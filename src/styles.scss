@@ -1,1 +1,213 @@
-/* You can add global styles to this file, and also import other style files */
+/* @import url('https://fonts.googleapis.com/css?family=Cabin:500&display=swap');
+
+$clr-font: 'Cabin', sans-serif; */
+@import '~@clr/ui/src/utils/components.clarity';
+.header {
+  background-color: #fff;
+}
+a {
+  cursor: pointer;
+}
+
+$zindex: (
+  modal: 9000,
+  overlay: 8000,
+  dropdown: 7000,
+  header: 6000,
+  footer: 5000,
+);
+
+input {
+  &[type='text'],
+  &[type='email'],
+  &[type='number'],
+  &[type='password'],
+  &[type='date'] {
+    width: 100%;
+    font-size: 1em;
+    margin: auto;
+    display: inline-block;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    box-sizing: border-box;
+    min-width: 50%;
+  }
+}
+
+select {
+  width: 100%;
+  font-size: 1em;
+  margin: auto;
+  display: inline-block;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-sizing: border-box;
+}
+
+.clr-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: 0 0;
+  height: 1.2rem;
+  color: #000;
+  display: inline-block;
+  border-bottom: 1px solid #999;
+  padding: 0 0.25rem;
+  max-height: 1.2rem;
+  font-size: 0.541667rem;
+}
+
+:host ::ng-deep {
+  clr-select-container {
+    .clr-multiselect-wrapper select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -ms-appearance: none;
+      -o-appearance: none;
+      height: 1.45rem;
+    }
+
+    .clr-select-wrapper {
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        -o-appearance: none;
+        height: 1.45rem;
+      }
+
+      &::after {
+        top: 0.5rem;
+      }
+    }
+  }
+
+  clr-date-container .clr-input-group {
+    border-bottom: none !important;
+  }
+
+  /*  .clr-popover-content {
+    z-index: 2000;
+  } */
+}
+
+clr-date-container .clr-input-group {
+  border-bottom: none !important;
+}
+
+$primary-default: #642c77;
+.clr-vertical-nav {
+  background-color: $primary-default !important;
+  .nav-divider {
+    border: 1px solid #fafafa !important;
+  }
+  .nav-group-content {
+    color: #fafafa !important;
+    &.active {
+      color: #fafafa !important;
+      background-color: $primary-default !important;
+    }
+    &:hover {
+      color: $primary-default !important;
+      background-color: #fafafa !important;
+    }
+  }
+  .nav-trigger {
+    color: #fafafa !important;
+  }
+  .nav-trigger + .nav-content {
+    border-top: 1px solid rgba(86, 86, 86, 0.2);
+  }
+  .nav-link {
+    color: #fafafa !important;
+    &.active {
+      color: $primary-default !important;
+      background-color: #fafafa !important;
+    }
+    &:hover {
+      color: $primary-default !important;
+      background-color: #fafafa !important;
+    }
+  }
+  /*  .nav-group.active:not(.is-expanded) .nav-group-content .nav-icon {
+    fill: $primary-default !important;
+  } */
+  .nav-group-content .nav-link.active ~ .nav-group-trigger {
+    background-color: $primary-default !important;
+  }
+  .nav-group.active:not(.is-expanded) .nav-group-content {
+    color: $primary-default !important;
+  }
+  .nav-group-content .nav-link:hover ~ .nav-group-trigger {
+    background-color: #fafafa;
+  }
+}
+
+.clr-vertical-nav .nav-link.active .nav-icon {
+  fill: $primary-default;
+}
+
+.limit-height clr-datagrid {
+  min-height: 286px;
+}
+
+clr-datagrid {
+  .datagrid .datagrid-column {
+    color: #fff;
+    background-color: $primary-default;
+  }
+
+  .datagrid-table .datagrid-column {
+    .datagrid-filter-toggle {
+      color: #fff;
+
+      &.datagrid-filter-open,
+      &.datagrid-filtered,
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    .datagrid-column-title {
+      color: #fff;
+    }
+  }
+
+  .datagrid .datagrid-column {
+    padding: 0.7rem;
+    font-size: 0.5333rem;
+  }
+
+  .datagrid-footer {
+    padding: 0.2rem 0.5rem;
+  }
+
+  .datagrid-table .datagrid-column .datagrid-column-title {
+    font-size: 1.2em;
+  }
+}
+
+.grey-header {
+  background: #8080806e;
+  padding: 0.8rem;
+}
+
+.padding-left-right-1 {
+  padding: 1rem;
+}
+
+.align-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card-text {
+  word-wrap: break-word;
+}
