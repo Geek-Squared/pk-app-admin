@@ -1,0 +1,23 @@
+<div class="card-header">Posts</div>
+<br />
+<a routerLink="/posts/list">Posts List </a>
+<strong style="font-size: 1.4em"> / </strong> <span>Post Details</span>
+<br />
+
+<div class="card" *ngIf="post$ | async as post">
+  <div class="card-block">
+    <img class="image-poster" src="{{ post?.imageUrl }}" />
+    <br /><br />
+    <div class="card-title">
+      {{ post?.title }}
+    </div>
+
+    <div class="card-text">
+      {{ post?.description }}
+      <br /><br />
+
+      <strong>Video Link : </strong>
+      <a [href]="post?.videoUrl" target="_blank">{{ post?.videoUrl }}</a>
+    </div>
+  </div>
+</div>

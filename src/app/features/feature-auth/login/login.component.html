@@ -1,15 +1,15 @@
 <div class="login-wrapper">
   <div class="login">
     <div class="text-center">
-      <!--    <span>
-        <img class="img-logo" src="assets/images/pesepay_logo.png" />
-      </span> -->
+      <span>
+        <img class="img-logo" src="assets/images/logo.png" />
+      </span>
+      <br />
       <section class="title">
-        <h3 class="welcome">Welcome to</h3>
-        Positive Konnections
+        <h3 class="welcome">Enter your details below to continue</h3>
       </section>
     </div>
 
-    <app-login-form></app-login-form>
+    <app-login-form (formValue)="onSubmit($event)"></app-login-form>
   </div>
 </div>

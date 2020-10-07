@@ -2,9 +2,7 @@
 
 $clr-font: 'Cabin', sans-serif; */
 @import '~@clr/ui/src/utils/components.clarity';
-.header {
-  background-color: #fff;
-}
+
 a {
   cursor: pointer;
 }
@@ -102,7 +100,7 @@ clr-date-container .clr-input-group {
   border-bottom: none !important;
 }
 
-$primary-default: #642c77;
+$primary-default: #4583d8;
 .clr-vertical-nav {
   background-color: $primary-default !important;
   .nav-divider {
@@ -210,4 +208,8 @@ clr-datagrid {
 
 .card-text {
   word-wrap: break-word;
+}
+
+.card {
+  box-shadow: none;
 }

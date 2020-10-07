@@ -1,0 +1,47 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ClrLoadingState } from '@clr/angular';
+import { Chapter } from 'src/app/models/chapter.interface';
+
+@Component({
+  selector: 'app-chapter-form',
+  templateUrl: './chapter-form.component.html',
+  styleUrls: ['./chapter-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ChapterFormComponent implements OnInit {
+  @Input() chapter: Chapter;
+  @Input() btnState: ClrLoadingState;
+  @Input() title: string;
+  @Input() imageSrc: string | ArrayBuffer;
+  @Input() uploadProgress;
+  @Output() formValue = new EventEmitter();
+  @Output() closeModal = new EventEmitter();
+  @Output() uploadFile = new EventEmitter();
+  public opened = true;
+  public chapterForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.createForm();
+    if (this.chapter) {
+      this.chapterForm.patchValue(this.chapter);
+    }
+  }
+
+  private createForm() {
+    this.chapterForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', [Validators.required]],
+      uid: '',
+    });
+  }
+}

@@ -1,0 +1,96 @@
+<div class="card-header text-center">Posts</div>
+<br />
+
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <clr-button-group>
+    <clr-button class="btn btn-sm" (click)="isCreate = true">
+      <clr-icon shape="plus"></clr-icon>&nbsp;Create Post
+    </clr-button>
+  </clr-button-group>
+  <br />
+
+  <ng-container *ngIf="posts?.length > 0">
+    <div *ngFor="let post of posts; let i = index" class="clr-row">
+      <div
+        routerLink="../view-post/{{ post.id }}"
+        class="card clr-col-lg-8 clr-col-sm-12"
+      >
+        <div class="clr-row">
+          <div class="card-block clr-col-8">
+            <div class="card-title">{{ post?.title }}</div>
+            <div class="clr-row">
+              <div class="clr-col-3">
+                <span class="clr-control-label">Description</span>
+              </div>
+              <div class="clr-col">
+                <span>{{ post?.description }}</span>
+                <span *ngIf="!post?.description">-</span>
+              </div>
+            </div>
+            <br />
+
+            <div class="clr-row">
+              <div class="clr-col-3">
+                <span class="clr-control-label">Video</span>
+              </div>
+              <div class="clr-col">
+                <a [href]="post?.videoUrl" target="_blank">{{
+                  post?.videoUrl
+                }}</a>
+                <span *ngIf="!post?.videoUrl">-</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-img clr-col">
+            <img src="{{ post?.imageUrl }}" />
+          </div>
+        </div>
+        <br />
+        <strong>Created on : </strong>
+        <i *ngIf="post?.createdDate">{{ post?.createdDate | date }}</i>
+        <br /><br />
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-sm-12">
+        <br />
+        <div class="card-block">
+          <button class="btn btn-sm btn-primary" (click)="updatePost(post)">
+            Update
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deletePost(post)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="text-center" *ngIf="posts?.length < 1">
+    <clr-icon class="is-info" shape="search" size="72"></clr-icon><br /><br />
+    <span class="card-title"> No Posts Found!</span>
+  </div>
+  <br /><br />
+</ng-container>
+
+<app-create-post
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+></app-create-post>
+
+<app-update-post
+  *ngIf="isUpdate"
+  [post]="selectedPost"
+  (closeModal)="isUpdate = false"
+></app-update-post>
+
+<app-delete-post
+  *ngIf="isDelete"
+  [postId]="selectedPost?.id"
+  (closeModal)="isDelete = false"
+></app-delete-post>

@@ -3,12 +3,7 @@
     <form [formGroup]="loginForm">
       <clr-input-container>
         <label>Username</label>
-        <input
-          type="text"
-          name="username"
-          clrInput
-          formControlName="username"
-        />
+        <input type="email" name="email" clrInput formControlName="email" />
       </clr-input-container>
 
       <clr-password-container>

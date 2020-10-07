@@ -1,0 +1,11 @@
+<a routerLink="/chapters/list">Chapters List </a>
+<strong style="font-size: 1.4em"> / </strong> <span>Chapter Details</span>
+<br /><br />
+
+<div class="card-title">{{ (chapter$ | async)?.title }}</div>
+<div class="card-text">{{ (chapter$ | async)?.description }}</div>
+<br />
+
+<app-list-posts
+  [chapterId]="route.snapshot.paramMap.get('chapterId')"
+></app-list-posts>

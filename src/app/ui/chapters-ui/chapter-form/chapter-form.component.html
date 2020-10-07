@@ -1,0 +1,40 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">{{ title }}</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="chapterForm" clrLayout="vertical">
+      <clr-input-container>
+        <label>Title</label>
+        <input clrInput type="text" formControlName="title" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <clr-textarea-container>
+        <label>Description</label>
+        <textarea
+          clrTextarea
+          formControlName="description"
+          name="description"
+          rows="5"
+          cols="50"
+          required
+        ></textarea>
+
+        <clr-control-error>You must provide a description!</clr-control-error>
+      </clr-textarea-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="btnState"
+      (click)="formValue.emit(chapterForm.value)"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>

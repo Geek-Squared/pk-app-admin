@@ -1,0 +1,9 @@
+<app-post-form
+  [btnState]="buttonState"
+  [title]="'Update Post'"
+  [uploadProgress]="fileService.uploadPercent"
+  [post]="post"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+  (uploadFile)="uploadFile($event)"
+></app-post-form>

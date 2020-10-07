@@ -1,0 +1,51 @@
+<div class="card-header">Chapters</div>
+<br />
+
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <clr-button-group>
+    <clr-button class="btn btn-sm" (click)="isCreate = true">
+      <clr-icon shape="plus"></clr-icon>&nbsp;Create Chapter
+    </clr-button>
+  </clr-button-group>
+  <br />
+
+  <ng-container *ngIf="chapters?.length > 0">
+    <div class="clr-row">
+      <div
+        class="clr-col-lg-4 clr-col-12"
+        *ngFor="let chapter of chapters; let i = index"
+      >
+        <a
+          class="card clickable text-center"
+          routerLink="../view-chapter/{{ chapter.id }}"
+        >
+          <div class="card-block">
+            <clr-icon
+              shape="folder-open"
+              class="is-solid is-info"
+              size="72"
+            ></clr-icon>
+            <p class="card-title">{{ chapter?.title }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="text-center" *ngIf="chapters?.length < 1">
+    <clr-icon class="is-info" shape="search" size="72"></clr-icon><br /><br />
+    <span class="card-title"> No Chapters Found!</span>
+  </div>
+  <br /><br />
+</ng-container>
+
+<app-create-chapter
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+></app-create-chapter>

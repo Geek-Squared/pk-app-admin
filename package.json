@@ -24,6 +24,7 @@
     "@clr/icons": "4.0.2",
     "@clr/ui": "4.0.2",
     "@webcomponents/webcomponentsjs": "^2.0.0",
+    "firebase": "^7.22.0",
     "ng2-izitoast": "^2.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

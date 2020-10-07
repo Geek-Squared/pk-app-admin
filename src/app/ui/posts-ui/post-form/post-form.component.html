@@ -1,0 +1,74 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">{{ title }}</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="postForm" clrLayout="vertical">
+      <clr-input-container>
+        <label>Title</label>
+        <input clrInput type="text" formControlName="title" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>Video Url</label>
+        <input clrInput type="text" formControlName="videoUrl" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <br />
+
+      <div class="clr-col-sm-5 clr-col-xs-12">
+        <input
+          type="file"
+          multiple
+          accept="image/x-png,image/gif,image/jpeg"
+          class="form-control"
+          (change)="onFileInputChange($event)"
+        />
+
+        <clr-progress-bar
+          *ngIf="uploadProgress"
+          clrValue="{{ uploadProgress | async }}"
+          clrSuccess
+          clrLabeled
+        ></clr-progress-bar>
+        <br />
+      </div>
+
+      <img
+        height="150"
+        width="150"
+        class="img-rounded clr-col"
+        [src]="imageSrc || 'http://placehold.it/180'"
+        alt="post image"
+      /><br />
+
+      <clr-textarea-container>
+        <label>Description</label>
+        <textarea
+          clrTextarea
+          formControlName="description"
+          name="description"
+          rows="5"
+          cols="50"
+          required
+        ></textarea>
+
+        <clr-control-error>You must provide a description!</clr-control-error>
+      </clr-textarea-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="btnState"
+      (click)="formValue.emit(postForm.value)"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>

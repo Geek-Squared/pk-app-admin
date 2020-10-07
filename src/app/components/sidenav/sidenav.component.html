@@ -1,0 +1,29 @@
+<clr-vertical-nav
+  [clrVerticalNavCollapsible]="true"
+  id="show_bg_2"
+  [clr-nav-level]="1"
+>
+  <a clrVerticalNavLink [routerLink]="['/chapters']" routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="file-group"></clr-icon>
+    Chapters
+  </a>
+
+  <a
+    clrVerticalNavLink
+    [routerLink]="['/work-books']"
+    routerLinkActive="active"
+  >
+    <clr-icon clrVerticalNavIcon shape="library"></clr-icon>
+    Work Books
+  </a>
+
+  <a clrVerticalNavLink [routerLink]="['/feedback']" routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="chat-bubble"></clr-icon>
+    FeedBack
+  </a>
+
+  <a clrVerticalNavLink [routerLink]="['/messages']" routerLinkActive="active">
+    <clr-icon clrVerticalNavIcon shape="envelope"></clr-icon>
+    Messages
+  </a>
+</clr-vertical-nav>
