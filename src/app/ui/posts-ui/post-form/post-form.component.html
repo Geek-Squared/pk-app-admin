@@ -55,6 +55,41 @@
 
         <clr-control-error>You must provide a description!</clr-control-error>
       </clr-textarea-container>
+
+      <h4>Questions</h4>
+      <button class="btn btn-icon btn-sm" (click)="isAddQuestion = true">
+        <clr-icon shape="plus"></clr-icon>
+        Add Question
+      </button>
+
+      <ng-container *ngIf="getFormArray('questions').value.length > 0">
+        <ol class="list">
+          <li
+            formArrayName="questions"
+            *ngFor="
+              let question of getFormArray('questions').controls;
+              let i = index
+            "
+          >
+            <div [formGroupName]="i">
+              <div class="card">
+                <div class="card-block">
+                  <div class="clr-row">
+                    <div class="clr-col-4">
+                      <label class="clr-control-label"
+                        >Question {{ i + 1 }}</label
+                      >
+                    </div>
+                    <div class="card-text">
+                      {{ question.get('narrative').value }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </ng-container>
     </form>
   </div>
 
@@ -72,3 +107,9 @@
     </button>
   </div>
 </clr-modal>
+
+<app-question-form
+  *ngIf="isAddQuestion"
+  (closeModal)="isAddQuestion = false"
+  (formValue)="addQuestion($event)"
+></app-question-form>

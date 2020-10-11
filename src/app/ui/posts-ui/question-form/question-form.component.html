@@ -1,0 +1,32 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">{{ title }}</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="questionForm" clrLayout="vertical">
+      <clr-textarea-container>
+        <label>Narrative</label>
+        <textarea
+          clrTextarea
+          formControlName="narrative"
+          name="narrative"
+          rows="5"
+          cols="50"
+          required
+        ></textarea>
+      </clr-textarea-container>
+    </form>
+    <br />
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      (click)="formValue.emit(questionForm.value)"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>

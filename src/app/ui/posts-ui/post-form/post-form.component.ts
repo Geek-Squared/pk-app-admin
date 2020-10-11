@@ -6,7 +6,13 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular/utils/loading';
 import { UPost } from 'src/app/models/post.interface';
 
@@ -26,6 +32,7 @@ export class PostFormComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
   @Output() uploadFile = new EventEmitter();
   public opened = true;
+  public isAddQuestion: boolean;
   public postForm: FormGroup;
 
   constructor(private fb: FormBuilder) {}
@@ -34,6 +41,11 @@ export class PostFormComponent implements OnInit {
     this.createForm();
     if (this.post) {
       this.postForm.patchValue(this.post);
+      if (this.post?.questions?.length > 0) {
+        this.post?.questions.forEach((element) => {
+          this.addQuestion(element);
+        });
+      }
       this.imageSrc = this.post.imageUrl;
     }
   }
@@ -44,9 +56,21 @@ export class PostFormComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', [Validators.required]],
       imageUrl: '',
+      questions: this.fb.array([]),
       uid: '',
       id: '',
     });
+  }
+
+  public addQuestion(question) {
+    console.log('1', question);
+
+    this.getFormArray('questions').push(this.fb.group(question));
+    this.isAddQuestion = false;
+  }
+
+  public getFormArray(array: string) {
+    return this.postForm.get(array) as FormArray;
   }
 
   public onFileInputChange(event) {

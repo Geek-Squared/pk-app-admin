@@ -7,4 +7,5 @@ export class UPost {
   videoUrl: string;
   chapterId: string;
   id: string;
+  questions: any[];
 }
