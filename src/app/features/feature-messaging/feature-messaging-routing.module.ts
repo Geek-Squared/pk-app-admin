@@ -4,12 +4,13 @@ import { MessagesComponent } from './messages/messages.component';
 import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
- /*  { path: '', component: MessagesComponent },
-  { path: 'chats/:id', component: ChatComponent }, */
+  { path: '', component: MessagesComponent },
+  { path: 'chats/:id', component: ChatComponent },
 ];
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
-export class FeatureWorkbooksRoutingModule {}
+export class FeatureMessagingRoutingModule { }

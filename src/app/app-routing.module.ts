@@ -31,6 +31,13 @@ const routes: Routes = [
             (mod) => mod.FeatureWorkbooksModule
           ),
       },
+      {
+        path: 'messages',
+        loadChildren: () =>
+          import('./features/feature-messaging/feature-messaging.module').then(
+            (mod) => mod.FeatureMessagingModule
+          ),
+      },
     ],
   },
   {

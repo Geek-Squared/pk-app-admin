@@ -47,6 +47,25 @@ export class ChatsService {
     );
   }
 
+  getAllChats() {
+    return this.auth.user$.pipe(
+      switchMap((user) => {
+        return this.afs
+          .collection('chats')
+          .snapshotChanges()
+          .pipe(
+            map((actions) => {
+              return actions.map((a) => {
+                const data: Object = a.payload.doc.data();
+                const id = a.payload.doc.id;
+                return { id, ...data };
+              });
+            })
+          );
+      })
+    );
+  }
+
   async create() {
     const { uid, displayName } = await this.auth.getUser();
 

@@ -32,20 +32,14 @@
     </div>
 
     <div class="form">
-      <input
-        class="input"
+      <textarea
         [(ngModel)]="newMsg"
+        name="description"
         maxlength="100"
+        cols="50"
         (keydown.enter)="submit(chat.id)"
-      />
-
-      <button
-        (click)="submit(chat.id)"
-        class="button is-info"
-        [disabled]="!newMsg"
-      >
-        Send
-      </button>
+        required
+      ></textarea>
     </div>
   </ng-container>
 </ng-container>
