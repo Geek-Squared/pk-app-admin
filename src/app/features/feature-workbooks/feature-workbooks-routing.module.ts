@@ -1,12 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MessagesComponent } from './messages/messages.component';
-import { ChatComponent } from './chat/chat.component';
+import { ListUsersComponent } from "./list-users/list-users.component";
 
-const routes: Routes = [
- /*  { path: '', component: MessagesComponent },
-  { path: 'chats/:id', component: ChatComponent }, */
-];
+const routes: Routes = [{ path: '', component: ListUsersComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
