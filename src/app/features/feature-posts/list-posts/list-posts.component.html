@@ -47,28 +47,7 @@
               </div>
             </div>
 
-            <ng-container *ngIf="post?.questions?.length > 0">
-              <ol class="list">
-                <li *ngFor="let question of post?.questions; let i = index">
-                  <div>
-                    <div class="card">
-                      <div class="card-block">
-                        <div class="clr-row">
-                          <div class="clr-col-4">
-                            <label class="clr-control-label"
-                              >Question {{ i + 1 }}</label
-                            >
-                          </div>
-                          <div class="card-text">
-                            {{ question.narrative }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ol>
-            </ng-container>
+            <app-list-questions [postId]="post?.uid"></app-list-questions>
           </div>
           <div class="card-img clr-col">
             <img src="{{ post?.imageUrl }}" />

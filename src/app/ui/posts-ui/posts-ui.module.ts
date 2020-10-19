@@ -8,6 +8,6 @@ import { QuestionFormComponent } from './question-form/question-form.component';
 @NgModule({
   declarations: [PostFormComponent, QuestionFormComponent],
   imports: [CommonModule, ClarityModule, ReactiveFormsModule, FormsModule],
-  exports: [PostFormComponent],
+  exports: [PostFormComponent, QuestionFormComponent],
 })
 export class PostsUiModule {}

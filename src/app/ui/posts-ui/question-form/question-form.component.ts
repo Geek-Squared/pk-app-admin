@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ClrLoadingState } from '@clr/angular';
 
 @Component({
   selector: 'app-question-form',
@@ -16,6 +17,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class QuestionFormComponent implements OnInit {
   @Input() title: string;
+  @Input() question;
+  @Input() btnState: ClrLoadingState;
   @Output() formValue = new EventEmitter();
   @Output() closeModal = new EventEmitter();
   public questionForm: FormGroup;
@@ -25,6 +28,9 @@ export class QuestionFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
+    if (this.question) {
+      this.questionForm.patchValue(this.question);
+    }
   }
 
   private createForm() {

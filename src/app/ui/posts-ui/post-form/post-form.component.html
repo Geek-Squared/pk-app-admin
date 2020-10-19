@@ -56,13 +56,7 @@
         <clr-control-error>You must provide a description!</clr-control-error>
       </clr-textarea-container>
 
-      <h4>Questions</h4>
-      <button class="btn btn-icon btn-sm" (click)="isAddQuestion = true">
-        <clr-icon shape="plus"></clr-icon>
-        Add Question
-      </button>
-
-      <ng-container *ngIf="getFormArray('questions').value.length > 0">
+      <!--  <ng-container *ngIf="getFormArray('questions').value.length > 0">
         <ol class="list">
           <li
             formArrayName="questions"
@@ -89,7 +83,7 @@
             </div>
           </li>
         </ol>
-      </ng-container>
+      </ng-container> -->
     </form>
   </div>
 

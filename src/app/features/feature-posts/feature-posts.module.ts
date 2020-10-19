@@ -9,6 +9,7 @@ import { ListPostsComponent } from './list-posts/list-posts.component';
 import { ClarityModule } from '@clr/angular';
 import { ViewPostComponent } from './view-post/view-post.component';
 import { PostsUiModule, SharedUiModule } from '../../ui';
+import { FeatureQuestionsModule } from '../feature-questions/feature-questions.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { PostsUiModule, SharedUiModule } from '../../ui';
     ClarityModule,
     PostsUiModule,
     SharedUiModule,
+    FeatureQuestionsModule,
   ],
 })
 export class FeaturePostsModule {}

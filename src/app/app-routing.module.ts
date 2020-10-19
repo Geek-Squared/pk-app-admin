@@ -24,6 +24,13 @@ const routes: Routes = [
             (mod) => mod.FeatureChaptersModule
           ),
       },
+      {
+        path: 'work-books',
+        loadChildren: () =>
+          import('./features/feature-workbooks/feature-workbooks.module').then(
+            (mod) => mod.FeatureWorkbooksModule
+          ),
+      },
     ],
   },
   {

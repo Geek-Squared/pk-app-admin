@@ -3,13 +3,22 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User } from 'firebase';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { first, switchMap } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
   user: User;
-  constructor(public afAuth: AngularFireAuth, public router: Router) {
+  user$: Observable<any>;
+
+  constructor(
+    public afAuth: AngularFireAuth,
+    public router: Router,
+    public afs: AngularFirestore
+  ) {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.user = user;
@@ -18,6 +27,16 @@ export class AuthenticationService {
         sessionStorage.setItem('user', null);
       }
     });
+
+    this.user$ = this.afAuth.authState.pipe(
+      switchMap((user) => {
+        if (user) {
+          return this.afs.doc<any>(`users/${user.uid}`).valueChanges();
+        } else {
+          return of(null);
+        }
+      })
+    );
   }
 
   login(email: string, password: string) {
@@ -50,4 +69,9 @@ export class AuthenticationService {
     const user = JSON.parse(sessionStorage.getItem('user'));
     return user !== null;
   }
+
+  getUser() {
+    return this.user$.pipe(first()).toPromise();
+  }
+
 }

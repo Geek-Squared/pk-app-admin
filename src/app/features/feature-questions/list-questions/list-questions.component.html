@@ -1,0 +1,33 @@
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<h4>Questions</h4>
+<button class="btn btn-icon btn-sm" (click)="isCreate = true">
+  <clr-icon shape="plus"></clr-icon>
+  Add Question
+</button>
+
+<ng-container *ngIf="questions?.length > 0">
+  <ol class="list">
+    <li *ngFor="let question of questions; let i = index">
+      <div>
+        <div class="card">
+          <div class="card-block">
+            <div class="card-text">
+              {{ question.narrative }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+</ng-container>
+
+<app-create-question
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+  [postId]="postId"
+></app-create-question>

@@ -56,7 +56,6 @@ export class PostFormComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', [Validators.required]],
       imageUrl: '',
-      questions: this.fb.array([]),
       uid: '',
       id: '',
     });
