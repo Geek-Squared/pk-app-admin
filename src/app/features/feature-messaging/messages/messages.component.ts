@@ -5,13 +5,14 @@ import { ChatsService } from 'src/app/services/chats.service';
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.scss']
+  styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit {
   chats$;
   constructor(public auth: AuthenticationService, public cs: ChatsService) {}
 
   ngOnInit() {
+    this.auth.user$.subscribe((res) => console.log(res));
     this.chats$ = this.cs.getAllChats();
   }
 }

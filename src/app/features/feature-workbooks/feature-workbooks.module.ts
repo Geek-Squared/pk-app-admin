@@ -5,9 +5,10 @@ import { FeatureWorkbooksRoutingModule } from './feature-workbooks-routing.modul
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { ListUsersComponent } from './list-users/list-users.component';
+import { ViewWorkbookComponent } from './view-workbook/view-workbook.component';
 
 @NgModule({
-  declarations: [ListUsersComponent],
+  declarations: [ListUsersComponent, ViewWorkbookComponent],
   imports: [
     CommonModule,
     FeatureWorkbooksRoutingModule,

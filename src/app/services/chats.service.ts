@@ -67,36 +67,36 @@ export class ChatsService {
   }
 
   async create() {
-    const { uid, displayName } = await this.auth.getUser();
+    await this.auth.afAuth.authState.subscribe(async (user) => {
+      const data = {
+        uid: user.uid,
+        displayName: user.displayName,
+        createdAt: Date.now(),
+        count: 0,
+        messages: [],
+      };
 
-    const data = {
-      uid,
-      displayName,
-      createdAt: Date.now(),
-      count: 0,
-      messages: [],
-    };
+      const docRef = await this.afs.collection('chats').add(data);
 
-    const docRef = await this.afs.collection('chats').add(data);
-
-    return this.router.navigate(['messages/chat', docRef.id]);
+      return this.router.navigate(['messages/chat', docRef.id]);
+    });
   }
 
   async sendMessage(chatId, content) {
-    const { uid } = await this.auth.getUser();
+    await this.auth.afAuth.authState.subscribe(async (user) => {
+      const data = {
+        uid: user.uid,
+        content,
+        createdAt: Date.now(),
+      };
 
-    const data = {
-      uid,
-      content,
-      createdAt: Date.now(),
-    };
-
-    if (uid) {
-      const ref = this.afs.collection('chats').doc(chatId);
-      return ref.update({
-        messages: firestore.FieldValue.arrayUnion(data),
-      });
-    }
+      if (user.uid) {
+        const ref = this.afs.collection('chats').doc(chatId);
+        return ref.update({
+          messages: firestore.FieldValue.arrayUnion(data),
+        });
+      }
+    });
   }
 
   joinUsers(chat$: Observable<any>) {
@@ -117,7 +117,7 @@ export class ChatsService {
         return userDocs.length ? combineLatest(userDocs) : of([]);
       }),
       map((arr) => {
-        arr.forEach((v) => (joinKeys[(<any>v).uid] = v));
+        arr.forEach((v) => (joinKeys[(<any>v)?.uid] = v));
         chat.messages = chat.messages.map((v) => {
           return { ...v, user: joinKeys[v.uid] };
         });
@@ -131,7 +131,7 @@ export class ChatsService {
     const { uid } = await this.auth.getUser();
 
     const ref = this.afs.collection('chats').doc(chat.id);
-    console.log(msg);
+
     if (chat.uid === uid || msg.uid === uid) {
       // Allowed to delete
       delete msg.user;

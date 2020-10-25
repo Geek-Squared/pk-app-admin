@@ -1,0 +1,20 @@
+<div class="card-header">Workbooks</div>
+<br />
+<a routerLink="/work-books">Workbooks List </a>
+<strong style="font-size: 1.4em"> / </strong> <span>Workbook Details</span>
+<br />
+
+<div class="card">
+  <div class="card-block">
+    <ol class="list">
+      <ng-container *ngFor="let item of workbook">
+        <li *ngFor="let element of item?.content | keyvalue">
+          <strong>{{ element?.value?.questionNarrative }}</strong
+          ><br />
+          <span>{{ element?.value?.response }}</span>
+          <br /><br />
+        </li>
+      </ng-container>
+    </ol>
+  </div>
+</div>

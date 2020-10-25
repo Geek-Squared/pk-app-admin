@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services';
 import { ChatsService } from 'src/app/services/chats.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
   chat$: Observable<any>;
@@ -22,8 +23,11 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     const chatId = this.route.snapshot.paramMap.get('id');
     const source = this.cs.get(chatId);
-    this.chat$ = this.cs.joinUsers(source); // .pipe(tap(v => this.scrollBottom(v)));
+    this.chat$ = this.cs
+      .joinUsers(source)
+      .pipe(tap((v) => this.scrollBottom()));
     this.scrollBottom();
+    this.auth.user$.subscribe((res) => console.log(res));
   }
 
   submit(chatId) {

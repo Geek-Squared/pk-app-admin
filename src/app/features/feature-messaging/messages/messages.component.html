@@ -1,27 +1,19 @@
 <div class="card-header">Messaging</div>
 <br />
 
-<div class="login">
-  <div *ngIf="auth.user$ | async as user">
-    <button class="btn btn-primary" (click)="cs.create()">
-      Create New Chat
-    </button>
+<div class="login" *ngIf="auth.user$ | async as user">
+  <h3>All Messages</h3>
 
-    <hr />
-
-    <h3>All Messages</h3>
-
-    <div class="chat">
-      <ng-container>
-        <div class="msg" *ngFor="let chat of chats$ | async">
-          <div class="user">
-            <span id="profileImage" [innerHTML]="'U'"></span>
-          </div>
-          <a routerLink="chats/{{ chat.id }}"
-            >{{ chat.id }} - {{ chat.messages.length }} Messages</a
-          >
+  <div class="chat">
+    <ng-container>
+      <div class="msg" *ngFor="let chat of chats$ | async">
+        <div class="user">
+          <span id="profileImage" [innerHTML]="'U'"></span>
         </div>
-      </ng-container>
-    </div>
+        <a routerLink="chats/{{ chat.id }}"
+          >{{ chat.id }} - {{ chat.messages.length }} Messages</a
+        >
+      </div>
+    </ng-container>
   </div>
 </div>
