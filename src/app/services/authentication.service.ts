@@ -19,14 +19,7 @@ export class AuthenticationService {
     public router: Router,
     public afs: AngularFirestore
   ) {
-    this.afAuth.authState.subscribe((user) => {
-      if (user) {
-        this.user = user;
-        sessionStorage.setItem('user', JSON.stringify(this.user));
-      } else {
-        sessionStorage.setItem('user', null);
-      }
-    });
+    this.setUser();
 
     this.user$ = this.afAuth.authState.pipe(
       switchMap((user) => {
@@ -39,9 +32,21 @@ export class AuthenticationService {
     );
   }
 
+  private setUser() {
+    this.afAuth.authState.subscribe((user) => {
+      if (user) {
+        this.user = user;
+        sessionStorage.setItem('user', JSON.stringify(this.user));
+        this.router.navigate(['']);
+      } else {
+        sessionStorage.setItem('user', null);
+      }
+    });
+  }
+
   login(email: string, password: string) {
     return this.afAuth.signInWithEmailAndPassword(email, password).then(() => {
-      this.router.navigate(['']);
+      this.setUser();
     });
   }
 
@@ -73,5 +78,4 @@ export class AuthenticationService {
   getUser() {
     return this.user$.pipe(first()).toPromise();
   }
-
 }
