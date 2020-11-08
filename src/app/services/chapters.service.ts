@@ -17,10 +17,15 @@ export class ChaptersService {
   }
 
   getChapterById(chapterId: string) {
-    return this.firestore.collection('chapters').doc<Chapter>(chapterId).valueChanges();
+    return this.firestore
+      .collection('chapters')
+      .doc<Chapter>(chapterId)
+      .valueChanges();
   }
 
   getChapters() {
-    return this.firestore.collection<Chapter>('chapters').snapshotChanges();
+    return this.firestore
+      .collection<Chapter>('chapters', (ref) => ref.orderBy('order'))
+      .snapshotChanges();
   }
 }

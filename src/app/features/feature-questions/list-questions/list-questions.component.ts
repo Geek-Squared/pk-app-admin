@@ -8,6 +8,7 @@ import { QuestionsService } from 'src/app/services/questions.service';
 })
 export class ListQuestionsComponent implements OnInit {
   @Input() postId: string;
+  @Input() chapterId: string;
   public isCreate: boolean;
   public isUpdate: boolean;
   public isDelete: boolean;

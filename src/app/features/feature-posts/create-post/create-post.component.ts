@@ -15,7 +15,7 @@ import {
 })
 export class CreatePostComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
-  @Input() chapterId: string ;
+  @Input() chapterId: string;
   public buttonState = ClrLoadingState.DEFAULT;
 
   constructor(
@@ -38,6 +38,7 @@ export class CreatePostComponent implements OnInit {
       : '';
     post.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     post.chapterId = this.chapterId;
+
     this.postsService.createPost(post).then(
       () => {
         this.closeModal.emit();

@@ -41,6 +41,7 @@ export class PostFormComponent implements OnInit {
     this.createForm();
     if (this.post) {
       this.postForm.patchValue(this.post);
+      this.postForm.get('id').patchValue(this.post.postId);
       if (this.post?.questions?.length > 0) {
         this.post?.questions.forEach((element) => {
           this.addQuestion(element);
@@ -57,13 +58,12 @@ export class PostFormComponent implements OnInit {
       description: ['', [Validators.required]],
       imageUrl: '',
       uid: '',
+      order: '',
       id: '',
     });
   }
 
   public addQuestion(question) {
-    console.log('1', question);
-
     this.getFormArray('questions').push(this.fb.group(question));
     this.isAddQuestion = false;
   }

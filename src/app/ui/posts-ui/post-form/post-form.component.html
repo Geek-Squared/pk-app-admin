@@ -56,6 +56,12 @@
         <clr-control-error>You must provide a description!</clr-control-error>
       </clr-textarea-container>
 
+      <clr-input-container>
+        <label>Order</label>
+        <input clrInput type="number" formControlName="order" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
       <!--  <ng-container *ngIf="getFormArray('questions').value.length > 0">
         <ol class="list">
           <li

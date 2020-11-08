@@ -41,6 +41,7 @@ export class ChapterFormComponent implements OnInit {
     this.chapterForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', [Validators.required]],
+      order: [''],
       uid: '',
     });
   }

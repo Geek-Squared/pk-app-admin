@@ -13,6 +13,8 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
+    console.log(postId);
+
     return this.firestore.collection('posts').doc(postId).delete();
   }
 
@@ -34,7 +36,7 @@ export class PostsService {
   getPostsByChapterId(chapterId: string) {
     return this.firestore
       .collection<any>('posts', (ref) =>
-        ref.where('chapterId', '==', chapterId)
+        ref.where('chapterId', '==', chapterId).orderBy('order')
       )
       .snapshotChanges();
   }

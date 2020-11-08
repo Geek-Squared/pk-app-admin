@@ -6,6 +6,7 @@ export class UPost {
   uid: string;
   videoUrl: string;
   chapterId: string;
-  id: string;
+  id?: string;
   questions: any[];
+  postId?: string;
 }

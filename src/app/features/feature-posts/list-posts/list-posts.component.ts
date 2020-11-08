@@ -12,7 +12,7 @@ export class ListPostsComponent implements OnInit {
   public isCreate: boolean;
   public isUpdate: boolean;
   public isDelete: boolean;
-  public posts: UPost[];
+  public posts;
   public isLoading: boolean;
   public selectedPost: UPost;
 
@@ -24,10 +24,12 @@ export class ListPostsComponent implements OnInit {
       (data) => {
         this.posts = data.map((e: any) => {
           return {
+            postId: e.payload.doc.id,
             id: e.payload.doc.id,
             ...e.payload.doc.data(),
-          } as UPost;
+          };
         });
+
         this.isLoading = false;
       },
       () => {

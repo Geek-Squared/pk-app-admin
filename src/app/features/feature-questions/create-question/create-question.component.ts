@@ -11,6 +11,7 @@ import { QuestionsService } from 'src/app/services/questions.service';
 export class CreateQuestionComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
   @Input() postId: string;
+  @Input() chapterId: string;
   public buttonState = ClrLoadingState.DEFAULT;
 
   constructor(private questionsService: QuestionsService) {}
@@ -21,6 +22,7 @@ export class CreateQuestionComponent implements OnInit {
     this.buttonState = ClrLoadingState.LOADING;
     question.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     question.postId = this.postId;
+    question.chapterId = this.chapterId;
     this.questionsService.createQuestion(question).then(
       () => {
         this.closeModal.emit();
