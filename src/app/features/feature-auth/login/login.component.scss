@@ -9,3 +9,31 @@
 .img-logo {
   width: 60%;
 }
+.login {
+  background: #222 !important;
+}
+
+.login-wrapper .login .title .welcome {
+  line-height: 1.8rem;
+  color: #ccc;
+}
+
+label.clr-control-label {
+  color: #ddd;
+}
+
+input[type=date], input[type=email], input[type=number], input[type=password], input[type=text] {
+  min-width: 50%;
+  color: #ddd;
+  border: 0px !important;
+  border-top: 0px !important;
+  border-bottom: 1px solid #999 !important;
+}
+
+a.signup {
+  color: #aaa;
+}
+
+button.clr-input-group-icon-action.ng-star-inserted {
+  border-bottom: 1px solid #ddd;
+}

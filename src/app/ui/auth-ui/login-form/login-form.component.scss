@@ -1,0 +1,22 @@
+.login {
+  background: #222 !important;
+}
+
+.login-wrapper .login .title .welcome {
+  line-height: 1.8rem;
+  color: #ccc;
+}
+
+label.clr-control-label {
+  color: #ddd;
+}
+
+input[type=date], input[type=email], input[type=number], input[type=password], input[type=text] {
+  min-width: 50%;
+  color: #ddd;
+  border-bottom: 1px solid #999 !important;
+}
+
+a.signup {
+  color: #aaa;
+}
