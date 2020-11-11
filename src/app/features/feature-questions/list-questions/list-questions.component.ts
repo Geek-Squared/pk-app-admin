@@ -28,6 +28,7 @@ export class ListQuestionsComponent implements OnInit {
             ...e.payload.doc.data(),
           };
         });
+        this.questions = this.questions.sort((a, b) => (a.createdDate > b.createdDate ? 1 : -1));
         this.isLoading = false;
       },
       () => {

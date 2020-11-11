@@ -12,7 +12,7 @@ export class ListPostsComponent implements OnInit {
   public isCreate: boolean;
   public isUpdate: boolean;
   public isDelete: boolean;
-  public posts;
+  public posts: UPost[];
   public isLoading: boolean;
   public selectedPost: UPost;
 
@@ -29,6 +29,7 @@ export class ListPostsComponent implements OnInit {
             ...e.payload.doc.data(),
           };
         });
+        this.posts = this.posts.sort((a, b) => (a.order > b.order ? 1 : -1));
 
         this.isLoading = false;
       },

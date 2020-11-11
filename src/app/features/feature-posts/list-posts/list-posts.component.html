@@ -17,10 +17,7 @@
 
   <ng-container *ngIf="posts?.length > 0">
     <div *ngFor="let post of posts" class="clr-row">
-      <div
-        routerLink="../view-post/{{ post.testField }}"
-        class="card clr-col-lg-8 clr-col-sm-12"
-      >
+      <div class="card clr-col-lg-8 clr-col-sm-12">
         <div class="clr-row">
           <div class="card-block clr-col-8">
             <div class="card-title">{{ post?.title }}</div>

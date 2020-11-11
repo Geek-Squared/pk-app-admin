@@ -9,4 +9,5 @@ export class UPost {
   id?: string;
   questions: any[];
   postId?: string;
+  order: string | number;
 }
