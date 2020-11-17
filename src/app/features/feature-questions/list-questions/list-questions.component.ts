@@ -24,11 +24,13 @@ export class ListQuestionsComponent implements OnInit {
       (data) => {
         this.questions = data.map((e: any) => {
           return {
-            id: e.payload.doc.id,
+            questionId: e.payload.doc.id,
             ...e.payload.doc.data(),
           };
         });
-        this.questions = this.questions.sort((a, b) => (a.createdDate > b.createdDate ? 1 : -1));
+        this.questions = this.questions.sort((a, b) =>
+          a.createdDate > b.createdDate ? 1 : -1
+        );
         this.isLoading = false;
       },
       () => {
