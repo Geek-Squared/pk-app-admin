@@ -1,1 +1,7 @@
-<p>update-chapter works!</p>
+<app-chapter-form
+  [btnState]="buttonState"
+  [title]="'Update Chapter'"
+  [chapter]="chapter"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+></app-chapter-form>

@@ -5,7 +5,7 @@ import { QuestionsService } from 'src/app/services/questions.service';
 @Component({
   selector: 'app-delete-question',
   templateUrl: './delete-question.component.html',
-  styleUrls: ['./delete-question.component.scss']
+  styleUrls: ['./delete-question.component.scss'],
 })
 export class DeleteQuestionComponent implements OnInit {
   @Output() closeModal = new EventEmitter();

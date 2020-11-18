@@ -29,7 +29,7 @@ export class ListQuestionsComponent implements OnInit {
           };
         });
         this.questions = this.questions.sort((a, b) =>
-          a.createdDate > b.createdDate ? 1 : -1
+          a.order > b.order ? 1 : -1
         );
         this.isLoading = false;
       },
@@ -46,6 +46,8 @@ export class ListQuestionsComponent implements OnInit {
 
   public deleteQuestion(question) {
     this.selectedQuestion = question;
+    console.log(question);
+
     this.isDelete = true;
   }
 }

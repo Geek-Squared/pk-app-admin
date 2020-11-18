@@ -1,11 +1,23 @@
-<a routerLink="/chapters/list">Chapters List </a>
-<strong style="font-size: 1.4em"> / </strong> <span>Chapter Details</span>
-<br /><br />
+<ng-container *ngIf="chapter$ | async as chapter">
+  <a routerLink="/chapters/list">Chapters List </a>
+  <strong style="font-size: 1.4em"> / </strong> <span>Chapter Details</span>
+  <br /><br />
 
-<div class="card-title">{{ (chapter$ | async)?.title }}</div>
-<div class="card-text">{{ (chapter$ | async)?.description }}</div>
-<br />
+  <div class="card-title">{{ chapter?.title }}</div>
+  <div class="card-text">{{ chapter?.description }}</div>
 
-<app-list-posts
-  [chapterId]="route.snapshot.paramMap.get('chapterId')"
-></app-list-posts>
+  <button class="btn btn-sm btn-primary" (click)="updateChapter(chapter)">
+    Update
+  </button>
+  <br />
+
+  <app-list-posts
+    [chapterId]="route.snapshot.paramMap.get('chapterId')"
+  ></app-list-posts>
+
+  <app-update-chapter
+    *ngIf="isUpdate"
+    [chapter]="selectedChapter"
+    (closeModal)="isUpdate = false"
+  ></app-update-chapter>
+</ng-container>

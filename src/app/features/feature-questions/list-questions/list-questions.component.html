@@ -21,6 +21,16 @@
             </div>
           </div>
         </div>
+        <clr-icon
+          shape="pencil"
+          class="is-solid is-warning"
+          (click)="updateQuestion(question)"
+        ></clr-icon>
+        &nbsp;<clr-icon
+          shape="trash"
+          class="is-solid is-danger"
+          (click)="deleteQuestion(question)"
+        ></clr-icon>
       </div>
     </li>
   </ol>
@@ -32,3 +42,15 @@
   [postId]="postId"
   [chapterId]="chapterId"
 ></app-create-question>
+
+<app-update-question
+  *ngIf="isUpdate"
+  [question]="selectedQuestion"
+  (closeModal)="isUpdate = false"
+></app-update-question>
+
+<app-delete-question
+  *ngIf="isDelete"
+  [questionId]="selectedQuestion?.questionId"
+  (closeModal)="isDelete = false"
+></app-delete-question>

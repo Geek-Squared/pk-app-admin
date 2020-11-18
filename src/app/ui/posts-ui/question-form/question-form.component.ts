@@ -36,6 +36,8 @@ export class QuestionFormComponent implements OnInit {
   private createForm() {
     this.questionForm = this.fb.group({
       narrative: '',
+      order: '',
+      questionId: '',
     });
   }
 }

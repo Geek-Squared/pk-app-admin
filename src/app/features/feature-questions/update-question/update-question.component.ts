@@ -13,10 +13,7 @@ export class UpdateQuestionComponent implements OnInit {
   @Input() question;
   public buttonState = ClrLoadingState.DEFAULT;
 
-  constructor(
-    private questionsService: QuestionsService,
-    private authService: AuthenticationService
-  ) {}
+  constructor(private questionsService: QuestionsService) {}
 
   ngOnInit(): void {}
 

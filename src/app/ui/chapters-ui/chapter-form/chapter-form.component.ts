@@ -43,6 +43,7 @@ export class ChapterFormComponent implements OnInit {
       description: ['', [Validators.required]],
       order: [''],
       uid: '',
+      id: '',
     });
   }
 }

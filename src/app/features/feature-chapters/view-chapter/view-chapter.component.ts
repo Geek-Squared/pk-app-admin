@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Chapter } from 'src/app/models/chapter.interface';
 import { ChaptersService } from 'src/app/services/chapters.service';
 
 @Component({
@@ -11,6 +12,8 @@ export class ViewChapterComponent implements OnInit {
   public chapter$ = this.chaptersService.getChapterById(
     this.route.snapshot.paramMap.get('chapterId')
   );
+  public isUpdate: boolean;
+  public selectedChapter: Chapter;
 
   constructor(
     public route: ActivatedRoute,
@@ -18,4 +21,9 @@ export class ViewChapterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {}
+
+  updateChapter(chapter) {
+    this.selectedChapter = chapter;
+    this.isUpdate = true;
+  }
 }

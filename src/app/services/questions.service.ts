@@ -18,7 +18,7 @@ export class QuestionsService {
   updateQuestion(question) {
     return this.firestore
       .collection('questions')
-      .doc(question.id)
+      .doc(question.questionId)
       .set(question, { merge: true });
   }
 

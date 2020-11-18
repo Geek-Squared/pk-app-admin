@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
 import { Chapter } from '../models/chapter.interface';
 
 @Injectable({
@@ -20,12 +21,24 @@ export class ChaptersService {
     return this.firestore
       .collection('chapters')
       .doc<Chapter>(chapterId)
-      .valueChanges();
+      .snapshotChanges()
+      .pipe(
+        map((doc: any) => {
+          return { id: doc.payload.id, ...doc.payload.data() };
+        })
+      );
   }
 
   getChapters() {
     return this.firestore
       .collection<Chapter>('chapters', (ref) => ref.orderBy('order'))
       .snapshotChanges();
+  }
+
+  updateChapter(chapter: Chapter) {
+    return this.firestore
+      .collection('chapters')
+      .doc(chapter.id)
+      .set(chapter, { merge: true });
   }
 }
