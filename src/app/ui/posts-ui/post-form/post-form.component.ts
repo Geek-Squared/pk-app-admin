@@ -40,6 +40,7 @@ export class PostFormComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     if (this.post) {
+      this.postForm.addControl('id', new FormControl(''));
       this.postForm.patchValue(this.post);
       this.postForm.get('id').patchValue(this.post.postId);
       if (this.post?.questions?.length > 0) {
@@ -59,7 +60,6 @@ export class PostFormComponent implements OnInit {
       imageUrl: '',
       uid: '',
       order: '',
-      id: '',
     });
   }
 

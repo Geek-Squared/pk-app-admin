@@ -6,7 +6,12 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 
 @Component({
@@ -29,15 +34,15 @@ export class QuestionFormComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     if (this.question) {
+      this.questionForm.addControl('id', new FormControl(''));
       this.questionForm.patchValue(this.question);
     }
   }
 
   private createForm() {
     this.questionForm = this.fb.group({
-      narrative: '',
-      order: '',
-      questionId: '',
+      narrative: ['', Validators.required],
+      order: ['', Validators.required],
     });
   }
 }

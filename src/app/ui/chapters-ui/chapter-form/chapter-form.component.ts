@@ -6,7 +6,12 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 import { Chapter } from 'src/app/models/chapter.interface';
 
@@ -33,6 +38,7 @@ export class ChapterFormComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     if (this.chapter) {
+      this.chapterForm.addControl('id', new FormControl(''));
       this.chapterForm.patchValue(this.chapter);
     }
   }
@@ -43,7 +49,6 @@ export class ChapterFormComponent implements OnInit {
       description: ['', [Validators.required]],
       order: [''],
       uid: '',
-      id: '',
     });
   }
 }

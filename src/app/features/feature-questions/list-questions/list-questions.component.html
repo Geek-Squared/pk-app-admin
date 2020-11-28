@@ -51,6 +51,6 @@
 
 <app-delete-question
   *ngIf="isDelete"
-  [questionId]="selectedQuestion?.questionId"
+  [questionId]="selectedQuestion?.id"
   (closeModal)="isDelete = false"
 ></app-delete-question>

@@ -24,7 +24,7 @@ export class ListQuestionsComponent implements OnInit {
       (data) => {
         this.questions = data.map((e: any) => {
           return {
-            questionId: e.payload.doc.id,
+            id: e.payload.doc.id,
             ...e.payload.doc.data(),
           };
         });
@@ -46,7 +46,6 @@ export class ListQuestionsComponent implements OnInit {
 
   public deleteQuestion(question) {
     this.selectedQuestion = question;
-    console.log(question);
 
     this.isDelete = true;
   }
