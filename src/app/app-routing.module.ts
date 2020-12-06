@@ -38,6 +38,13 @@ const routes: Routes = [
             (mod) => mod.FeatureMessagingModule
           ),
       },
+      {
+        path: 'feedback',
+        loadChildren: () =>
+          import('./features/feature-feedback/feature-feedback.module').then(
+            (mod) => mod.FeatureFeedbackModule
+          ),
+      },
     ],
   },
   {

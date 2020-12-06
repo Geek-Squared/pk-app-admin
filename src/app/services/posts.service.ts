@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { UPost } from '../models/post.interface';
 
 @Injectable({
@@ -23,7 +24,7 @@ export class PostsService {
       .set(post, { merge: true });
   }
 
-  getPostById(postId: string) {
+  getPostById(postId: string): Observable<any> {
     return this.firestore.collection('posts').doc(postId).valueChanges();
   }
 

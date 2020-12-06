@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Chapter } from 'src/app/models/chapter.interface';
+import { UPost } from 'src/app/models/post.interface';
 import { UsersService } from 'src/app/services';
 
 @Component({
@@ -9,6 +11,8 @@ import { UsersService } from 'src/app/services';
 export class ListUsersComponent implements OnInit {
   public users: any[];
   public isLoading: boolean;
+  public chapters: Chapter[];
+  public posts: UPost[];
 
   constructor(private usersService: UsersService) {}
 

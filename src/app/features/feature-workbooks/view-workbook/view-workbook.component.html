@@ -12,7 +12,14 @@
           <strong>{{ element?.value?.questionNarrative }}</strong
           ><br />
           <span>{{ element?.value?.response }}</span>
-          <br /><br />
+
+          <br />
+          <small
+            ><i class="footnote"
+              >{{ getDetails(element?.value?.postId)?.chapterTitle }} :
+              {{ getDetails(element?.value?.postId)?.postTitle }}
+            </i></small
+          ><br /><br />
         </li>
       </ng-container>
     </ol>

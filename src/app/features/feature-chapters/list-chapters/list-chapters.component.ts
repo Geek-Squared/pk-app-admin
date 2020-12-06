@@ -5,7 +5,7 @@ import { ChaptersService } from 'src/app/services/chapters.service';
 @Component({
   selector: 'app-list-chapters',
   templateUrl: './list-chapters.component.html',
-  styleUrls: ['./list-chapters.component.scss']
+  styleUrls: ['./list-chapters.component.scss'],
 })
 export class ListChaptersComponent implements OnInit {
   public isCreate: boolean;
