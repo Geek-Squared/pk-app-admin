@@ -3,17 +3,29 @@
 
 <div class="login" *ngIf="auth.user$ | async as user">
   <h3>All Messages</h3>
+  <br />
+  <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">
+    Create Group Chat
+  </button>
 
   <div class="chat">
     <ng-container>
       <div class="msg" *ngFor="let chat of chats$ | async">
         <div class="user">
-          <span id="profileImage" [innerHTML]="'U'"></span>
+          <span
+            id="profileImage"
+            [innerHTML]="getInitials(chat?.displayName)"
+          ></span>
         </div>
-        <a routerLink="chats/{{ chat.id }}"
-          >{{ chat.id }} - {{ chat.messages.length }} Messages</a
+        <a routerLink="chats/{{ chat?.id }}"
+          >{{ chat?.displayName }} - {{ chat?.messages?.length }} Messages</a
         >
       </div>
     </ng-container>
   </div>
 </div>
+
+<app-create-group-chat
+  *ngIf="isCreateGroup"
+  (closeModal)="isCreateGroup = false"
+></app-create-group-chat>

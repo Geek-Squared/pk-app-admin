@@ -9,10 +9,17 @@ import { ChatsService } from 'src/app/services/chats.service';
 })
 export class MessagesComponent implements OnInit {
   chats$;
+  public groupChats$;
+  public isCreateGroup: boolean;
+
   constructor(public auth: AuthenticationService, public cs: ChatsService) {}
 
   ngOnInit() {
-    this.auth.user$.subscribe((res) => console.log(res));
     this.chats$ = this.cs.getAllChats();
+    this.groupChats$ = this.cs.getAllGroupChats();
+  }
+
+  getInitials(name: string) {
+    return name ? name.substring(0, 1).toLocaleUpperCase() : 'O';
   }
 }

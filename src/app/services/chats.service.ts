@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { firestore } from 'firebase';
+import { firestore } from 'firebase/app';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { AuthenticationService } from './authentication.service';
@@ -48,22 +48,18 @@ export class ChatsService {
   }
 
   getAllChats() {
-    return this.auth.user$.pipe(
-      switchMap((user) => {
-        return this.afs
-          .collection('chats')
-          .snapshotChanges()
-          .pipe(
-            map((actions) => {
-              return actions.map((a) => {
-                const data: Object = a.payload.doc.data();
-                const id = a.payload.doc.id;
-                return { id, ...data };
-              });
-            })
-          );
-      })
-    );
+    return this.afs
+      .collection('chats')
+      .snapshotChanges()
+      .pipe(
+        map((actions) => {
+          return actions.map((a) => {
+            const data: Object = a.payload.doc.data();
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
+      );
   }
 
   async create() {
@@ -139,5 +135,24 @@ export class ChatsService {
         messages: firestore.FieldValue.arrayRemove(msg),
       });
     }
+  }
+
+  createGroup(data) {
+    return this.afs.collection('chats').add(data);
+  }
+
+  getAllGroupChats() {
+    return this.afs
+      .collection('group-chats')
+      .snapshotChanges()
+      .pipe(
+        map((actions) => {
+          return actions.map((a) => {
+            const data: Object = a.payload.doc.data();
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
+      );
   }
 }

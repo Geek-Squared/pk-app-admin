@@ -27,7 +27,6 @@ export class ChatComponent implements OnInit {
       .joinUsers(source)
       .pipe(tap((v) => this.scrollBottom()));
     this.scrollBottom();
-    this.auth.user$.subscribe((res) => console.log(res));
   }
 
   submit(chatId) {

@@ -1,0 +1,26 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">Create Group Chat</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="groupChatForm" clrLayout="vertical">
+      <clr-input-container>
+        <label>Display Name</label>
+        <input clrInput type="text" formControlName="displayName" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="btnState"
+      (click)="onSubmit()"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>
