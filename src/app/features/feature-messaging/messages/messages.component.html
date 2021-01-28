@@ -1,7 +1,7 @@
 <div class="card-header">Messaging</div>
 <br />
 
-<div class="login" *ngIf="auth.user$ | async as user">
+<div class="login" *ngIf="auth.user">
   <h3>All Messages</h3>
   <br />
   <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">

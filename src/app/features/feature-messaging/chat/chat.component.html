@@ -1,7 +1,7 @@
 <div class="card-header">Messaging</div>
 
 <ng-container *ngIf="chat$ | async as chat">
-  <ng-container *ngIf="auth.user$ | async as user">
+  <ng-container *ngIf="auth.user">
     <div #chatBox class="chat">
       <div
         class="msg animated zoomInUp"
@@ -14,7 +14,7 @@
           /> -->
           <div>
             <strong class="tag is-dark">{{
-              msg.user?.displayName || msg.user?.uid
+              msg.user?.displayName || msg.user?.email
             }}</strong>
           </div>
 
