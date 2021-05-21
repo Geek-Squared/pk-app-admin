@@ -1,14 +1,26 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 
-import { Intervention } from "src/app/models/intervention.interface";
+import { Intervention } from 'src/app/models/intervention.interface';
 
 @Component({
   selector: 'app-intervention-form',
   templateUrl: './intervention-form.component.html',
   styleUrls: ['./intervention-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterventionFormComponent implements OnInit {
   @Input() intervention: Intervention;
@@ -31,8 +43,7 @@ export class InterventionFormComponent implements OnInit {
 
   private createForm() {
     this.interventionForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', [Validators.required]],
+      name: ['', Validators.required],
       order: [''],
       uid: '',
     });

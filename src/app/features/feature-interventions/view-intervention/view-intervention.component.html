@@ -1,24 +1,26 @@
 <ng-container *ngIf="intervention$ | async as intervention">
-    <a routerLink="/interventions/list">Interventions List </a>
-    <strong style="font-size: 1.4em"> / </strong> <span>Intervention Details</span>
-    <br /><br />
-  
-    <div class="card-title">{{ intervention?.title }}</div>
-    <div class="card-text">{{ intervention?.description }}</div>
-  
-    <button class="btn btn-sm btn-primary" (click)="updateIntervention(intervention)">
-      Update
-    </button>
-    <br />
-  
-    <app-list-chapters
-      [interventionId]="route.snapshot.paramMap.get('interventionId')"
-    ></app-list-chapters>
-  
-    <app-update-intervention
-      *ngIf="isUpdate"
-      [intervention]="selectedIntervention"
-      (closeModal)="isUpdate = false"
-    ></app-update-intervention>
-  </ng-container>
-  
+  <a routerLink="/interventions/list">Interventions List </a>
+  <strong style="font-size: 1.4em"> / </strong>
+  <span>Intervention Details</span> <br /><br />
+
+  <div class="card-title">{{ intervention?.title }}</div>
+  <div class="card-text">{{ intervention?.description }}</div>
+
+  <button
+    class="btn btn-sm btn-primary"
+    (click)="updateIntervention(intervention)"
+  >
+    Update Intervention
+  </button>
+  <br />
+
+  <app-list-chapters
+    [interventionId]="route.snapshot.paramMap.get('interventionId')"
+  ></app-list-chapters>
+
+  <app-update-intervention
+    *ngIf="isUpdate"
+    [intervention]="selectedIntervention"
+    (closeModal)="isUpdate = false"
+  ></app-update-intervention>
+</ng-container>
