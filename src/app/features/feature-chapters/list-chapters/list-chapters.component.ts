@@ -21,12 +21,16 @@ export class ListChaptersComponent implements OnInit {
       .getChaptersByInterventionId(this.interventionId)
       .subscribe(
         (data) => {
-          this.chapters = data.map((e: any) => {
-            return {
-              id: e.payload.doc.id,
-              ...e.payload.doc.data(),
-            } as Chapter;
-          });
+          this.chapters = data
+            .map((e: any) => {
+              return {
+                id: e.payload.doc.id,
+                ...e.payload.doc.data(),
+              } as Chapter;
+            })
+            .sort((a, b) =>
+              a.order > b.order ? 1 : b.order > a.order ? -1 : 0
+            );
           this.isLoading = false;
         },
         () => {
