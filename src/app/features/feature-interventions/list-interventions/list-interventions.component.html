@@ -1,0 +1,51 @@
+<div class="card-header">Interventions</div>
+<br />
+
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <clr-button-group>
+    <clr-button class="btn btn-sm" (click)="isCreate = true">
+      <clr-icon shape="plus"></clr-icon>&nbsp;Create Intervention
+    </clr-button>
+  </clr-button-group>
+  <br />
+
+  <ng-container *ngIf="interventions?.length > 0">
+    <div class="clr-row">
+      <div
+        class="clr-col-lg-4 clr-col-12"
+        *ngFor="let intervention of interventions; let i = index"
+      >
+        <a
+          class="card clickable text-center"
+          routerLink="../view-intervention/{{ intervention.id }}"
+        >
+          <div class="card-block">
+            <clr-icon
+              shape="folder-open"
+              class="is-solid is-info"
+              size="72"
+            ></clr-icon>
+            <p class="card-title">{{ intervention?.name }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="text-center" *ngIf="interventions?.length < 1">
+    <clr-icon class="is-info" shape="search" size="72"></clr-icon><br /><br />
+    <span class="card-title"> No Interventions Found!</span>
+  </div>
+  <br /><br />
+</ng-container>
+
+<app-create-intervention
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+></app-create-intervention>

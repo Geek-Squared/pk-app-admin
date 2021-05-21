@@ -1,8 +1,6 @@
-import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Chapter } from 'src/app/models/chapter.interface';
-import { AuthenticationService } from 'src/app/services';
 import { ChaptersService } from 'src/app/services/chapters.service';
 
 @Component({

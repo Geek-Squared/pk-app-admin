@@ -25,11 +25,8 @@ export class ChapterFormComponent implements OnInit {
   @Input() chapter: Chapter;
   @Input() btnState: ClrLoadingState;
   @Input() title: string;
-  @Input() imageSrc: string | ArrayBuffer;
-  @Input() uploadProgress;
   @Output() formValue = new EventEmitter();
   @Output() closeModal = new EventEmitter();
-  @Output() uploadFile = new EventEmitter();
   public opened = true;
   public chapterForm: FormGroup;
 

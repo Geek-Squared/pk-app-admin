@@ -41,4 +41,12 @@ export class ChaptersService {
       .doc(chapter.id)
       .set(chapter, { merge: true });
   }
+
+  getChaptersByInterventionId(interventionId: string) {
+    return this.firestore
+      .collection<any>('chapters', (ref) =>
+        ref.where('interventionId', '==', interventionId).orderBy('order')
+      )
+      .snapshotChanges();
+  }
 }

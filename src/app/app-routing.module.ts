@@ -10,6 +10,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     /*   resolve: { userDetails: UserProfileResolverService }, */
     children: [
+      { path: '', redirectTo: 'interventions', pathMatch: 'full' },
+      {
+        path: 'interventions',
+        loadChildren: () =>
+          import(
+            './features/feature-interventions/feature-interventions.module'
+          ).then((mod) => mod.FeatureInterventionsModule),
+      },
       {
         path: 'posts',
         loadChildren: () =>

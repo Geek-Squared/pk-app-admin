@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { PortalContainerComponent } from './components/portal-container/portal-container.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HeaderComponent } from './components/header/header.component';
+import { FeatureInterventionsModule } from './features/feature-interventions/feature-interventions.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { HeaderComponent } from './components/header/header.component';
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    FeatureInterventionsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
