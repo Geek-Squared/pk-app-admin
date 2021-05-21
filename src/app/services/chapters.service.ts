@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as firebase from 'firebase';
 import { map } from 'rxjs/operators';
 import { Chapter } from '../models/chapter.interface';
 
@@ -45,8 +46,31 @@ export class ChaptersService {
   getChaptersByInterventionId(interventionId: string) {
     return this.firestore
       .collection<any>('chapters', (ref) =>
-        ref.where('interventionId', '==', interventionId).orderBy('order')
+        ref.where('interventionId', '==', interventionId)
       )
       .snapshotChanges();
+  }
+
+  bulkUpdate() {
+    const batch = firebase.firestore().batch();
+
+    this.firestore
+      .collection('chapters')
+      .get()
+      .subscribe((docs) => {
+        docs.forEach((element) => {
+          batch.update(
+            this.firestore.collection('chapters').doc(element.id).ref,
+            {
+              interventionId: 't13NFhJPPqXPjh2Iq96O',
+            }
+          );
+        });
+
+        batch.commit().then(
+          (res) => console.log('Batch completed!'),
+          (err) => console.error(err)
+        );
+      });
   }
 }

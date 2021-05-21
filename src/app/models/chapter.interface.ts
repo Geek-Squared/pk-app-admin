@@ -4,4 +4,5 @@ export interface Chapter {
   uid: string;
   createdDate: string;
   id: string;
+  order?: number;
 }
