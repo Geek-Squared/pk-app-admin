@@ -26,6 +26,12 @@ import { FeaturePostsModule } from '../feature-posts/feature-posts.module';
     ChaptersUiModule,
     FeaturePostsModule,
   ],
-  exports: [ListChaptersComponent],
+  exports: [
+    ListChaptersComponent,
+    CreateChapterComponent,
+    ViewChapterComponent,
+    DeleteChapterComponent,
+    UpdateChapterComponent,
+  ],
 })
 export class FeatureChaptersModule {}
