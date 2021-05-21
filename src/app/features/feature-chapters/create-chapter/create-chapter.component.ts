@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Chapter } from 'src/app/models/chapter.interface';
 import { AuthenticationService } from 'src/app/services';
@@ -11,6 +11,7 @@ import { ChaptersService } from 'src/app/services/chapters.service';
   styleUrls: ['./create-chapter.component.scss'],
 })
 export class CreateChapterComponent implements OnInit {
+  @Input() interventionId: string;
   @Output() closeModal = new EventEmitter();
   public buttonState = ClrLoadingState.DEFAULT;
 
@@ -25,6 +26,7 @@ export class CreateChapterComponent implements OnInit {
     this.buttonState = ClrLoadingState.LOADING;
     chapter.uid = this.authService.user.uid;
     chapter.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    chapter.interventionId = this.interventionId;
     this.chaptersService.createChapter(chapter).then(
       () => {
         this.closeModal.emit();

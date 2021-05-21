@@ -47,5 +47,6 @@
 
 <app-create-chapter
   *ngIf="isCreate"
+  [interventionId]="interventionId"
   (closeModal)="isCreate = false"
 ></app-create-chapter>
