@@ -6,22 +6,36 @@
 
 <div class="card">
   <div class="card-block">
-    <ol class="list">
-      <ng-container *ngFor="let item of workbook">
-        <li *ngFor="let element of item?.content | keyvalue">
-          <strong>{{ element?.value?.questionNarrative }}</strong
-          ><br />
-          <span>{{ element?.value?.response }}</span>
+    <div class="text-center" *ngIf="isLoading">
+      <br /><br />
+      <clr-spinner clrMedium clrAssertive></clr-spinner>
+      <br /><br />
+    </div>
 
-          <br />
-          <small
-            ><i class="footnote"
-              >{{ getDetails(element?.value?.postId)?.chapterTitle }} :
-              {{ getDetails(element?.value?.postId)?.postTitle }}
-            </i></small
-          ><br /><br />
-        </li>
-      </ng-container>
-    </ol>
+    <ng-container *ngIf="!isLoading">
+      <div *ngIf="workbook?.length > 0">
+        <app-workbooks-posts-list
+          [postIds]="uniquePosts"
+          [posts]="posts"
+          [chapters]="chapters"
+          (viewSelected)="getSelectedWorkBookItem($event)"
+        ></app-workbooks-posts-list>
+      </div>
+
+      <div class="text-center" *ngIf="workbook?.length < 1">
+        <clr-icon class="is-info" shape="search" size="72"></clr-icon
+        ><br /><br />
+        <span class="card-title"> This workbook is still empty!</span>
+      </div>
+      <br /><br />
+    </ng-container>
   </div>
 </div>
+
+<app-workbook-details
+  *ngIf="isViewDetails"
+  [item]="selectedWorkBookItem"
+  [posts]="posts"
+  [chapters]="chapters"
+  (closeModal)="isViewDetails = false"
+></app-workbook-details>

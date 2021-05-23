@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 import { ListUsersComponent } from './list-users/list-users.component';
 import { ViewWorkbookComponent } from './view-workbook/view-workbook.component';
+import { WorkbooksUiModule } from '../../ui/workbooks-ui/workbooks-ui.module';
 
 @NgModule({
   declarations: [ListUsersComponent, ViewWorkbookComponent],
@@ -15,6 +16,7 @@ import { ViewWorkbookComponent } from './view-workbook/view-workbook.component';
     FormsModule,
     ReactiveFormsModule,
     ClarityModule,
+    WorkbooksUiModule,
   ],
 })
 export class FeatureWorkbooksModule {}
