@@ -2,8 +2,10 @@
   [btnState]="buttonState"
   [title]="'Update Post'"
   [uploadProgress]="fileService.uploadPercent"
+  [audioUploadProgress]="fileService.audioPercent"
   [post]="post"
   (closeModal)="closeModal.emit($event)"
   (formValue)="onSubmit($event)"
   (uploadFile)="uploadFile($event)"
+  (uploadAudio)="uploadMedia($event, mediaTypes.Audio)"
 ></app-post-form>

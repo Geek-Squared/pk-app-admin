@@ -2,7 +2,9 @@
   [btnState]="buttonState"
   [title]="'Create New Post'"
   [uploadProgress]="fileService.uploadPercent"
+  [audioUploadProgress]="fileService.audioPercent"
   (closeModal)="closeModal.emit($event)"
   (formValue)="onSubmit($event)"
   (uploadFile)="uploadFile($event)"
+  (uploadAudio)="uploadMedia($event, mediaTypes.Audio)"
 ></app-post-form>

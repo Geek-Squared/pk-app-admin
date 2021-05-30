@@ -8,9 +8,12 @@ import { finalize, tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class FilesService {
-  uploadPercent: Observable<number>;
-  downloadUrlChange: Subject<any> = new Subject<any>();
-  downloadURL: string;
+  public uploadPercent: Observable<number>;
+  public audioPercent: Observable<number>;
+  public downloadUrlChange: Subject<any> = new Subject<any>();
+  public downloadURL: string;
+  public audioMedia: string;
+  public videoMedia: string;
 
   constructor(
     private afStorage: AngularFireStorage,
@@ -27,8 +30,6 @@ export class FilesService {
       .pipe(
         finalize(() => {
           fileRef.getDownloadURL().subscribe((url) => {
-            console.log(url);
-
             this.downloadURL = url;
             this.downloadUrlChange.next(this.downloadURL);
           });
@@ -36,4 +37,28 @@ export class FilesService {
       )
       .subscribe();
   }
+
+  uploadMedia(file: any | null, type: MediaType) {
+    const filePath = `positive-konnections/${type}/${file.name}`;
+    const fileRef = this.afStorage.ref(filePath);
+    const task = this.afStorage.upload(filePath, file);
+    this.audioPercent = task.percentageChanges();
+    task
+      .snapshotChanges()
+      .pipe(
+        finalize(() => {
+          fileRef.getDownloadURL().subscribe((url) => {
+            type === MediaType.Audio
+              ? (this.audioMedia = url)
+              : (this.videoMedia = url);
+          });
+        })
+      )
+      .subscribe();
+  }
+}
+
+export enum MediaType {
+  Video = 'video',
+  Audio = 'audio',
 }

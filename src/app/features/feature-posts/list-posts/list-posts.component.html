@@ -49,6 +49,23 @@
                       </div>
                     </div>
 
+                    <div class="clr-row">
+                      <div class="clr-col-3">
+                        <span class="clr-control-label">Audio</span>
+                      </div>
+                      <div class="clr-col">
+                        <audio *ngIf="post?.audio" controls>
+                          <source [src]="post?.audio" />
+                          Your browser does not support playing this audio. The
+                          link to the audio is
+                          <a [href]="post?.audio" target="_blank">{{
+                            post?.audio
+                          }}</a>
+                        </audio>
+                        <span *ngIf="!post?.audio">-</span>
+                      </div>
+                    </div>
+
                     <app-list-questions
                       [postId]="post?.postId"
                       [chapterId]="chapterId"

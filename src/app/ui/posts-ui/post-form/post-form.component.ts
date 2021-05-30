@@ -28,9 +28,11 @@ export class PostFormComponent implements OnInit {
   @Input() title: string;
   @Input() imageSrc: string | ArrayBuffer;
   @Input() uploadProgress;
+  @Input() audioUploadProgress;
   @Output() formValue = new EventEmitter();
   @Output() closeModal = new EventEmitter();
   @Output() uploadFile = new EventEmitter();
+  @Output() uploadAudio = new EventEmitter();
   public opened = true;
   public isAddQuestion: boolean;
   public postForm: FormGroup;
@@ -43,11 +45,11 @@ export class PostFormComponent implements OnInit {
       this.postForm.addControl('id', new FormControl(''));
       this.postForm.patchValue(this.post);
       this.postForm.get('id').patchValue(this.post.postId);
-      if (this.post?.questions?.length > 0) {
+      /*  if (this.post?.questions?.length > 0) {
         this.post?.questions.forEach((element) => {
           this.addQuestion(element);
         });
-      }
+      } */
       this.imageSrc = this.post.imageUrl;
     }
   }
@@ -75,7 +77,7 @@ export class PostFormComponent implements OnInit {
   public onFileInputChange(event) {
     const file = event.target.files[0];
     if (file.type.split('/')[0] !== 'image') {
-      return alert('Pleas select an Image file');
+      return alert('Please select an Image file');
     }
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
@@ -83,5 +85,13 @@ export class PostFormComponent implements OnInit {
       reader.readAsDataURL(file);
     }
     this.uploadFile.emit(file);
+  }
+
+  public onAudioInputChange(event) {
+    const file = event.target.files[0];
+    if (file.type.split('/')[0] !== 'audio') {
+      return alert('Please select an audio file');
+    }
+    this.uploadAudio.emit(file);
   }
 }

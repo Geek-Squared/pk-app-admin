@@ -19,7 +19,6 @@
       <div class="clr-col-sm-5 clr-col-xs-12">
         <input
           type="file"
-          multiple
           accept="image/x-png,image/gif,image/jpeg"
           class="form-control"
           (change)="onFileInputChange($event)"
@@ -62,6 +61,22 @@
         <clr-control-error>Field is required</clr-control-error>
       </clr-input-container>
 
+      <clr-input-container>
+        <label>Audio File</label>
+        <input
+          clrInput
+          type="file"
+          accept="audio/*"
+          class="form-control"
+          (change)="onAudioInputChange($event)"
+      /></clr-input-container>
+      <clr-progress-bar
+        *ngIf="audioUploadProgress"
+        clrValue="{{ audioUploadProgress | async }}"
+        clrSuccess
+        clrLabeled
+      ></clr-progress-bar>
+
       <!--  <ng-container *ngIf="getFormArray('questions').value.length > 0">
         <ol class="list">
           <li
@@ -101,6 +116,10 @@
       type="submit"
       class="btn btn-primary"
       [clrLoading]="btnState"
+      [disabled]="
+        postForm.invalid || (audioUploadProgress | async) || uploadProgress
+          | async
+      "
       (click)="formValue.emit(postForm.value)"
     >
       Submit

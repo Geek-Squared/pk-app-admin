@@ -10,4 +10,5 @@ export class UPost {
   questions: any[];
   postId?: string;
   order: string | number;
+  audio: string;
 }

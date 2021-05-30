@@ -5,6 +5,7 @@ import { UPost } from 'src/app/models/post.interface';
 import {
   AuthenticationService,
   FilesService,
+  MediaType,
   PostsService,
 } from 'src/app/services';
 
@@ -17,6 +18,7 @@ export class CreatePostComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
   @Input() chapterId: string;
   public buttonState = ClrLoadingState.DEFAULT;
+  public mediaTypes = MediaType;
 
   constructor(
     private postsService: PostsService,
@@ -30,6 +32,10 @@ export class CreatePostComponent implements OnInit {
     this.fileService.uploadFile(file);
   }
 
+  uploadMedia(file: any, type: MediaType) {
+    this.fileService.uploadMedia(file, type);
+  }
+
   onSubmit(post: UPost) {
     this.buttonState = ClrLoadingState.LOADING;
     post.uid = this.authService.user.uid;
@@ -38,6 +44,7 @@ export class CreatePostComponent implements OnInit {
       : '';
     post.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     post.chapterId = this.chapterId;
+    post.audio = this.fileService.audioMedia ? this.fileService.audioMedia : '';
 
     this.postsService.createPost(post).then(
       () => {
