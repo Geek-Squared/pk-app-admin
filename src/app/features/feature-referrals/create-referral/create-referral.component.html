@@ -1,0 +1,6 @@
+<app-referrals-form
+  [btnState]="buttonState"
+  [title]="'Create New Referral'"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+></app-referrals-form>

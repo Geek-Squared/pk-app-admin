@@ -53,6 +53,13 @@ const routes: Routes = [
             (mod) => mod.FeatureFeedbackModule
           ),
       },
+      {
+        path: 'referrals',
+        loadChildren: () =>
+          import('./features/feature-referrals/feature-referrals.module').then(
+            (mod) => mod.FeatureReferralsModule
+          ),
+      },
     ],
   },
   {

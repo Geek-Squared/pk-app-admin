@@ -14,15 +14,15 @@ import {
 } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 
-import { Referrals } from 'src/app/models/referrals.interface';
+import { Referral } from 'src/app/models/referral.interface';
 
 @Component({
   selector: 'app-referrals-form',
   templateUrl: './referrals-form.component.html',
-  styleUrls: ['./referrals-form.component.scss']
+  styleUrls: ['./referrals-form.component.scss'],
 })
 export class ReferralsFormComponent implements OnInit {
-  @Input() referral: Referrals;
+  @Input() referral: Referral;
   @Input() btnState: ClrLoadingState;
   @Input() title: string;
   @Output() formValue = new EventEmitter();
@@ -44,7 +44,7 @@ export class ReferralsFormComponent implements OnInit {
     this.referralForm = this.fb.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
-      phone: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
       order: [''],
       uid: '',
     });

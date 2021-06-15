@@ -1,7 +1,7 @@
 <clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
   <h3 class="modal-title">{{ title }}</h3>
   <div class="modal-body">
-    <form clrForm [formGroup]="referralsForm" clrLayout="vertical">
+    <form clrForm [formGroup]="referralForm" clrLayout="vertical">
       <clr-input-container>
         <label>Name</label>
         <input clrInput type="text" formControlName="name" size="45" />
@@ -15,8 +15,8 @@
       </clr-input-container>
 
       <clr-input-container>
-        <label>Phone</label>
-        <input clrInput type="text" formControlName="phone" size="45" />
+        <label>Phone Number</label>
+        <input clrInput type="text" formControlName="phoneNumber" size="45" />
         <clr-control-error>Field is required</clr-control-error>
       </clr-input-container>
 
@@ -36,7 +36,7 @@
       type="submit"
       class="btn btn-primary"
       [clrLoading]="btnState"
-      (click)="formValue.emit(interventionForm.value)"
+      (click)="formValue.emit(referralForm.value)"
     >
       Submit
     </button>

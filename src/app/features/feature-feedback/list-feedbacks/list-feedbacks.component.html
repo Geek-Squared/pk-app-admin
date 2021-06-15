@@ -12,7 +12,7 @@
   <clr-dg-column>Phone Number</clr-dg-column>
   <clr-dg-column>Message</clr-dg-column>
 
-  <clr-dg-row *ngFor="let item of feedback">
+  <clr-dg-row *clrDgItems="let item of feedback">
     <clr-dg-cell>{{ item?.name }}</clr-dg-cell>
     <clr-dg-cell>{{ item?.phoneNumber }}</clr-dg-cell>
     <clr-dg-cell>{{ item?.message }}</clr-dg-cell>

@@ -12,6 +12,7 @@ import { PortalContainerComponent } from './components/portal-container/portal-c
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FeatureInterventionsModule } from './features/feature-interventions/feature-interventions.module';
+import { FeatureReferralsModule } from './features/feature-referrals/feature-referrals.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { FeatureInterventionsModule } from './features/feature-interventions/fea
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     FeatureInterventionsModule,
+    FeatureReferralsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
