@@ -1,9 +1,12 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { firestore } from 'firebase/app';
 import { combineLatest, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { UsersService } from '.';
 import { AuthenticationService } from './authentication.service';
 
 @Injectable({
@@ -13,7 +16,9 @@ export class ChatsService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient,
+    private usersService: UsersService
   ) {}
 
   get(chatId) {
@@ -78,21 +83,24 @@ export class ChatsService {
     });
   }
 
-  async sendMessage(chatId, content) {
-    await this.auth.afAuth.authState.subscribe(async (user) => {
-      const data = {
-        uid: user.uid,
-        content,
-        createdAt: Date.now(),
-      };
+  async sendMessage(chatId, content, chatUser?: string) {
+    const { uid } = await this.auth.getUser();
 
-      if (user.uid) {
-        const ref = this.afs.collection('chats').doc(chatId);
-        return ref.update({
-          messages: firestore.FieldValue.arrayUnion(data),
-        });
+    const data = {
+      uid,
+      content,
+      createdAt: Date.now(),
+    };
+
+    if (uid) {
+      const ref = this.afs.collection('chats').doc(chatId);
+      if (chatUser !== uid) {
+        this.sendPush(data, uid);
       }
-    });
+      return ref.update({
+        messages: firestore.FieldValue.arrayUnion(data),
+      });
+    }
   }
 
   joinUsers(chat$: Observable<any>) {
@@ -154,5 +162,41 @@ export class ChatsService {
           });
         })
       );
+  }
+
+  sendPush(data: any, uid: string) {
+    this.usersService
+      .getUserById(uid)
+      .pipe(
+        tap((user: any) => {
+          this.http
+            .post(
+              `https://fcm.googleapis.com/fcm/send`,
+              {
+                notification: {
+                  body: data,
+                  sound: 'default',
+                  click_action: 'FCM_PLUGIN_ACTIVITY',
+                  icon: 'fcm_push_icon',
+                },
+                /*  data: {
+          landing_page: 'second',
+          price: '$3,000.00',
+        }, */
+                to: user?.deviceId,
+                priority: 'high',
+                restricted_package_name: '',
+              },
+              {
+                headers: new HttpHeaders().set(
+                  'Authorization',
+                  `key=${environment.firebaseConfig.apiKey}`
+                ),
+              }
+            )
+            .subscribe();
+        })
+      )
+      .subscribe();
   }
 }

@@ -10,4 +10,8 @@ export class UsersService {
   getUsers() {
     return this.firestore.collection('users').snapshotChanges();
   }
+
+  getUserById(userId: string) {
+    return this.firestore.collection('userId').doc(userId).valueChanges();
+  }
 }

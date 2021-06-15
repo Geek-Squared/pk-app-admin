@@ -12,7 +12,7 @@ import { PortalContainerComponent } from './components/portal-container/portal-c
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FeatureInterventionsModule } from './features/feature-interventions/feature-interventions.module';
-
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +28,7 @@ import { FeatureInterventionsModule } from './features/feature-interventions/fea
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     FeatureInterventionsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

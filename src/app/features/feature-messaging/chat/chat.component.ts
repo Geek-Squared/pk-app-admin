@@ -29,11 +29,11 @@ export class ChatComponent implements OnInit {
     this.scrollBottom();
   }
 
-  submit(chatId) {
+  submit(chat) {
     if (!this.newMsg) {
       return alert('you need to enter something');
     }
-    this.cs.sendMessage(chatId, this.newMsg);
+    this.cs.sendMessage(chat.id, this.newMsg, chat?.uid);
     this.newMsg = '';
     this.scrollBottom();
   }
