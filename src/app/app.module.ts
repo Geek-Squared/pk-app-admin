@@ -14,6 +14,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FeatureInterventionsModule } from './features/feature-interventions/feature-interventions.module';
 import { FeatureReferralsModule } from './features/feature-referrals/feature-referrals.module';
 
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +31,7 @@ import { FeatureReferralsModule } from './features/feature-referrals/feature-ref
     AngularFireAuthModule,
     FeatureInterventionsModule,
     FeatureReferralsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
