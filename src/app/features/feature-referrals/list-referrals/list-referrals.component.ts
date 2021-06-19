@@ -10,6 +10,8 @@ export class ListReferralsComponent implements OnInit {
   public referral: any[];
   public isLoading: boolean;
   public isCreate;
+  public isUpdate;
+  public selectedReferral;
 
   constructor(private referralService: ReferralsService) {}
 
@@ -29,5 +31,12 @@ export class ListReferralsComponent implements OnInit {
         this.isLoading = false;
       }
     );
+  }
+
+  updateReferral(ref) {
+    console.log(ref);
+
+    this.selectedReferral = ref;
+    this.isUpdate = true;
   }
 }

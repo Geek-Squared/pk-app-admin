@@ -21,6 +21,11 @@
     <clr-dg-column>Message</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let item of referral">
+      <clr-dg-action-overflow>
+        <button class="action-item" (click)="updateReferral(item)">
+          Update
+        </button>
+      </clr-dg-action-overflow>
       <clr-dg-cell>{{ item?.name }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.phoneNumber }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.address }}</clr-dg-cell>
@@ -34,3 +39,9 @@
   *ngIf="isCreate"
   (closeModal)="isCreate = false"
 ></app-create-referral>
+
+<app-update-referral
+  *ngIf="isUpdate"
+  [referral]="selectedReferral"
+  (closeModal)="isUpdate = false"
+></app-update-referral>

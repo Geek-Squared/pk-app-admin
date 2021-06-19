@@ -1,1 +1,7 @@
-<p>update-referral works!</p>
+<app-referrals-form
+  [btnState]="buttonState"
+  [title]="'Update Referral'"
+  [referral]="referral"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+></app-referrals-form>
