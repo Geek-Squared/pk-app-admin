@@ -9,5 +9,7 @@ export const environment = {
     messagingSenderId: '803337097020',
     appId: '1:803337097020:web:ba78819354d9754930d839',
     measurementId: 'G-RLJPEC09H2',
+    serverKey:
+      'AAAAuwqfTzw:APA91bGu-BT7iIo5hGk9_H-mPBp52aA1_zxzqu_ZPIwXUfDyQ7sk6FHMIMiKhSBCqyq2NFKsqnA00pZNIzSJpMqq50m9ZnB9Jf6mtw5V6OUBsHwyhykGh83DEGNiH9_A3ka2fh1XRhkc',
   },
 };

@@ -93,9 +93,11 @@ export class ChatsService {
     };
 
     if (uid) {
+      console.log(uid, chatUser);
+
       const ref = this.afs.collection('chats').doc(chatId);
       if (chatUser !== uid) {
-        this.sendPush(data, uid);
+        this.sendPush(chatId, data, chatUser);
       }
       return ref.update({
         messages: firestore.FieldValue.arrayUnion(data),
@@ -164,37 +166,41 @@ export class ChatsService {
       );
   }
 
-  sendPush(data: any, uid: string) {
+  sendPush(chatId: string | number, data: any, uid: string) {
     this.usersService
       .getUserById(uid)
       .pipe(
         tap((user: any) => {
-          this.http
-            .post(
-              `https://fcm.googleapis.com/fcm/send`,
-              {
-                notification: {
-                  body: data,
-                  sound: 'default',
-                  click_action: 'FCM_PLUGIN_ACTIVITY',
-                  icon: 'fcm_push_icon',
+          console.log(uid, user);
+          if (user.deviceId) {
+            this.http
+              .post(
+                `https://fcm.googleapis.com/fcm/send`,
+                {
+                  registration_ids: [user?.deviceId.value],
+                  notification: {
+                    body: data?.content,
+                    sound: 'default',
+                    click_action: 'FCM_PLUGIN_ACTIVITY',
+                    icon: 'fcm_push_icon',
+                  },
+                  data: {
+                    landing_page: 'messages/chat',
+                    chatId,
+                  },
+                  /*  to: user?.deviceId.value, */
+                  priority: 'high',
+                  restricted_package_name: '',
                 },
-                /*  data: {
-          landing_page: 'second',
-          price: '$3,000.00',
-        }, */
-                to: user?.deviceId,
-                priority: 'high',
-                restricted_package_name: '',
-              },
-              {
-                headers: new HttpHeaders().set(
-                  'Authorization',
-                  `key=${environment.firebaseConfig.apiKey}`
-                ),
-              }
-            )
-            .subscribe();
+                {
+                  headers: new HttpHeaders().set(
+                    'Authorization',
+                    `key=${environment.firebaseConfig.serverKey}`
+                  ),
+                }
+              )
+              .subscribe();
+          }
         })
       )
       .subscribe();
