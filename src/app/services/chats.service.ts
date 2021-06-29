@@ -93,8 +93,6 @@ export class ChatsService {
     };
 
     if (uid) {
-      console.log(uid, chatUser);
-
       const ref = this.afs.collection('chats').doc(chatId);
       if (chatUser !== uid) {
         this.sendPush(chatId, data, chatUser);
@@ -171,7 +169,6 @@ export class ChatsService {
       .getUserById(uid)
       .pipe(
         tap((user: any) => {
-          console.log(uid, user);
           if (user.deviceId) {
             this.http
               .post(
