@@ -1,0 +1,59 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">Create User</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="userForm" clrLayout="vertical">
+      <clr-input-container>
+        <label>Display Name</label>
+        <input clrInput type="text" formControlName="displayName" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <clr-radio-container clrInline>
+        <label>Role</label>
+        <clr-radio-wrapper *ngFor="let role of roles | keyvalue">
+          <input
+            type="radio"
+            clrRadio
+            required
+            [value]="role?.value"
+            formControlName="role"
+          />
+          <label>{{ role?.value }}</label>
+        </clr-radio-wrapper>
+        <clr-control-error>This field is required!</clr-control-error>
+      </clr-radio-container>
+
+      <clr-input-container>
+        <label>Email</label>
+        <input clrInput type="email" formControlName="email" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <clr-password-container>
+        <label>Password</label>
+        <input
+          clrPassword
+          type="password"
+          formControlName="password"
+          size="45"
+        />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-password-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="btnState"
+      [disabled]="userForm?.invalid"
+      (click)="formValue.emit(userForm.value)"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>

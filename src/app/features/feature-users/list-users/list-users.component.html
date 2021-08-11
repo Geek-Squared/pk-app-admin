@@ -1,0 +1,42 @@
+<div class="card-header text-center">Users</div>
+<br />
+
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <clr-button-group>
+    <clr-button class="btn btn-sm" (click)="isCreate = true">
+      <clr-icon shape="plus"></clr-icon>&nbsp;Create User
+    </clr-button>
+  </clr-button-group>
+  <br />
+  <clr-datagrid>
+    <clr-dg-column>Email</clr-dg-column>
+    <clr-dg-column>Display Name</clr-dg-column>
+    <clr-dg-column>Role</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let item of users">
+      <clr-dg-cell>{{ item?.email }}</clr-dg-cell>
+      <clr-dg-cell>{{ item?.displayName }}</clr-dg-cell>
+      <clr-dg-cell>{{ item?.role }}</clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer
+      >{{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
+      {{ users?.length }} Users
+      <clr-dg-pagination
+        #pagination
+        [clrDgTotalItems]="users?.length"
+      ></clr-dg-pagination
+    ></clr-dg-footer>
+  </clr-datagrid>
+</ng-container>
+
+<app-create-user
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+></app-create-user>

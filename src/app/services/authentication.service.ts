@@ -4,8 +4,13 @@ import { User } from 'firebase/app';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-import { AngularFirestore } from '@angular/fire/firestore';
-
+import {
+  AngularFirestore,
+  AngularFirestoreDocument,
+} from '@angular/fire/firestore';
+import { Utilities } from '../models/utils';
+import { WorkbooksService } from './workbooks.service';
+import { Roles } from '../models/roles';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,7 +21,8 @@ export class AuthenticationService {
   constructor(
     public afAuth: AngularFireAuth,
     public router: Router,
-    public afs: AngularFirestore
+    public afs: AngularFirestore,
+    private workBooksService: WorkbooksService
   ) {
     this.setUser();
 
@@ -49,9 +55,29 @@ export class AuthenticationService {
     });
   }
 
-  async register(email: string, password: string) {
-    await this.afAuth.createUserWithEmailAndPassword(email, password);
-    this.sendEmailVerification();
+  async register(
+    email: string,
+    password: string,
+    displayName: string,
+    _role: string
+  ) {
+    try {
+      const result = await this.afAuth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      this.SetUserData(result?.user, displayName, _role);
+      this.sendEmailVerification();
+      if ((_role = Roles.Client)) {
+        this.workBooksService.create(result?.user);
+        this.createClientChat(result?.user, displayName);
+      }
+    } catch (error) {
+      return Utilities.displayToast(
+        'error',
+        error?.message ? error?.message : 'An error has occurred'
+      );
+    }
   }
 
   async sendEmailVerification() {
@@ -76,5 +102,43 @@ export class AuthenticationService {
 
   getUser() {
     return this.user$.pipe(first()).toPromise();
+  }
+
+  async SetUserData(user: User, displayName: string, role: string) {
+    await user
+      .updateProfile({ displayName })
+      .catch((error) =>
+        Utilities.displayToast(
+          'error',
+          error?.message ? error?.message : 'An error has occurred'
+        )
+      );
+
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
+      `users/${user.uid}`
+    );
+    const userData: any = {
+      uid: user.uid,
+      email: user.email,
+      displayName: displayName,
+      photoURL: user.photoURL,
+      emailVerified: user.emailVerified,
+      role,
+    };
+    return userRef.set(userData, {
+      merge: true,
+    });
+  }
+
+  async createClientChat(user: User, displayName: string) {
+    const data = {
+      uid: user?.uid,
+      displayName: displayName,
+      createdAt: Date.now(),
+      count: 0,
+      messages: [],
+    };
+
+    await this.afs.collection('chats').add(data);
   }
 }

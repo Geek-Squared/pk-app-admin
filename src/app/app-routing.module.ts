@@ -60,6 +60,13 @@ const routes: Routes = [
             (mod) => mod.FeatureReferralsModule
           ),
       },
+      {
+        path: 'users',
+        loadChildren: () =>
+          import('./features/feature-users/feature-users.module').then(
+            (m) => m.FeatureUsersModule
+          ),
+      },
     ],
   },
   {

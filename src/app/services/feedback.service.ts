@@ -9,7 +9,9 @@ export class FeedbackService {
 
   getFeedback() {
     return this.firestore
-      .collection<any>('feedback', (ref) => ref.orderBy('createdDate'))
+      .collection<any>('feedback', (ref) =>
+        ref.orderBy('createdDate', 'desc').limit(100)
+      )
       .snapshotChanges();
   }
 }

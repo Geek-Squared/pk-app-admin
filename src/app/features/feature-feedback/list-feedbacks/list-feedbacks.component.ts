@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { FeedbackService } from 'src/app/services/feedback.service';
 
 @Component({
@@ -6,11 +11,14 @@ import { FeedbackService } from 'src/app/services/feedback.service';
   templateUrl: './list-feedbacks.component.html',
   styleUrls: ['./list-feedbacks.component.scss'],
 })
-export class ListFeedbacksComponent implements OnInit {
+export class ListFeedbacksComponent implements OnInit, AfterViewChecked {
   public feedback: any[];
   public isLoading: boolean;
 
-  constructor(private feedbackService: FeedbackService) {}
+  constructor(
+    private feedbackService: FeedbackService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -22,11 +30,17 @@ export class ListFeedbacksComponent implements OnInit {
             ...e.payload.doc.data(),
           } as any;
         });
+
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       () => {
         this.isLoading = false;
       }
     );
+  }
+
+  ngAfterViewChecked() {
+    this.cdr.detectChanges();
   }
 }

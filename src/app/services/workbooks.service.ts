@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { User } from 'firebase';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -25,5 +26,16 @@ export class WorkbooksService {
           });
         })
       );
+  }
+
+  async create(user: User) {
+    const data = {
+      uid: user?.uid,
+      createdAt: Date.now(),
+      count: 0,
+      responses: [],
+    };
+
+    await this.firestore.collection('workbooks').add(data);
   }
 }
