@@ -83,8 +83,8 @@ export class ChatsService {
     });
   }
 
-  async sendMessage(chatId, content, chatUser?: string) {
-    const { uid } = JSON.parse(sessionStorage.getItem('user'))?.uid;
+  async sendMessage(chatId, content, chatUser?: string, members?: string[]) {
+    const uid = JSON.parse(sessionStorage.getItem('user'))?.uid;
 
     const data = {
       uid,
@@ -94,11 +94,19 @@ export class ChatsService {
 
     if (uid) {
       const ref = this.afs.collection('chats').doc(chatId);
-      console.log(chatUser, uid);
 
-      if (chatUser !== uid) {
+      if (chatUser && chatUser !== uid) {
         this.sendPush(chatId, data, chatUser);
       }
+
+      if (members) {
+        members.forEach((chatUser) => {
+          if (chatUser && chatUser !== uid) {
+            this.sendPush(chatId, data, chatUser);
+          }
+        });
+      }
+
       return ref.update({
         messages: firestore.FieldValue.arrayUnion(data),
       });
@@ -134,7 +142,7 @@ export class ChatsService {
   }
 
   async deleteMessage(chat, msg) {
-    const { uid } = JSON.parse(sessionStorage.getItem('user'))?.uid;
+    const uid = JSON.parse(sessionStorage.getItem('user'))?.uid;
 
     const ref = this.afs.collection('chats').doc(chat.id);
 
@@ -171,8 +179,6 @@ export class ChatsService {
       .getUserById(uid)
       .pipe(
         tap((user: any) => {
-          console.log(user);
-
           if (user.deviceId) {
             this.http
               .post(
