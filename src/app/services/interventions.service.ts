@@ -42,10 +42,10 @@ export class InterventionsService {
       .set(intervention, { merge: true });
   }
 
-  getInterventionsByInterventionId(interventionId: string) {
+  getInterventionsByCategoryId(categoryId: string) {
     return this.firestore
       .collection<any>('interventions', (ref) =>
-        ref.where('interventionId', '==', interventionId).orderBy('order')
+        ref.where('categoryId', '==', categoryId).orderBy('order')
       )
       .snapshotChanges();
   }

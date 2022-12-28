@@ -1,6 +1,5 @@
-export interface Intervention {
+export interface Category {
   name: string;
   createdDate: string;
   id: string;
-  categoryId: string;
 }

@@ -76,6 +76,7 @@ const routes: Routes = [
         (mod) => mod.FeatureAuthModule
       ),
   },
+  { path: 'feature-categories', loadChildren: () => import('./features/feature-categories/feature-categories.module').then(m => m.FeatureCategoriesModule) },
 ];
 
 @NgModule({
