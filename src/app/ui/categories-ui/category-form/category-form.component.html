@@ -1,0 +1,32 @@
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+  <h3 class="modal-title">{{ title }}</h3>
+  <div class="modal-body">
+    <form clrForm [formGroup]="categoryForm" clrLayout="vertical">
+      <clr-input-container>
+        <label>Name</label>
+        <input clrInput type="text" formControlName="name" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+
+      <clr-input-container>
+        <label>Order</label>
+        <input clrInput type="number" formControlName="order" size="45" />
+        <clr-control-error>Field is required</clr-control-error>
+      </clr-input-container>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="btnState"
+      (click)="formValue.emit(categoryForm.value)"
+    >
+      Submit
+    </button>
+  </div>
+</clr-modal>

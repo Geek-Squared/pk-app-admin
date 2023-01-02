@@ -10,7 +10,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     /*   resolve: { userDetails: UserProfileResolverService }, */
     children: [
-      { path: '', redirectTo: 'interventions', pathMatch: 'full' },
+      { path: '', redirectTo: 'categories', pathMatch: 'full' },
       {
         path: 'interventions',
         loadChildren: () =>
@@ -67,6 +67,13 @@ const routes: Routes = [
             (m) => m.FeatureUsersModule
           ),
       },
+      {
+        path: 'categories',
+        loadChildren: () =>
+          import(
+            './features/feature-categories/feature-categories.module'
+          ).then((m) => m.FeatureCategoriesModule),
+      },
     ],
   },
   {
@@ -76,7 +83,6 @@ const routes: Routes = [
         (mod) => mod.FeatureAuthModule
       ),
   },
-  { path: 'feature-categories', loadChildren: () => import('./features/feature-categories/feature-categories.module').then(m => m.FeatureCategoriesModule) },
 ];
 
 @NgModule({

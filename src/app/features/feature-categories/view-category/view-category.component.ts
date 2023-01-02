@@ -1,15 +1,29 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Category } from 'src/app/models/category.interface';
+import { CategoriesService } from 'src/app/services';
 
 @Component({
   selector: 'app-view-category',
   templateUrl: './view-category.component.html',
-  styleUrls: ['./view-category.component.scss']
+  styleUrls: ['./view-category.component.scss'],
 })
 export class ViewCategoryComponent implements OnInit {
+  public category$ = this.categoriesService.getCategoryById(
+    this.route.snapshot.paramMap.get('categoryId')
+  );
+  public isUpdate: boolean;
+  public selectedCategory: Category;
 
-  constructor() { }
+  constructor(
+    public route: ActivatedRoute,
+    private categoriesService: CategoriesService
+  ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  updateCategory(category) {
+    this.selectedCategory = category;
+    this.isUpdate = true;
   }
-
 }

@@ -1,1 +1,51 @@
-<p>feature-categories works!</p>
+<div class="card-header">Categories</div>
+<br />
+
+<div class="text-center" *ngIf="isLoading">
+  <br /><br />
+  <clr-spinner clrMedium clrAssertive></clr-spinner>
+  <br /><br />
+</div>
+
+<ng-container *ngIf="!isLoading">
+  <clr-button-group>
+    <clr-button class="btn btn-sm" (click)="isCreate = true">
+      <clr-icon shape="plus"></clr-icon>&nbsp;Create Category
+    </clr-button>
+  </clr-button-group>
+  <br />
+
+  <ng-container *ngIf="categories?.length > 0">
+    <div class="clr-row">
+      <div
+        class="clr-col-lg-4 clr-col-12"
+        *ngFor="let category of categories; let i = index"
+      >
+        <a
+          class="card clickable text-center"
+          routerLink="../view-category/{{ category.id }}"
+        >
+          <div class="card-block">
+            <clr-icon
+              shape="grid-view"
+              class="is-solid is-info"
+              size="72"
+            ></clr-icon>
+            <p class="card-title">{{ category?.name }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="text-center" *ngIf="categories?.length < 1">
+    <clr-icon class="is-info" shape="search" size="72"></clr-icon><br /><br />
+    <span class="card-title"> No Categories Found!</span>
+  </div>
+  <br /><br />
+</ng-container>
+
+<app-create-category
+  *ngIf="isCreate"
+  (closeModal)="isCreate = false"
+></app-create-category>

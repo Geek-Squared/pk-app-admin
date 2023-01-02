@@ -23,7 +23,7 @@
       >
         <a
           class="card clickable text-center"
-          routerLink="../view-intervention/{{ intervention.id }}"
+          routerLink="/interventions/view-intervention/{{ intervention.id }}"
         >
           <div class="card-block">
             <clr-icon
@@ -47,5 +47,6 @@
 
 <app-create-intervention
   *ngIf="isCreate"
+  [categoryId]="categoryId"
   (closeModal)="isCreate = false"
 ></app-create-intervention>

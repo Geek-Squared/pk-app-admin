@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Intervention } from 'src/app/models/intervention.interface';
 import { InterventionsService } from 'src/app/services';
@@ -10,6 +10,7 @@ import { InterventionsService } from 'src/app/services';
   styleUrls: ['./create-intervention.component.scss'],
 })
 export class CreateInterventionComponent implements OnInit {
+  @Input() categoryId: string;
   @Output() closeModal = new EventEmitter();
   public buttonState = ClrLoadingState.DEFAULT;
 
@@ -20,6 +21,7 @@ export class CreateInterventionComponent implements OnInit {
   onSubmit(intervention: Intervention) {
     this.buttonState = ClrLoadingState.LOADING;
     intervention.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    intervention.categoryId = this.categoryId;
     this.interventionsService.createIntervention(intervention).then(
       () => {
         this.closeModal.emit();

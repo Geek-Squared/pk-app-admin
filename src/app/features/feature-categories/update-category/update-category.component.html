@@ -1,1 +1,7 @@
-<p>update-category works!</p>
+<app-category-form
+  [btnState]="buttonState"
+  [title]="'Update Category'"
+  [category]="category"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+></app-category-form>

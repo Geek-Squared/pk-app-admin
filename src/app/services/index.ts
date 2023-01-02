@@ -5,3 +5,4 @@ export * from './users.service';
 export * from './workbooks.service';
 export * from './interventions.service';
 export * from './referrals.service';
+export * from './categories.service';

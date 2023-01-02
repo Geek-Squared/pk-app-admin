@@ -46,6 +46,7 @@ export class InterventionFormComponent implements OnInit {
       name: ['', Validators.required],
       order: [''],
       uid: '',
+      categoryId: '',
     });
   }
 }

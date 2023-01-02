@@ -8,6 +8,7 @@ import { UpdateCategoryComponent } from './update-category/update-category.compo
 import { ViewCategoryComponent } from './view-category/view-category.component';
 import { FeatureInterventionsModule } from '../feature-interventions/feature-interventions.module';
 import { ClarityModule } from '@clr/angular';
+import { CategoriesUiModule } from '../../ui/categories-ui/categories-ui.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ClarityModule } from '@clr/angular';
     CommonModule,
     FeatureCategoriesRoutingModule,
     FeatureInterventionsModule,
-    ClarityModule
+    ClarityModule,
+    CategoriesUiModule
   ],
 })
 export class FeatureCategoriesModule {}

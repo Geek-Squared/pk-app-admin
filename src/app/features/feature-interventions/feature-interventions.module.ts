@@ -24,5 +24,11 @@ import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.modu
     ClarityModule,
     FeatureChaptersModule,
   ],
+  exports: [
+    CreateInterventionComponent,
+    UpdateInterventionComponent,
+    ListInterventionsComponent,
+    ViewInterventionComponent,
+  ],
 })
 export class FeatureInterventionsModule {}

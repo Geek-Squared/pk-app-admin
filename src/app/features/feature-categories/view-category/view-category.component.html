@@ -1,1 +1,22 @@
-<p>view-category works!</p>
+<ng-container *ngIf="category$ | async as category">
+  <a routerLink="/categories/list">Categories List </a>
+  <strong style="font-size: 1.4em"> / </strong>
+  <span>Category Details</span> <br /><br />
+
+  <div class="card-title">{{ category?.name }}</div>
+
+  <button class="btn btn-sm btn-primary" (click)="updateCategory(category)">
+    Update Category
+  </button>
+  <br />
+
+  <app-list-interventions
+    [categoryId]="route.snapshot.paramMap.get('categoryId')"
+  ></app-list-interventions>
+
+  <app-update-category
+    *ngIf="isUpdate"
+    [category]="selectedCategory"
+    (closeModal)="isUpdate = false"
+  ></app-update-category>
+</ng-container>
