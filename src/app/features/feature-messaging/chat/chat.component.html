@@ -2,44 +2,56 @@
 
 <ng-container *ngIf="chat$ | async as chat">
   <ng-container *ngIf="auth.user">
-    <div #chatBox class="chat">
-      <div
-        class="msg animated zoomInUp"
-        *ngFor="let msg of chat.messages; trackBy: trackByCreated"
-      >
-        <div class="user">
-          <!--   <img
-            [src]="msg.user?.photoURL || 'assets/unicorn.svg'"
-            width="50px"
-          /> -->
-          <div>
-            <strong class="tag is-dark">{{
-              msg.user?.displayName || msg.user?.email
-            }}</strong>
-          </div>
+    <div class="chatbox-holder">
+      <div class="chatbox group-chat">
+        <div class="chatbox-top">
+          <!--  <div class="chatbox-avatar">
+            <a target="_blank" href="https://www.facebook.com/mfreak"
+              ><img
+                src="https://avatars0.githubusercontent.com/u/7145968?v=3&s=460"
+            /></a>
+          </div> -->
 
-          <!--   <button
-            *ngIf="chat.uid === user.uid || msg.uid === user.uid"
-            class="button is-danger is-small"
-            (click)="cs.deleteMessage(chat, msg)"
-          >
-            Delete
-          </button> -->
+          <div class="chat-group-name">
+            {{ chat?.displayName }}
+          </div>
         </div>
 
-        <span>{{ msg.content }}</span>
-      </div>
-    </div>
+        <div class="chat-messages">
+          <div
+            class="message-box-holder"
+            *ngFor="let msg of chat.messages; trackBy: trackByCreated"
+          >
+            <div class="message-box" *ngIf="msg?.uid === auth?.user?.uid">
+              {{ msg.content }}
+            </div>
 
-    <div class="form">
-      <textarea
-        [(ngModel)]="newMsg"
-        name="description"
-        maxlength="2000"
-        cols="50"
-        (keydown.enter)="submit(chat)"
-        required
-      ></textarea>
-    </div>
-  </ng-container>
-</ng-container>
+            <ng-container *ngIf="msg?.uid !== auth?.user?.uid">
+              <div class="message-sender">
+                <a href="#">{{ msg?.user?.displayName }}</a>
+              </div>
+              <div class="message-box message-partner">
+                {{ msg.content }}
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="chat-input-holder">
+          <textarea
+            class="chat-input"
+            [(ngModel)]="newMsg"
+            name="description"
+            maxlength="2000"
+            cols="50"
+          ></textarea>
+          <input
+            type="submit"
+            value="Send"
+            class="message-send"
+            (click)="submit(chat)"
+          />
+        </div>
+      </div>
+    </div> </ng-container
+></ng-container>

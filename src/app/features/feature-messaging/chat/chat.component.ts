@@ -23,9 +23,13 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
     const chatId = this.route.snapshot.paramMap.get('id');
     const source = this.cs.get(chatId);
-    this.chat$ = this.cs
-      .joinUsers(source)
-      .pipe(tap((v) => this.scrollBottom()));
+    this.chat$ = this.cs.joinUsers(source).pipe(
+      tap((v) => {
+        console.log(v);
+
+        this.scrollBottom();
+      })
+    );
     this.scrollBottom();
   }
 
@@ -34,7 +38,7 @@ export class ChatComponent implements OnInit {
       return alert('you need to enter something');
     }
 
-    this.cs.sendMessage(chat.id, this.newMsg, chat?.uid, chat?.members);
+    this.cs.sendMessage(chat.id, this.newMsg, this.auth?.user?.uid, chat?.members);
     this.newMsg = '';
     this.scrollBottom();
   }
