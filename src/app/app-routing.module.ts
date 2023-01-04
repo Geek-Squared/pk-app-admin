@@ -10,7 +10,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     /*   resolve: { userDetails: UserProfileResolverService }, */
     children: [
-      { path: '', redirectTo: 'categories', pathMatch: 'full' },
+      { path: '', redirectTo: 'interventions', pathMatch: 'full' },
       {
         path: 'interventions',
         loadChildren: () =>

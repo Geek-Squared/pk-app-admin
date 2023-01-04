@@ -1,6 +1,6 @@
 <ng-container *ngIf="category$ | async as category">
-  <a routerLink="/categories/list">Categories List </a>
-  <strong style="font-size: 1.4em"> / </strong>
+  <!--  <a routerLink="../../">Categories List </a>
+  <strong style="font-size: 1.4em"> / </strong> -->
   <span>Category Details</span> <br /><br />
 
   <div class="card-title">{{ category?.name }}</div>
@@ -10,9 +10,10 @@
   </button>
   <br />
 
-  <app-list-interventions
+  <app-list-chapters
     [categoryId]="route.snapshot.paramMap.get('categoryId')"
-  ></app-list-interventions>
+    [interventionId]="route.snapshot.paramMap.get('interventionId')"
+  ></app-list-chapters>
 
   <app-update-category
     *ngIf="isUpdate"

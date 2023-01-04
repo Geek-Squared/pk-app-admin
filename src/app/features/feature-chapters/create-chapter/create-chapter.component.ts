@@ -12,6 +12,7 @@ import { ChaptersService } from 'src/app/services/chapters.service';
 })
 export class CreateChapterComponent implements OnInit {
   @Input() interventionId: string;
+  @Input() categoryId: string;
   @Output() closeModal = new EventEmitter();
   public buttonState = ClrLoadingState.DEFAULT;
 
@@ -27,6 +28,7 @@ export class CreateChapterComponent implements OnInit {
     chapter.uid = this.authService.user.uid;
     chapter.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     chapter.interventionId = this.interventionId;
+    chapter.categoryId = this.categoryId;
     this.chaptersService.createChapter(chapter).then(
       () => {
         this.closeModal.emit();

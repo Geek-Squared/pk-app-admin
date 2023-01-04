@@ -21,7 +21,6 @@ export class CreateInterventionComponent implements OnInit {
   onSubmit(intervention: Intervention) {
     this.buttonState = ClrLoadingState.LOADING;
     intervention.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
-    intervention.categoryId = this.categoryId;
     this.interventionsService.createIntervention(intervention).then(
       () => {
         this.closeModal.emit();

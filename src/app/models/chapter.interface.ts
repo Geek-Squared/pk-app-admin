@@ -5,5 +5,6 @@ export interface Chapter {
   createdDate: string;
   id: string;
   order?: number;
-  interventionId: string;
+  interventionId?: string;
+  categoryId: string;
 }

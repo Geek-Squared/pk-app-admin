@@ -43,10 +43,15 @@ export class ChaptersService {
       .set(chapter, { merge: true });
   }
 
-  getChaptersByInterventionId(interventionId: string) {
+  getChaptersByCategoryIdAndInterventionId(
+    categoryId: string,
+    interventionId: string
+  ) {
     return this.firestore
       .collection<any>('chapters', (ref) =>
-        ref.where('interventionId', '==', interventionId)
+        ref
+          .where('categoryId', '==', categoryId)
+          .where('interventionId', '==', interventionId)
       )
       .snapshotChanges();
   }
@@ -62,7 +67,7 @@ export class ChaptersService {
           batch.update(
             this.firestore.collection('chapters').doc(element.id).ref,
             {
-              interventionId: 't13NFhJPPqXPjh2Iq96O',
+              categoryId: 'LnxI6W6RjA4zNotOGdPq',
             }
           );
         });

@@ -45,10 +45,10 @@ export class CategoriesService {
       .set(category, { merge: true });
   }
 
-  getCategoriesByCategoryId(categoryId: string) {
+  getCategoriesByInterventionId(interventionId: string) {
     return this.firestore
       .collection<any>('categories', (ref) =>
-        ref.where('categoryId', '==', categoryId).orderBy('order')
+        ref.where('interventionId', '==', interventionId).orderBy('order')
       )
       .snapshotChanges();
   }

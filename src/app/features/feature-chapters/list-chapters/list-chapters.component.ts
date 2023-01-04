@@ -8,6 +8,7 @@ import { ChaptersService } from 'src/app/services/chapters.service';
   styleUrls: ['./list-chapters.component.scss'],
 })
 export class ListChaptersComponent implements OnInit {
+  @Input() categoryId: string;
   @Input() interventionId: string;
   public isCreate: boolean;
   public chapters: Chapter[];
@@ -18,7 +19,10 @@ export class ListChaptersComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = true;
     this.chaptersService
-      .getChaptersByInterventionId(this.interventionId)
+      .getChaptersByCategoryIdAndInterventionId(
+        this.categoryId,
+        this.interventionId
+      )
       .subscribe(
         (data) => {
           this.chapters = data
@@ -31,6 +35,8 @@ export class ListChaptersComponent implements OnInit {
             .sort((a, b) =>
               a.order > b.order ? 1 : b.order > a.order ? -1 : 0
             );
+          console.log(this.categoryId, this.interventionId, this.chapters);
+
           this.isLoading = false;
         },
         () => {

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
-import { Intervention } from "src/app/models/intervention.interface";
+import { Intervention } from 'src/app/models/intervention.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InterventionsService {
   constructor(private firestore: AngularFirestore) {}
@@ -14,7 +14,10 @@ export class InterventionsService {
   }
 
   deleteIntervention(interventionId: string) {
-    return this.firestore.collection('interventions').doc(interventionId).delete();
+    return this.firestore
+      .collection('interventions')
+      .doc(interventionId)
+      .delete();
   }
 
   getInterventionById(interventionId: string) {
@@ -40,13 +43,5 @@ export class InterventionsService {
       .collection('interventions')
       .doc(intervention.id)
       .set(intervention, { merge: true });
-  }
-
-  getInterventionsByCategoryId(categoryId: string) {
-    return this.firestore
-      .collection<any>('interventions', (ref) =>
-        ref.where('categoryId', '==', categoryId).orderBy('order')
-      )
-      .snapshotChanges();
   }
 }

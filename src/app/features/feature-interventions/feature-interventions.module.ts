@@ -9,6 +9,7 @@ import { UpdateInterventionComponent } from './update-intervention/update-interv
 import { ListInterventionsComponent } from './list-interventions/list-interventions.component';
 import { ViewInterventionComponent } from './view-intervention/view-intervention.component';
 import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.module';
+import { FeatureCategoriesModule } from '../feature-categories/feature-categories.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.modu
     InterventionsUiModule,
     ClarityModule,
     FeatureChaptersModule,
+    FeatureCategoriesModule,
   ],
   exports: [
     CreateInterventionComponent,

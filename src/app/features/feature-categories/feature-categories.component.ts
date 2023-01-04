@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Category } from 'src/app/models/category.interface';
 import { CategoriesService } from 'src/app/services';
 
