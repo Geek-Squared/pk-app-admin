@@ -1,6 +1,6 @@
 <div class="card-header">Messaging</div>
 
-<ng-container *ngIf="chat$ | async as chat">
+<ng-container *ngIf="chat$ | async as chat; else loading">
   <ng-container *ngIf="auth.user">
     <div class="chatbox-holder">
       <div class="chatbox group-chat">
@@ -62,3 +62,10 @@
       </div>
     </div> </ng-container
 ></ng-container>
+
+<ng-template #loading>
+  <div class="text-center">
+    <br /><br />
+    <clr-spinner clrMedium clrAssertive></clr-spinner>
+    <br /><br /></div
+></ng-template>

@@ -95,7 +95,7 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
 
   private getUniquePosts() {
     let set = new Set();
-    this.workbook.forEach((element) => {
+    this.workbook?.forEach((element) => {
       for (const property in element['content']) {
         set.add(element['content'][property]?.postId);
       }
