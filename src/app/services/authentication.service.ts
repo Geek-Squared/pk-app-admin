@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { User } from 'firebase/app';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 import {
   AngularFirestore,
   AngularFirestoreDocument,
-} from '@angular/fire/firestore';
+} from '@angular/fire/compat/firestore';
 import { Utilities } from '../models/utils';
 import { WorkbooksService } from './workbooks.service';
 import { Roles } from '../models/roles';
+import firebase from 'firebase/compat/app';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  user: User;
+  user: firebase.User;
   user$: Observable<any>;
 
   constructor(
@@ -104,7 +104,7 @@ export class AuthenticationService {
     return this.user$.pipe(first()).toPromise();
   }
 
-  async SetUserData(user: User, displayName: string, role: string) {
+  async SetUserData(user: firebase.User, displayName: string, role: string) {
     await user
       .updateProfile({ displayName })
       .catch((error) =>
@@ -130,7 +130,7 @@ export class AuthenticationService {
     });
   }
 
-  async createClientChat(user: User, displayName: string) {
+  async createClientChat(user: firebase.User, displayName: string) {
     const data = {
       uid: user?.uid,
       displayName: displayName,

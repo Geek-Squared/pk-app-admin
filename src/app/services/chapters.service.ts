@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import * as firebase from 'firebase';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 import { map } from 'rxjs/operators';
 import { Chapter } from '../models/chapter.interface';
 

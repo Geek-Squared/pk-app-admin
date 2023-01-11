@@ -74,6 +74,13 @@ const routes: Routes = [
             './features/feature-categories/feature-categories.module'
           ).then((m) => m.FeatureCategoriesModule),
       },
+      {
+        path: 'surveys',
+        loadChildren: () =>
+          import('./features/feature-surveys/feature-surveys.module').then(
+            (mod) => mod.FeatureSurveysModule
+          ),
+      },
     ],
   },
   {
@@ -86,7 +93,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
