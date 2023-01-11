@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { User } from 'firebase';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class WorkbooksService {
       .collection('workbooks', (ref) => ref.where('uid', '==', userUid))
       .snapshotChanges()
       .pipe(
-        map((actions) => {
+        map((actions: any) => {
           return actions.map((a) => {
             const data: Object = a.payload.doc.data();
             const id = a.payload.doc.id;
@@ -28,7 +28,7 @@ export class WorkbooksService {
       );
   }
 
-  async create(user: User) {
+  async create(user: firebase.User) {
     const data = {
       uid: user?.uid,
       createdAt: Date.now(),

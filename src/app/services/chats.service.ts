@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { firestore } from 'firebase/app';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { UsersService } from '.';
 import { AuthenticationService } from './authentication.service';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -108,7 +109,7 @@ export class ChatsService {
       }
 
       return ref.update({
-        messages: firestore.FieldValue.arrayUnion(data),
+        messages: firebase.firestore.FieldValue.arrayUnion(data),
       });
     }
   }
@@ -150,7 +151,7 @@ export class ChatsService {
       // Allowed to delete
       delete msg.user;
       return ref.update({
-        messages: firestore.FieldValue.arrayRemove(msg),
+        messages: firebase.firestore.FieldValue.arrayRemove(msg),
       });
     }
   }

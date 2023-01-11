@@ -74,6 +74,13 @@ const routes: Routes = [
             './features/feature-categories/feature-categories.module'
           ).then((m) => m.FeatureCategoriesModule),
       },
+      {
+        path: 'surveys',
+        loadChildren: () =>
+          import('./features/feature-surveys/feature-surveys.module').then(
+            (mod) => mod.FeatureSurveysModule
+          ),
+      },
     ],
   },
   {
