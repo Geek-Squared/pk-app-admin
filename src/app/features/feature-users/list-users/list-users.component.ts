@@ -14,7 +14,9 @@ import { UsersService } from 'src/app/services';
 export class ListUsersComponent implements OnInit, AfterViewChecked {
   public isCreate: boolean;
   public users: any[];
+  public filteredUsers: any[];
   public isLoading: boolean;
+  public searchTerm = '';
 
   constructor(
     private usersService: UsersService,
@@ -36,11 +38,36 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
             ...e.payload.doc.data(),
           };
         });
+        this.applyFilter();
         this.isLoading = false;
       },
       () => {
         this.isLoading = false;
       }
     );
+  }
+
+  onSearchTermChange(value: string) {
+    this.searchTerm = value;
+    this.applyFilter();
+  }
+
+  private applyFilter() {
+    const term = (this.searchTerm || '').trim().toLowerCase();
+    if (!term) {
+      this.filteredUsers = this.users || [];
+      return;
+    }
+
+    this.filteredUsers = (this.users || []).filter((user) => {
+      const email = (user?.email || '').toString().toLowerCase();
+      const displayName = (user?.displayName || '').toString().toLowerCase();
+      const role = (user?.role || '').toString().toLowerCase();
+      return (
+        email.includes(term) ||
+        displayName.includes(term) ||
+        role.includes(term)
+      );
+    });
   }
 }

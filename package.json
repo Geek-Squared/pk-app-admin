@@ -28,6 +28,7 @@
     "firebase": "^9.0.1",
     "ng2-izitoast": "^2.0.0",
     "rxjs": "~7.8.0",
+    "survey-core": "^1.9.67",
     "survey-angular-ui": "^1.9.67",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
@@ -38,7 +39,7 @@
     "@angular/compiler-cli": "~13.3.12",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^12.11.1",
+    "@types/node": "~16.11.7",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",

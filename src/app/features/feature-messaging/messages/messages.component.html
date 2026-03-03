@@ -7,10 +7,24 @@
   <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">
     Create Group Chat
   </button>
+  <div class="clr-row" style="margin-top: 0.75rem;">
+    <div class="clr-col-12 clr-col-md-4">
+      <clr-input-container>
+        <label>Search Messages</label>
+        <input
+          clrInput
+          type="text"
+          placeholder="Name or message text"
+          [value]="searchTerm"
+          (input)="onSearchTermChange($any($event.target).value)"
+        />
+      </clr-input-container>
+    </div>
+  </div>
 
   <div class="chat">
-    <ng-container *ngIf="chats$ | async as chats; else loading">
-      <div class="msg" *ngFor="let chat of chats">
+    <ng-container *ngIf="!isLoading; else loading">
+      <div class="msg" *ngFor="let chat of filteredChats">
         <div class="user">
           <span
             id="profileImage"

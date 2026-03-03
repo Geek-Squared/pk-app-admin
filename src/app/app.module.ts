@@ -7,6 +7,8 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 import { environment } from 'src/environments/environment';
 import { PortalContainerComponent } from './components/portal-container/portal-container.component';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
@@ -29,6 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireFunctionsModule,
     FeatureInterventionsModule,
     FeatureReferralsModule,
     HttpClientModule,

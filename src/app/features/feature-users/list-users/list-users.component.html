@@ -13,13 +13,27 @@
       <clr-icon shape="plus"></clr-icon>&nbsp;Create User
     </clr-button>
   </clr-button-group>
+  <div class="clr-row" style="margin-top: 0.75rem;">
+    <div class="clr-col-12 clr-col-md-4">
+      <clr-input-container>
+        <label>Search Users</label>
+        <input
+          clrInput
+          type="text"
+          placeholder="Email, name, or role"
+          [value]="searchTerm"
+          (input)="onSearchTermChange($any($event.target).value)"
+        />
+      </clr-input-container>
+    </div>
+  </div>
   <br />
   <clr-datagrid>
     <clr-dg-column>Email</clr-dg-column>
     <clr-dg-column>Display Name</clr-dg-column>
     <clr-dg-column>Role</clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let item of users">
+    <clr-dg-row *clrDgItems="let item of filteredUsers">
       <clr-dg-cell>{{ item?.email }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.displayName }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.role }}</clr-dg-cell>
@@ -27,10 +41,10 @@
 
     <clr-dg-footer
       >{{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-      {{ users?.length }} Users
+      {{ filteredUsers?.length }} Users
       <clr-dg-pagination
         #pagination
-        [clrDgTotalItems]="users?.length"
+        [clrDgTotalItems]="filteredUsers?.length"
       ></clr-dg-pagination
     ></clr-dg-footer>
   </clr-datagrid>

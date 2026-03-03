@@ -81,6 +81,13 @@ const routes: Routes = [
             (mod) => mod.FeatureSurveysModule
           ),
       },
+      {
+        path: 'notifications',
+        loadChildren: () =>
+          import(
+            './features/feature-notifications/feature-notifications.module'
+          ).then((mod) => mod.FeatureNotificationsModule),
+      },
     ],
   },
   {
@@ -93,7 +100,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
