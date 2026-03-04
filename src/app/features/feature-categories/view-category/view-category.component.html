@@ -1,4 +1,8 @@
 <ng-container *ngIf="category$ | async as category">
+  <button class="btn btn-sm btn-link" type="button" (click)="goBack()">
+    &larr; Back
+  </button>
+  <br /><br />
   <!--  <a routerLink="../../">Categories List </a>
   <strong style="font-size: 1.4em"> / </strong> -->
   <span>Category Details</span> <br /><br />

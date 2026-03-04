@@ -8,6 +8,7 @@ import { CategoriesService } from 'src/app/services';
   styleUrls: ['./feature-categories.component.scss'],
 })
 export class FeatureCategoriesComponent implements OnInit {
+  @Input() interventionId: string | null = null;
   public isCreate: boolean;
   public categories: Category[];
   public isLoading: boolean;
@@ -16,7 +17,13 @@ export class FeatureCategoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.categoriesService.getCategories().subscribe(
+    const categories$ = this.interventionId
+      ? this.categoriesService.getCategoriesByInterventionId(
+          this.interventionId
+        )
+      : this.categoriesService.getCategories();
+
+    categories$.subscribe(
       (data) => {
         this.categories = data.map((e: any) => {
           return {

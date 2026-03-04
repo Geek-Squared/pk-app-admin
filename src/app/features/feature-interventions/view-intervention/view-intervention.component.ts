@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Intervention } from 'src/app/models/intervention.interface';
@@ -17,7 +18,8 @@ export class ViewInterventionComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
-    private interventionsService: InterventionsService
+    private interventionsService: InterventionsService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {}
@@ -25,5 +27,9 @@ export class ViewInterventionComponent implements OnInit {
   updateIntervention(intervention) {
     this.selectedIntervention = intervention;
     this.isUpdate = true;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

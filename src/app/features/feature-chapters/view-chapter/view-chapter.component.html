@@ -1,4 +1,8 @@
 <ng-container *ngIf="chapter$ | async as chapter">
+  <button class="btn btn-sm btn-link" type="button" (click)="goBack()">
+    &larr; Back
+  </button>
+  <br /><br />
   <a routerLink="../../">Chapters List </a>
   <strong style="font-size: 1.4em"> / </strong> <span>Chapter Details</span>
   <br /><br />

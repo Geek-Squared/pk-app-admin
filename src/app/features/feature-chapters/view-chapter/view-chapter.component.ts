@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chapter } from 'src/app/models/chapter.interface';
@@ -17,7 +18,8 @@ export class ViewChapterComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
-    private chaptersService: ChaptersService
+    private chaptersService: ChaptersService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {}
@@ -25,5 +27,9 @@ export class ViewChapterComponent implements OnInit {
   updateChapter(chapter) {
     this.selectedChapter = chapter;
     this.isUpdate = true;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

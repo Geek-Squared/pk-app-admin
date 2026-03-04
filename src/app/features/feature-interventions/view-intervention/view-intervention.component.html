@@ -1,4 +1,8 @@
 <ng-container *ngIf="intervention$ | async as intervention">
+  <button class="btn btn-sm btn-link" type="button" (click)="goBack()">
+    &larr; Back
+  </button>
+  <br /><br />
   <span>Intervention Details</span> <br /><br />
 
   <div class="card-title">{{ intervention?.title }}</div>

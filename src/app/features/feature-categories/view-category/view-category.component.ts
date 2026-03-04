@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from 'src/app/models/category.interface';
@@ -17,7 +18,8 @@ export class ViewCategoryComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {}
@@ -25,5 +27,9 @@ export class ViewCategoryComponent implements OnInit {
   updateCategory(category) {
     this.selectedCategory = category;
     this.isUpdate = true;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

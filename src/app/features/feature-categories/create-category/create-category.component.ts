@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Category } from 'src/app/models/category.interface';
 import { CategoriesService } from 'src/app/services';
@@ -11,6 +11,7 @@ import { CategoriesService } from 'src/app/services';
 })
 export class CreateCategoryComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
+  @Input() interventionId: string | null = null;
   public buttonState = ClrLoadingState.DEFAULT;
 
   constructor(private categoriesService: CategoriesService) {}
@@ -20,6 +21,9 @@ export class CreateCategoryComponent implements OnInit {
   onSubmit(category: Category) {
     this.buttonState = ClrLoadingState.LOADING;
     category.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    if (this.interventionId) {
+      category.interventionId = this.interventionId;
+    }
     this.categoriesService.createCategory(category).then(
       () => {
         this.closeModal.emit();

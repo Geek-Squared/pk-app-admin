@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
   AfterViewChecked,
   ChangeDetectorRef,
@@ -31,7 +32,8 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
     private route: ActivatedRoute,
     private postsService: PostsService,
     private chaptersService: ChaptersService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -153,5 +155,9 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
       this.selectedWorkBookItem = matches[0];
       this.isViewDetails = true;
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
