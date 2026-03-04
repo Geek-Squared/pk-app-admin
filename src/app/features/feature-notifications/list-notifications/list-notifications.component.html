@@ -1,20 +1,6 @@
 <div class="card-header text-center">Admin Notifications</div>
 <br />
 
-<div class="notifications-actions">
-  <button
-    class="btn btn-primary"
-    (click)="sendTestNotification()"
-    [disabled]="isSending"
-  >
-    <clr-icon shape="bell"></clr-icon>
-    Send Test Notification
-  </button>
-  <span *ngIf="isSending" class="ml-2">
-    <clr-spinner clrSmall></clr-spinner>
-  </span>
-</div>
-
 <br />
 
 <div class="text-center" *ngIf="isLoading">
@@ -31,7 +17,12 @@
   <clr-dg-column>Workbook</clr-dg-column>
   <clr-dg-column>Created</clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let item of notifications">
+  <clr-dg-row
+    *clrDgItems="let item of notifications"
+    class="notification-row"
+    [class.notification-read]="isRead(item)"
+    (click)="handleNotificationClick(item)"
+  >
     <clr-dg-cell>{{ item?.type }}</clr-dg-cell>
     <clr-dg-cell>{{ item?.title }}</clr-dg-cell>
     <clr-dg-cell>{{ item?.message }}</clr-dg-cell>

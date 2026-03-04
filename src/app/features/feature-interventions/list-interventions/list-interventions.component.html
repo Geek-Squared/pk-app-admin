@@ -21,19 +21,50 @@
         class="clr-col-lg-4 clr-col-12"
         *ngFor="let intervention of interventions; let i = index"
       >
-        <a
-          class="card clickable text-center"
-          routerLink="/interventions/view-intervention/{{ intervention.id }}"
-        >
-          <div class="card-block">
-            <clr-icon
-              shape="grid-view"
-              class="is-solid is-info"
-              size="72"
-            ></clr-icon>
-            <p class="card-title">{{ intervention?.name }}</p>
+        <div class="intervention-card">
+          <button
+            class="card-menu-trigger"
+            type="button"
+            aria-label="Intervention actions"
+            (click)="toggleMenu(intervention, $event)"
+          >
+            <clr-icon shape="ellipsis-vertical"></clr-icon>
+          </button>
+          <div
+            class="card-menu"
+            *ngIf="openMenuId === intervention.id"
+            (click)="$event.stopPropagation()"
+          >
+            <button
+              class="menu-item"
+              type="button"
+              (click)="openEdit(intervention, $event)"
+            >
+              Edit
+            </button>
+            <button
+              class="menu-item text-danger"
+              type="button"
+              (click)="deleteIntervention(intervention, $event)"
+            >
+              Delete
+            </button>
           </div>
-        </a>
+
+          <a
+            class="card clickable text-center"
+            routerLink="/interventions/view-intervention/{{ intervention.id }}"
+          >
+            <div class="card-block">
+              <clr-icon
+                shape="grid-view"
+                class="is-solid is-info"
+                size="72"
+              ></clr-icon>
+              <p class="card-title">{{ intervention?.name }}</p>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </ng-container>
@@ -50,3 +81,9 @@
   [categoryId]="categoryId"
   (closeModal)="isCreate = false"
 ></app-create-intervention>
+
+<app-update-intervention
+  *ngIf="isUpdate"
+  [intervention]="selectedIntervention"
+  (closeModal)="isUpdate = false"
+></app-update-intervention>

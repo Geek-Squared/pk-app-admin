@@ -6,6 +6,12 @@
   <div class="header-actions">
     <a class="nav-icon" routerLink="/notifications">
       <clr-icon shape="bell" style="color:#4583d8" size="24"></clr-icon>
+      <span
+        class="notification-badge"
+        *ngIf="(unreadCount$ | async) as count"
+        [class.hidden]="count === 0"
+        >{{ count }}</span
+      >
     </a>
     <clr-dropdown>
       <button class="nav-icon" clrDropdownTrigger>

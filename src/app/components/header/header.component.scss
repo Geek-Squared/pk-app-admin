@@ -15,3 +15,30 @@ clr-header {
   -moz-box-shadow: 0px 10px 13px -10px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 10px 13px -10px rgba(0, 0, 0, 0.75);
 }
+
+.nav-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: #e02424;
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.notification-badge.hidden {
+  display: none;
+}

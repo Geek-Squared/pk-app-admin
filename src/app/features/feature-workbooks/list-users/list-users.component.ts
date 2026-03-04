@@ -15,9 +15,11 @@ import { UsersService } from 'src/app/services';
 })
 export class ListUsersComponent implements OnInit, AfterViewChecked {
   public users: any[];
+  public filteredUsers: any[];
   public isLoading: boolean;
   public chapters: Chapter[];
   public posts: UPost[];
+  public searchTerm = '';
 
   constructor(
     private usersService: UsersService,
@@ -34,6 +36,7 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
             ...e.payload.doc.data(),
           } as any;
         });
+        this.applySearch();
         this.isLoading = false;
       },
       () => {
@@ -44,5 +47,22 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     this.cdr.detectChanges();
+  }
+
+  public applySearch() {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      this.filteredUsers = this.users;
+      return;
+    }
+
+    this.filteredUsers = (this.users || []).filter((user) => {
+      const email = (user?.email || '').toLowerCase();
+      const name = (user?.displayName || '').toLowerCase();
+      const uid = (user?.uid || user?.id || '').toLowerCase();
+      return (
+        email.includes(term) || name.includes(term) || uid.includes(term)
+      );
+    });
   }
 }

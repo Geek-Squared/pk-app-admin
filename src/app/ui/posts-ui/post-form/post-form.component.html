@@ -26,7 +26,7 @@
 
         <clr-progress-bar
           *ngIf="uploadProgress"
-          clrValue="{{ uploadProgress | async }}"
+          [clrValue]="(uploadProgress | async) || 0"
           clrSuccess
           clrLabeled
         ></clr-progress-bar>
@@ -37,7 +37,7 @@
         height="150"
         width="150"
         class="img-rounded clr-col"
-        [src]="imageSrc || 'http://placehold.it/180'"
+        [src]="imageSrc || 'https://placehold.co/180x180'"
         alt="post image"
       /><br />
 
@@ -72,7 +72,7 @@
       /></clr-input-container>
       <clr-progress-bar
         *ngIf="audioUploadProgress"
-        clrValue="{{ audioUploadProgress | async }}"
+        [clrValue]="(audioUploadProgress | async) || 0"
         clrSuccess
         clrLabeled
       ></clr-progress-bar>
@@ -117,8 +117,9 @@
       class="btn btn-primary"
       [clrLoading]="btnState"
       [disabled]="
-        postForm.invalid || (audioUploadProgress | async) || uploadProgress
-          | async
+        postForm.invalid ||
+        (audioUploadProgress | async) ||
+        (uploadProgress | async)
       "
       (click)="formValue.emit(postForm.value)"
     >

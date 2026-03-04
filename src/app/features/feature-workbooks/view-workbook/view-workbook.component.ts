@@ -23,6 +23,8 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   public selectedWorkBookItem;
   public uniquePosts = [];
   public isViewDetails: boolean;
+  private notificationPostId: string | null = null;
+  private notificationChapterId: string | null = null;
 
   constructor(
     private workbooksService: WorkbooksService,
@@ -33,6 +35,11 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.notificationPostId = params.get('postId');
+      this.notificationChapterId = params.get('chapterId');
+      this.selectFromNotification();
+    });
     this.getAllChapters();
     this.getPosts();
     this.getWorkBook();
@@ -50,6 +57,7 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
         (res: any) => {
           this.workbook = res[0]?.responses;
           this.getUniquePosts();
+          this.selectFromNotification();
           this.isLoading = false;
         },
         () => {
@@ -96,6 +104,9 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   private getUniquePosts() {
     let set = new Set();
     this.workbook?.forEach((element) => {
+      if (element?.postId) {
+        set.add(element.postId);
+      }
       for (const property in element['content']) {
         set.add(element['content'][property]?.postId);
       }
@@ -109,5 +120,38 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
       (item) => item?.content['0']?.postId == postId
     );
     this.isViewDetails = true;
+  }
+
+  private selectFromNotification() {
+    if (!Array.isArray(this.workbook) || !this.workbook.length) {
+      return;
+    }
+
+    if (this.notificationPostId) {
+      const match = this.workbook.find(
+        (item) => item?.postId === this.notificationPostId
+      );
+      if (match) {
+        this.selectedWorkBookItem = match;
+        this.isViewDetails = true;
+        return;
+      }
+      this.getSelectedWorkBookItem(this.notificationPostId);
+      return;
+    }
+
+    if (this.notificationChapterId) {
+      const matches = this.workbook.filter(
+        (item) => item?.chapterId === this.notificationChapterId
+      );
+      if (!matches.length) {
+        return;
+      }
+      matches.sort(
+        (a, b) => (b?.createdAt || 0) - (a?.createdAt || 0)
+      );
+      this.selectedWorkBookItem = matches[0];
+      this.isViewDetails = true;
+    }
   }
 }

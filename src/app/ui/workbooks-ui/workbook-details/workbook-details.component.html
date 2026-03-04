@@ -1,27 +1,24 @@
-<clr-modal
-  [(clrModalOpen)]="opened"
-  [clrModalClosable]="false"
-  [clrModalSize]="'lg'"
->
-  <div class="modal-title">Workbook Item Details</div>
-  <div class="modal-body">
-    <li *ngFor="let element of item?.content | keyvalue">
-      <strong>{{ element?.value?.questionNarrative }}</strong
-      ><br />
-      <span>{{ element?.value?.response }}</span>
-
-      <br />
-      <small
-        ><i class="footnote"
-          >{{ getDetails(element?.value?.postId)?.chapterTitle }} :
-          {{ getDetails(element?.value?.postId)?.postTitle }}
-        </i></small
-      ><br /><br />
-    </li>
+<div class="card workbook-details">
+  <div class="card-header">Workbook Item Details</div>
+  <div class="card-block">
+    <ul class="details-list">
+      <li *ngFor="let element of item?.content | keyvalue">
+        <strong>{{ element?.value?.questionNarrative }}</strong>
+        <br />
+        <span>{{ element?.value?.response }}</span>
+        <br />
+        <small
+          ><i class="footnote"
+            >{{ getDetails(element?.value?.postId)?.chapterTitle }} :
+            {{ getDetails(element?.value?.postId)?.postTitle }}
+          </i></small
+        >
+      </li>
+    </ul>
   </div>
-  <div class="modal-footer">
+  <div class="card-footer">
     <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
       Close
     </button>
   </div>
-</clr-modal>
+</div>

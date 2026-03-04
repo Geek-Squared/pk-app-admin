@@ -23,7 +23,7 @@
       >
         <a
           class="card clickable text-center"
-          routerLink="../view-chapter/{{ chapter.id }}"
+          [routerLink]="['./view-chapter', chapter.id]"
         >
           <div class="card-block">
             <clr-icon
@@ -47,6 +47,7 @@
 
 <app-create-chapter
   *ngIf="isCreate"
+  [categoryId]="categoryId"
   [interventionId]="interventionId"
   (closeModal)="isCreate = false"
 ></app-create-chapter>

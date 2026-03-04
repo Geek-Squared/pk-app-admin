@@ -1,18 +1,36 @@
 <div class="card-header text-center">Users</div>
 <br />
 
+<div class="workbooks-search">
+  <clr-input-container>
+    <label>Search</label>
+    <input
+      clrInput
+      type="text"
+      placeholder="Search email, name, or UID"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="applySearch()"
+    />
+  </clr-input-container>
+</div>
+
 <div class="text-center" *ngIf="isLoading">
   <br /><br />
   <clr-spinner clrMedium clrAssertive></clr-spinner>
   <br /><br />
 </div>
 
-<clr-datagrid *ngIf="!isLoading">
+<div class="text-center" *ngIf="!isLoading && filteredUsers?.length === 0">
+  <clr-icon class="is-info" shape="search" size="48"></clr-icon><br /><br />
+  <span class="card-title"> No users match this search.</span>
+</div>
+
+<clr-datagrid *ngIf="!isLoading && filteredUsers?.length > 0">
   <clr-dg-column [clrDgField]="'email'">Email</clr-dg-column>
   <clr-dg-column [clrDgField]="'displayName'"> Display Name</clr-dg-column>
   <clr-dg-column></clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let user of users">
+  <clr-dg-row *clrDgItems="let user of filteredUsers">
     <clr-dg-cell>{{ user?.email }}</clr-dg-cell>
     <clr-dg-cell>{{ user?.displayName }}</clr-dg-cell>
     <clr-dg-cell
@@ -27,7 +45,7 @@
     {{ pagination.totalItems }} Users
     <clr-dg-pagination
       #pagination
-      [clrDgTotalItems]="users?.length"
+      [clrDgTotalItems]="filteredUsers?.length"
     ></clr-dg-pagination
   ></clr-dg-footer>
 </clr-datagrid>

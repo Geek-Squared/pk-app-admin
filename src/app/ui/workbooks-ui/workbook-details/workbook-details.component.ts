@@ -18,7 +18,6 @@ export class WorkbookDetailsComponent implements OnInit {
   @Input() chapters = [];
   @Input() posts = [];
   @Output() closeModal = new EventEmitter();
-  public opened = true;
 
   constructor() {}
 
