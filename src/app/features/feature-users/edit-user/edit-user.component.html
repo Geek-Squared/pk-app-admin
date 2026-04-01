@@ -1,0 +1,7 @@
+<app-user-form
+  [btnState]="buttonState"
+  [title]="'Edit User'"
+  [user]="user"
+  (closeModal)="closeModal.emit($event)"
+  (formValue)="onSubmit($event)"
+></app-user-form>

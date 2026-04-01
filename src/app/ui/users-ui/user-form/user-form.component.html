@@ -1,5 +1,5 @@
 <clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">Create User</h3>
+  <h3 class="modal-title">{{ title }}</h3>
   <div class="modal-body">
     <form clrForm [formGroup]="userForm" clrLayout="vertical">
       <clr-input-container>
@@ -23,13 +23,13 @@
         <clr-control-error>This field is required!</clr-control-error>
       </clr-radio-container>
 
-      <clr-input-container>
+      <clr-input-container *ngIf="!user">
         <label>Email</label>
         <input clrInput type="email" formControlName="email" size="45" />
         <clr-control-error>Field is required</clr-control-error>
       </clr-input-container>
 
-      <clr-password-container>
+      <clr-password-container *ngIf="!user">
         <label>Password</label>
         <input
           clrPassword

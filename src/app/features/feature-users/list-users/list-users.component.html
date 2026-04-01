@@ -32,11 +32,17 @@
     <clr-dg-column>Email</clr-dg-column>
     <clr-dg-column>Display Name</clr-dg-column>
     <clr-dg-column>Role</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let item of filteredUsers">
       <clr-dg-cell>{{ item?.email }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.displayName }}</clr-dg-cell>
       <clr-dg-cell>{{ item?.role }}</clr-dg-cell>
+      <clr-dg-cell>
+        <button class="btn btn-sm btn-link" (click)="onEdit(item)">
+          Edit
+        </button>
+      </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer
@@ -54,3 +60,9 @@
   *ngIf="isCreate"
   (closeModal)="isCreate = false"
 ></app-create-user>
+
+<app-edit-user
+  *ngIf="isEdit"
+  [user]="selectedUser"
+  (closeModal)="isEdit = false"
+></app-edit-user>

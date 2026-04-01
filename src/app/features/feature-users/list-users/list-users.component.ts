@@ -13,6 +13,8 @@ import { UsersService } from 'src/app/services';
 })
 export class ListUsersComponent implements OnInit, AfterViewChecked {
   public isCreate: boolean;
+  public isEdit: boolean;
+  public selectedUser: any;
   public users: any[];
   public filteredUsers: any[];
   public isLoading: boolean;
@@ -38,6 +40,7 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
             ...e.payload.doc.data(),
           };
         });
+        console.log('Fetched Users:', this.users);
         this.applyFilter();
         this.isLoading = false;
       },
@@ -69,5 +72,10 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
         role.includes(term)
       );
     });
+  }
+
+  onEdit(user: any) {
+    this.selectedUser = user;
+    this.isEdit = true;
   }
 }

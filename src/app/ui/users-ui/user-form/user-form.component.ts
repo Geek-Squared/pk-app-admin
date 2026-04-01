@@ -17,6 +17,8 @@ import { Roles } from '../../../models/roles';
 })
 export class UserFormComponent implements OnInit {
   @Input() btnState: ClrLoadingState;
+  @Input() user: any;
+  @Input() title: string = 'Create User';
   @Output() formValue = new EventEmitter();
   @Output() closeModal = new EventEmitter();
   public opened = true;
@@ -27,6 +29,14 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
+    if (this.user) {
+      this.userForm.patchValue(this.user);
+      this.userForm.get('email').disable();
+      this.userForm.get('email').clearValidators();
+      this.userForm.get('email').updateValueAndValidity();
+      this.userForm.get('password').clearValidators();
+      this.userForm.get('password').updateValueAndValidity();
+    }
   }
 
   private createForm() {
