@@ -1,45 +1,79 @@
-<div class="card-header">Workbooks</div>
-<br />
-<button class="btn btn-sm btn-link" type="button" (click)="goBack()">
-  &larr; Back
-</button>
-<br /><br />
-<a routerLink="/work-books">Workbooks List </a>
-<strong style="font-size: 1.4em"> / </strong> <span>Workbook Details</span>
-<br />
+<ng-template #workbookContent>
+  <div class="text-center" *ngIf="isLoading">
+    <br /><br />
+    <clr-spinner clrMedium clrAssertive></clr-spinner>
+    <br /><br />
+  </div>
 
-<div class="card">
-  <div class="card-block">
-    <div class="text-center" *ngIf="isLoading">
-      <br /><br />
-      <clr-spinner clrMedium clrAssertive></clr-spinner>
-      <br /><br />
-    </div>
-
-    <ng-container *ngIf="!isLoading">
-      <div *ngIf="workbook?.length > 0">
+  <ng-container *ngIf="!isLoading">
+    <div class="clr-row" *ngIf="workbook?.length > 0; else emptyState">
+      <div class="clr-col-12 clr-col-md-4" style="border-right: 1px solid #ddd; max-height: 70vh; overflow-y: auto;">
         <app-workbooks-posts-list
           [postIds]="uniquePosts"
           [posts]="posts"
           [chapters]="chapters"
+          [activePostId]="currentPostId"
           (viewSelected)="getSelectedWorkBookItem($event)"
         ></app-workbooks-posts-list>
       </div>
 
-      <div class="text-center" *ngIf="workbook?.length < 1">
+      <div class="clr-col-12 clr-col-md-8">
+        <div *ngIf="isViewDetails; else selectPrompt" style="max-height: 70vh; overflow-y: auto;">
+          <app-workbook-details
+            [item]="selectedWorkBookItem"
+            [posts]="posts"
+            [chapters]="chapters"
+            [showFooter]="false"
+            [postId]="currentPostId"
+          ></app-workbook-details>
+        </div>
+        <ng-template #selectPrompt>
+          <div class="text-center" style="margin-top: 4rem;">
+            <clr-icon shape="cursor-arrow" size="64"></clr-icon>
+            <br /><br />
+            <span class="card-title">Select an item from the list to view details</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="text-center">
         <clr-icon class="is-info" shape="search" size="72"></clr-icon
         ><br /><br />
         <span class="card-title"> This workbook is still empty!</span>
       </div>
-      <br /><br />
-    </ng-container>
-  </div>
-</div>
+    </ng-template>
+    <br /><br />
+  </ng-container>
+</ng-template>
 
-<app-workbook-details
-  *ngIf="isViewDetails"
-  [item]="selectedWorkBookItem"
-  [posts]="posts"
-  [chapters]="chapters"
-  (closeModal)="isViewDetails = false"
-></app-workbook-details>
+<ng-container *ngIf="!isModal">
+  <div class="card-header">Workbooks</div>
+  <br />
+  <button class="btn btn-sm btn-link" type="button" (click)="goBack()">
+    &larr; Back
+  </button>
+  <br /><br />
+  <a routerLink="/work-books">Workbooks List </a>
+  <strong style="font-size: 1.4em"> / </strong> <span>Workbook Details</span>
+  <br />
+  <ng-container *ngTemplateOutlet="workbookContent"></ng-container>
+</ng-container>
+
+<clr-modal
+  *ngIf="isModal"
+  [(clrModalOpen)]="isModal"
+  [clrModalClosable]="false"
+  clrModalSize="xl"
+>
+  <h3 class="modal-title">Workbook Details</h3>
+  <div class="modal-body">
+    <ng-container *ngTemplateOutlet="workbookContent"></ng-container>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="close.emit()">
+      Close
+    </button>
+  </div>
+</clr-modal>

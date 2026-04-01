@@ -4,19 +4,23 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Chapter } from 'src/app/models/chapter.interface';
 import { UPost } from 'src/app/models/post.interface';
 import { PostsService, WorkbooksService } from 'src/app/services';
 import { ChaptersService } from 'src/app/services/chapters.service';
+import { Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-view-workbook',
   templateUrl: './view-workbook.component.html',
   styleUrls: ['./view-workbook.component.scss'],
 })
-export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
+export class ViewWorkbookComponent
+  implements OnInit, AfterViewChecked, OnChanges {
   public chapters: Chapter[] = [];
   public workbook;
   public posts: UPost[] = [];
@@ -24,6 +28,10 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   public selectedWorkBookItem;
   public uniquePosts = [];
   public isViewDetails: boolean;
+  public currentPostId: string | null = null;
+  @Input() userUid: string;
+  @Input() isModal: boolean = false;
+  @Output() close = new EventEmitter<void>();
   private notificationPostId: string | null = null;
   private notificationChapterId: string | null = null;
 
@@ -44,7 +52,17 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
     });
     this.getAllChapters();
     this.getPosts();
-    this.getWorkBook();
+    if (this.userUid) {
+      this.fetchWorkbook(this.userUid);
+    } else {
+      this.getWorkBook();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.userUid && changes.userUid.currentValue) {
+      this.fetchWorkbook(changes.userUid.currentValue);
+    }
   }
 
   ngAfterViewChecked() {
@@ -52,20 +70,30 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   }
 
   private getWorkBook() {
+    const uid = this.route.snapshot.paramMap.get('userUid');
+    if (uid) {
+      this.fetchWorkbook(uid);
+    }
+  }
+
+  private fetchWorkbook(uid: string) {
     this.isLoading = true;
-    this.workbooksService
-      .getWorkBook(this.route.snapshot.paramMap.get('userUid'))
-      .subscribe(
-        (res: any) => {
-          this.workbook = res[0]?.responses;
-          this.getUniquePosts();
-          this.selectFromNotification();
-          this.isLoading = false;
-        },
-        () => {
-          this.isLoading = false;
+    this.workbooksService.getWorkBook(uid).subscribe(
+      (res: any) => {
+        this.workbook = res[0]?.responses || [];
+        if (Array.isArray(this.workbook)) {
+          this.workbook.sort(
+            (a, b) => (b?.createdAt || 0) - (a?.createdAt || 0)
+          );
         }
-      );
+        this.getUniquePosts();
+        this.selectFromNotification();
+        this.isLoading = false;
+      },
+      () => {
+        this.isLoading = false;
+      }
+    );
   }
 
   private getPosts() {
@@ -77,6 +105,7 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
           ...e.payload.doc.data(),
         };
       });
+      this.getUniquePosts();
     });
   }
 
@@ -104,20 +133,12 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
   }
 
   private getUniquePosts() {
-    let set = new Set();
-    this.workbook?.forEach((element) => {
-      if (element?.postId) {
-        set.add(element.postId);
-      }
-      for (const property in element['content']) {
-        set.add(element['content'][property]?.postId);
-      }
-    });
-
-    this.uniquePosts = [...set];
+    const postIds = this.posts.map((p) => p.id);
+    this.uniquePosts = [...new Set(postIds)];
   }
 
   public getSelectedWorkBookItem(postId: string) {
+    this.currentPostId = postId;
     this.selectedWorkBookItem = this.workbook.find(
       (item) => item?.content['0']?.postId == postId
     );
@@ -134,6 +155,7 @@ export class ViewWorkbookComponent implements OnInit, AfterViewChecked {
         (item) => item?.postId === this.notificationPostId
       );
       if (match) {
+        this.currentPostId = this.notificationPostId;
         this.selectedWorkBookItem = match;
         this.isViewDetails = true;
         return;

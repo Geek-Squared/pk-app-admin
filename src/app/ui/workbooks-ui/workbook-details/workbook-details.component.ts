@@ -17,6 +17,8 @@ export class WorkbookDetailsComponent implements OnInit {
   @Input() item;
   @Input() chapters = [];
   @Input() posts = [];
+  @Input() showFooter = true;
+  @Input() postId: string;
   @Output() closeModal = new EventEmitter();
 
   constructor() {}
@@ -30,5 +32,21 @@ export class WorkbookDetailsComponent implements OnInit {
     );
 
     return { postTitle: post?.title, chapterTitle: chapter?.title };
+  }
+
+  get uniqueContent() {
+    if (!this.item || !this.item.content) {
+      return [];
+    }
+    const contentArray = Object.values(this.item.content);
+    const latestMap = new Map();
+
+    contentArray.forEach((element: any) => {
+      // Use questionNarrative + postId as a key to identify unique questions
+      const key = `${element.postId}_${element.questionNarrative}`;
+      latestMap.set(key, element);
+    });
+
+    return Array.from(latestMap.values());
   }
 }

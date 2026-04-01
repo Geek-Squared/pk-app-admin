@@ -1,16 +1,16 @@
-<div class="clr-row">
+<div class="workbook-sidebar">
   <div
-    class="clr-col-lg-3 clr-col-12"
+    class="sidebar-item"
     *ngFor="let postId of postIds; let i = index"
+    [class.active]="postId === activePostId"
+    (click)="viewSelected.emit(postId)"
   >
-    <a class="card clickable text-center" (click)="viewSelected.emit(postId)">
-      <div class="card-block">
-        <clr-icon shape="book" class="is-info" size="32"></clr-icon>
-        <p class="card-text">
-          {{ getDetails(postId)?.chapterTitle }} :
-          {{ getDetails(postId)?.postTitle }}
-        </p>
+    <div class="sidebar-item-content">
+      <clr-icon shape="book"></clr-icon>
+      <div class="sidebar-text">
+        <span class="chapter-label">{{ getDetails(postId)?.chapterTitle }}</span>
+        <span class="post-label">{{ getDetails(postId)?.postTitle }}</span>
       </div>
-    </a>
+    </div>
   </div>
 </div>

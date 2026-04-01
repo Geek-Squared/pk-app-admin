@@ -17,6 +17,7 @@ export class WorkbooksPostsListComponent implements OnInit {
   @Input() postIds: string[] = [];
   @Input() chapters = [];
   @Input() posts = [];
+  @Input() activePostId: string | null = null;
   @Output() viewSelected = new EventEmitter<string>();
 
   constructor() {}

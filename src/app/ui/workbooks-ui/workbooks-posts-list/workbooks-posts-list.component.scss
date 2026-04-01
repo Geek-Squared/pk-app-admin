@@ -1,0 +1,57 @@
+.workbook-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #eee;
+
+  &:hover {
+    background-color: #f8f8f8;
+  }
+
+  &.active {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+
+    .chapter-label {
+      color: #1a73e8;
+    }
+  }
+
+  .sidebar-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chapter-label {
+    font-size: 0.6rem;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .post-label {
+    font-size: 0.8rem;
+  }
+
+  clr-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: #999;
+  }
+
+  &.active clr-icon {
+    color: #1a73e8;
+  }
+}

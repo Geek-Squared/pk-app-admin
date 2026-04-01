@@ -34,7 +34,7 @@
     <clr-dg-cell>{{ user?.email }}</clr-dg-cell>
     <clr-dg-cell>{{ user?.displayName }}</clr-dg-cell>
     <clr-dg-cell
-      ><button class="btn btn-sm" routerLink="view-details/{{ user?.uid }}">
+      ><button class="btn btn-sm" (click)="openWorkbook(user?.uid || user?.id)">
         View Workbook
       </button></clr-dg-cell
     >
@@ -49,3 +49,10 @@
     ></clr-dg-pagination
   ></clr-dg-footer>
 </clr-datagrid>
+
+<app-view-workbook
+  *ngIf="isViewWorkbookOpen"
+  [isModal]="true"
+  [userUid]="selectedUserUid"
+  (close)="closeWorkbook()"
+></app-view-workbook>

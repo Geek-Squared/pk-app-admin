@@ -17,9 +17,9 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
   public users: any[];
   public filteredUsers: any[];
   public isLoading: boolean;
-  public chapters: Chapter[];
-  public posts: UPost[];
   public searchTerm = '';
+  public isViewWorkbookOpen = false;
+  public selectedUserUid: string | null = null;
 
   constructor(
     private usersService: UsersService,
@@ -64,5 +64,15 @@ export class ListUsersComponent implements OnInit, AfterViewChecked {
         email.includes(term) || name.includes(term) || uid.includes(term)
       );
     });
+  }
+
+  public openWorkbook(uid: string) {
+    this.selectedUserUid = uid;
+    this.isViewWorkbookOpen = true;
+  }
+
+  public closeWorkbook() {
+    this.isViewWorkbookOpen = false;
+    this.selectedUserUid = null;
   }
 }

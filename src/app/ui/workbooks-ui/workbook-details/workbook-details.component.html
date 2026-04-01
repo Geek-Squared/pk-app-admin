@@ -1,22 +1,27 @@
 <div class="card workbook-details">
   <div class="card-header">Workbook Item Details</div>
   <div class="card-block">
-    <ul class="details-list">
-      <li *ngFor="let element of item?.content | keyvalue">
-        <strong>{{ element?.value?.questionNarrative }}</strong>
+    <div *ngIf="uniqueContent?.length === 0" class="text-center" style="margin-top: 2rem;">
+      <clr-icon shape="block-line" size="48" style="color: #999;"></clr-icon>
+      <p style="color: #666; margin-top: 1rem;">No answers found for <strong>{{ getDetails(postId)?.postTitle }}</strong> yet.</p>
+    </div>
+
+    <ul class="details-list" *ngIf="uniqueContent?.length > 0">
+      <li *ngFor="let element of uniqueContent">
+        <strong>{{ element?.questionNarrative }}</strong>
         <br />
-        <span>{{ element?.value?.response }}</span>
+        <span>{{ element?.response }}</span>
         <br />
         <small
           ><i class="footnote"
-            >{{ getDetails(element?.value?.postId)?.chapterTitle }} :
-            {{ getDetails(element?.value?.postId)?.postTitle }}
+            >{{ getDetails(element?.postId)?.chapterTitle }} :
+            {{ getDetails(element?.postId)?.postTitle }}
           </i></small
         >
       </li>
     </ul>
   </div>
-  <div class="card-footer">
+  <div class="card-footer" *ngIf="showFooter">
     <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
       Close
     </button>
