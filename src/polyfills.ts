@@ -18,6 +18,29 @@
  * BROWSER POLYFILLS
  */
 
+const browserWindow = window as any;
+if (typeof browserWindow.fetch === 'function') {
+  const originalFetch = browserWindow.fetch.bind(window);
+  browserWindow.fetch = (input: RequestInfo, init?: RequestInit) => {
+    const url =
+      typeof input === 'string'
+        ? input
+        : input instanceof Request
+        ? input.url
+        : '';
+
+    if (url.includes('firestore.googleapis.com')) {
+      const nextInit: RequestInit = {
+        ...(init || {}),
+        credentials: 'omit',
+      };
+      return originalFetch(input, nextInit);
+    }
+
+    return originalFetch(input, init);
+  };
+}
+
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents
  * user can disable parts of macroTask/DomEvents patch by setting following flags
