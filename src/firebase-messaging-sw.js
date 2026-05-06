@@ -22,3 +22,52 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(title, options);
 });
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const data = event.notification?.data || {};
+  const url = buildNotificationUrl(data);
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if ('focus' in client) {
+            client.focus();
+            if ('navigate' in client) {
+              return client.navigate(url);
+            }
+            return undefined;
+          }
+        }
+
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(url);
+        }
+
+        return undefined;
+      })
+  );
+});
+
+function buildNotificationUrl(data) {
+  if (!data?.userId) {
+    return '/notifications';
+  }
+
+  const params = new URLSearchParams();
+  if (data.workbookId) {
+    params.set('workbookId', data.workbookId);
+  }
+  if (data.chapterId) {
+    params.set('chapterId', data.chapterId);
+  }
+  if (data.postId) {
+    params.set('postId', data.postId);
+  }
+
+  const query = params.toString();
+  return `/work-books/view-details/${data.userId}${query ? `?${query}` : ''}`;
+}
