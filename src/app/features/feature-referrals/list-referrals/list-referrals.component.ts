@@ -34,8 +34,6 @@ export class ListReferralsComponent implements OnInit {
   }
 
   updateReferral(ref) {
-    console.log(ref);
-
     this.selectedReferral = ref;
     this.isUpdate = true;
   }

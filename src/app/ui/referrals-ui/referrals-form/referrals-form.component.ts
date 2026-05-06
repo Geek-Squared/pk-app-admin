@@ -34,7 +34,6 @@ export class ReferralsFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    console.log(this.referral);
 
     if (this.referral) {
       this.referralForm.addControl('id', new FormControl(''));

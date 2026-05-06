@@ -35,7 +35,6 @@ export class ListChaptersComponent implements OnInit {
             .sort((a, b) =>
               a.order > b.order ? 1 : b.order > a.order ? -1 : 0
             );
-          console.log(this.categoryId, this.interventionId, this.chapters);
 
           this.isLoading = false;
         },

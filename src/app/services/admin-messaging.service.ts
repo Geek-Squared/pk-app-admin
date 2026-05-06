@@ -91,7 +91,6 @@ export class AdminMessagingService {
       !environment.fcmVapidKey ||
       environment.fcmVapidKey.startsWith('REPLACE_')
     ) {
-      console.warn('FCM VAPID key is not configured.');
       return false;
     }
 
@@ -105,14 +104,12 @@ export class AdminMessagingService {
     const token = await getToken(this.messaging, {
       vapidKey: environment.fcmVapidKey,
       serviceWorkerRegistration: registration,
-    }).catch((error) => {
-      console.warn('Unable to get FCM token', error);
+    }).catch(() => {
       return null;
     });
 
     if (token) {
       await this.storeToken(uid, token);
-      console.log('Admin web FCM token registered.');
       return true;
     }
 
@@ -127,7 +124,6 @@ export class AdminMessagingService {
     this.foregroundHandlerRegistered = true;
     onMessage(this.messaging, (payload) => {
       this.zone.run(() => {
-        console.log('Foreground message received', payload);
         this.showForegroundNotification(payload);
       });
     });
