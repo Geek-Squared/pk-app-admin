@@ -1,8 +1,8 @@
-import { group } from '@angular/animations';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 import { ChatsService } from 'src/app/services/chats.service';
+import { UsersService } from 'src/app/services';
 
 @Component({
   selector: 'app-create-group-chat',
@@ -11,29 +11,76 @@ import { ChatsService } from 'src/app/services/chats.service';
 })
 export class CreateGroupChatComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
+
   public opened = true;
   public groupChatForm: FormGroup;
   public btnState = ClrLoadingState.DEFAULT;
+  public users: any[] = [];
+  public selectedUids: string[] = [];
+  public isLoadingUsers = true;
 
-  constructor(private fb: FormBuilder, private chatsService: ChatsService) {}
+  constructor(
+    private fb: FormBuilder,
+    private chatsService: ChatsService,
+    private usersService: UsersService
+  ) {}
 
   ngOnInit(): void {
     this.groupChatForm = this.fb.group({
-      displayName: '',
-      type: 'group',
-      createdAt: Date.now(),
-      messages: this.fb.array([]),
-      members: this.fb.array([]),
+      displayName: ['', Validators.required],
+    });
+
+    this.usersService.getUsers().subscribe((actions: any[]) => {
+      this.users = actions.map((a) => ({
+        id: a.payload.doc.id,
+        ...a.payload.doc.data(),
+      }));
+      this.isLoadingUsers = false;
     });
   }
 
-  public onSubmit() {
+  toggleUser(uid: string): void {
+    const index = this.selectedUids.indexOf(uid);
+    if (index > -1) {
+      this.selectedUids.splice(index, 1);
+    } else {
+      this.selectedUids.push(uid);
+    }
+  }
+
+  isSelected(uid: string): boolean {
+    return this.selectedUids.includes(uid);
+  }
+
+  public onSubmit(): void {
+    if (this.groupChatForm.invalid || !this.groupChatForm.value.displayName?.trim()) {
+      return;
+    }
+
+    this.btnState = ClrLoadingState.LOADING;
+
+    const creatorUid = JSON.parse(sessionStorage.getItem('user'))?.uid;
+    const uids = this.selectedUids.includes(creatorUid)
+      ? this.selectedUids
+      : [creatorUid, ...this.selectedUids];
+
+    const data = {
+      displayName: this.groupChatForm.value.displayName.trim(),
+      type: 'group',
+      uids,
+      messages: [],
+      createdAt: Date.now(),
+      createdBy: creatorUid,
+    };
+
     this.chatsService
-      .createGroup(this.groupChatForm.value)
+      .createGroup(data)
       .then(() => {
         this.btnState = ClrLoadingState.SUCCESS;
         this.closeModal.emit();
       })
-      .catch(() => (this.btnState = ClrLoadingState.ERROR));
+      .catch(() => {
+        this.btnState = ClrLoadingState.ERROR;
+      });
   }
 }

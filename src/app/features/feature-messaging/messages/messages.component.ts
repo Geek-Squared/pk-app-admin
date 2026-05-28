@@ -9,33 +9,52 @@ import { ChatsService } from 'src/app/services/chats.service';
   styleUrls: ['./messages.component.scss'],
 })
 export class MessagesComponent implements OnInit, OnDestroy {
-  public chats: any[] = [];
-  public filteredChats: any[] = [];
-  public groupChats$;
-  public isCreateGroup: boolean;
+  public individualChats: any[] = [];
+  public filteredIndividualChats: any[] = [];
+  public groupChats: any[] = [];
+  public filteredGroupChats: any[] = [];
+  public isCreateGroup = false;
   public isLoading = false;
   public searchTerm = '';
+  public currentUser: any;
+
   private chatsSub?: Subscription;
+  private groupChatsSub?: Subscription;
+  private userSub?: Subscription;
 
   constructor(public auth: AuthenticationService, public cs: ChatsService) {}
 
   ngOnInit() {
     this.isLoading = true;
+
+    this.userSub = this.auth.user$.subscribe((user) => {
+      this.currentUser = user;
+    });
+
     this.chatsSub = this.cs.getAllChats().subscribe(
       (chats) => {
-        this.chats = chats || [];
+        this.individualChats = (chats || []).filter((c: any) => c.type !== 'group');
         this.applyFilter();
         this.isLoading = false;
       },
-      () => {
-        this.isLoading = false;
-      }
+      () => { this.isLoading = false; }
     );
-    this.groupChats$ = this.cs.getAllGroupChats();
+
+    this.groupChatsSub = this.cs.getAllGroupChats().subscribe((chats) => {
+      this.groupChats = chats || [];
+      this.applyFilter();
+    });
   }
 
   ngOnDestroy() {
     this.chatsSub?.unsubscribe();
+    this.groupChatsSub?.unsubscribe();
+    this.userSub?.unsubscribe();
+  }
+
+  get canCreateGroup(): boolean {
+    const role = this.currentUser?.role;
+    return role === 'Administrator' || role === 'Counsellor';
   }
 
   onSearchTermChange(value: string) {
@@ -45,19 +64,24 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   private applyFilter() {
     const term = (this.searchTerm || '').trim().toLowerCase();
+
     if (!term) {
-      this.filteredChats = this.chats || [];
+      this.filteredIndividualChats = this.individualChats;
+      this.filteredGroupChats = this.groupChats;
       return;
     }
 
-    this.filteredChats = (this.chats || []).filter((chat) => {
-      const name = (chat?.displayName || '').toString().toLowerCase();
+    const matchChat = (chat: any) => {
+      const name = (chat?.displayName || '').toLowerCase();
       const messages = Array.isArray(chat?.messages) ? chat.messages : [];
-      const messageMatch = messages.some((msg) =>
-        (msg?.content || '').toString().toLowerCase().includes(term)
+      return (
+        name.includes(term) ||
+        messages.some((m) => (m?.content || '').toLowerCase().includes(term))
       );
-      return name.includes(term) || messageMatch;
-    });
+    };
+
+    this.filteredIndividualChats = this.individualChats.filter(matchChat);
+    this.filteredGroupChats = this.groupChats.filter(matchChat);
   }
 
   getInitials(name: string) {

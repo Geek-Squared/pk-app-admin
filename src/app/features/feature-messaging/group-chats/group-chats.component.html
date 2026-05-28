@@ -1,1 +1,64 @@
-<p>group-chats works!</p>
+<div class="card-header">Messaging — Group Chat</div>
+
+<ng-container *ngIf="chat$ | async as chat; else loading">
+  <ng-container *ngIf="auth.user">
+    <div class="chatbox-holder">
+      <div class="chatbox group-chat">
+
+        <div class="chatbox-top">
+          <div class="chat-group-name">
+            {{ chat?.displayName }}
+            <span class="label label-info" style="margin-left: 8px;">Group · {{ chat?.uids?.length || 0 }} members</span>
+          </div>
+        </div>
+
+        <div class="chat-messages" #content>
+          <div
+            #messages
+            class="message-box-holder"
+            *ngFor="let msg of chat.messages; trackBy: trackByCreated"
+          >
+            <ng-container *ngIf="msg?.uid === auth?.user?.uid">
+              <div class="message-box">{{ msg.content }}</div>
+              <small>{{ msg.createdAt | date : 'short' }}</small>
+            </ng-container>
+
+            <ng-container *ngIf="msg?.uid !== auth?.user?.uid">
+              <div class="message-sender">
+                <a href="#">{{ msg?.user?.displayName || msg?.user?.email }}</a>
+              </div>
+              <div class="message-box message-partner">{{ msg.content }}</div>
+              <small style="align-self: start">{{ msg.createdAt | date : 'short' }}</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="chat-input-holder">
+          <textarea
+            class="chat-input"
+            [(ngModel)]="newMsg"
+            name="message"
+            maxlength="2000"
+            cols="50"
+            placeholder="Type a message..."
+          ></textarea>
+          <input
+            type="submit"
+            value="Send"
+            class="message-send"
+            (click)="submit(chat)"
+          />
+        </div>
+
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <div class="text-center">
+    <br /><br />
+    <clr-spinner clrMedium clrAssertive></clr-spinner>
+    <br /><br />
+  </div>
+</ng-template>

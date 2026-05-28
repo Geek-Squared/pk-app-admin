@@ -1,13 +1,20 @@
 <div class="card-header">Messaging</div>
 <br />
 
-<div class="login" *ngIf="auth.user">
-  <h3>All Messages</h3>
-  <br />
-  <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">
-    Create Group Chat
-  </button>
-  <div class="clr-row" style="margin-top: 0.75rem;">
+<div *ngIf="auth.user">
+
+  <div class="clr-row" style="align-items: center; margin-bottom: 0.5rem;">
+    <div class="clr-col">
+      <h3 style="margin: 0;">All Messages</h3>
+    </div>
+    <div class="clr-col-auto" *ngIf="canCreateGroup">
+      <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">
+        + Create Group Chat
+      </button>
+    </div>
+  </div>
+
+  <div class="clr-row" style="margin-top: 0.75rem; margin-bottom: 1rem;">
     <div class="clr-col-12 clr-col-md-4">
       <clr-input-container>
         <label>Search Messages</label>
@@ -22,28 +29,53 @@
     </div>
   </div>
 
-  <div class="chat">
-    <ng-container *ngIf="!isLoading; else loading">
-      <div class="msg" *ngFor="let chat of filteredChats">
-        <div class="user">
-          <span
-            id="profileImage"
-            [innerHTML]="getInitials(chat?.displayName)"
-          ></span>
-        </div>
-        <a routerLink="chats/{{ chat?.id }}"
-          >{{ chat?.displayName }} - {{ chat?.messages?.length }} Messages</a
-        >
-      </div>
-    </ng-container>
+  <ng-container *ngIf="!isLoading; else loading">
 
-    <ng-template #loading>
-      <div class="text-center">
-        <br /><br />
-        <clr-spinner clrMedium clrAssertive></clr-spinner>
-        <br /><br /></div
-    ></ng-template>
-  </div>
+    <!-- Group Chats -->
+    <div *ngIf="filteredGroupChats.length > 0">
+      <h5 class="section-label">Group Chats</h5>
+      <div class="chat">
+        <div class="msg" *ngFor="let chat of filteredGroupChats">
+          <div class="user">
+            <span id="profileImage" class="group-avatar" [innerHTML]="getInitials(chat?.displayName)"></span>
+          </div>
+          <a routerLink="group-chats/{{ chat?.id }}">
+            {{ chat?.displayName }}
+            <span class="label label-info" style="margin-left: 6px;">Group · {{ chat?.uids?.length || 0 }} members</span>
+            — {{ chat?.messages?.length }} Messages
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Individual Chats -->
+    <h5 class="section-label">Individual Chats</h5>
+    <div class="chat">
+      <ng-container *ngIf="filteredIndividualChats.length > 0; else noChats">
+        <div class="msg" *ngFor="let chat of filteredIndividualChats">
+          <div class="user">
+            <span id="profileImage" [innerHTML]="getInitials(chat?.displayName)"></span>
+          </div>
+          <a routerLink="chats/{{ chat?.id }}">
+            {{ chat?.displayName }} — {{ chat?.messages?.length }} Messages
+          </a>
+        </div>
+      </ng-container>
+      <ng-template #noChats>
+        <p class="text-muted" style="padding: 10px;">No individual chats found.</p>
+      </ng-template>
+    </div>
+
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="text-center">
+      <br /><br />
+      <clr-spinner clrMedium clrAssertive></clr-spinner>
+      <br /><br />
+    </div>
+  </ng-template>
+
 </div>
 
 <app-create-group-chat

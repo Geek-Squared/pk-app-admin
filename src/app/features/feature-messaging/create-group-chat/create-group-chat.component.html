@@ -1,13 +1,50 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
+<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false" [clrModalSize]="'md'">
   <h3 class="modal-title">Create Group Chat</h3>
+
   <div class="modal-body">
     <form clrForm [formGroup]="groupChatForm" clrLayout="vertical">
       <clr-input-container>
-        <label>Display Name</label>
-        <input clrInput type="text" formControlName="displayName" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
+        <label>Group Name</label>
+        <input
+          clrInput
+          type="text"
+          formControlName="displayName"
+          size="45"
+          placeholder="e.g. Support Group A"
+        />
+        <clr-control-error>Group name is required</clr-control-error>
       </clr-input-container>
     </form>
+
+    <div class="member-section">
+      <p class="member-label">Add Members</p>
+
+      <ng-container *ngIf="!isLoadingUsers; else loadingUsers">
+        <div class="member-list">
+          <div class="member-item" *ngFor="let user of users">
+            <clr-checkbox-wrapper>
+              <input
+                type="checkbox"
+                clrCheckbox
+                [checked]="isSelected(user.id)"
+                (change)="toggleUser(user.id)"
+              />
+              <label>
+                {{ user?.displayName || user?.email }}
+                <span class="label label-info" style="margin-left: 6px;">{{ user?.role }}</span>
+              </label>
+            </clr-checkbox-wrapper>
+          </div>
+        </div>
+        <p class="selected-count" *ngIf="selectedUids.length > 0">
+          {{ selectedUids.length }} member(s) selected
+        </p>
+      </ng-container>
+
+      <ng-template #loadingUsers>
+        <clr-spinner clrSmall></clr-spinner>
+      </ng-template>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -18,9 +55,10 @@
       type="submit"
       class="btn btn-primary"
       [clrLoading]="btnState"
+      [disabled]="groupChatForm.invalid"
       (click)="onSubmit()"
     >
-      Submit
+      Create Group
     </button>
   </div>
 </clr-modal>

@@ -162,7 +162,7 @@ export class ChatsService {
 
   getAllGroupChats() {
     return this.afs
-      .collection('group-chats')
+      .collection('chats', (ref) => ref.where('type', '==', 'group'))
       .snapshotChanges()
       .pipe(
         map((actions) => {
