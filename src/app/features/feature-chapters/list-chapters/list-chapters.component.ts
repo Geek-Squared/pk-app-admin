@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Chapter } from 'src/app/models/chapter.interface';
 import { ChaptersService } from 'src/app/services/chapters.service';
 
@@ -11,10 +11,41 @@ export class ListChaptersComponent implements OnInit {
   @Input() categoryId: string;
   @Input() interventionId: string;
   public isCreate: boolean;
+  public isUpdate = false;
+  public isDelete = false;
   public chapters: Chapter[];
   public isLoading: boolean;
+  public openMenuId: string | null = null;
+  public selectedChapter: Chapter | null = null;
 
   constructor(private chaptersService: ChaptersService) {}
+
+  @HostListener('document:click')
+  closeMenus() {
+    this.openMenuId = null;
+  }
+
+  toggleMenu(event: Event, chapter: Chapter) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.openMenuId = this.openMenuId === chapter.id ? null : chapter.id;
+  }
+
+  editChapter(event: Event, chapter: Chapter) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.selectedChapter = chapter;
+    this.openMenuId = null;
+    this.isUpdate = true;
+  }
+
+  deleteChapter(event: Event, chapter: Chapter) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.selectedChapter = chapter;
+    this.openMenuId = null;
+    this.isDelete = true;
+  }
 
   ngOnInit(): void {
     this.isLoading = true;

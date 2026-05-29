@@ -1,20 +1,16 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-    <h3 class="modal-title"><ng-content select=".action-header"></ng-content></h3>
-    <div class="modal-body">
-      <ng-content select=".action-message"></ng-content>
+<div class="pk-overlay">
+  <div class="pk-modal" style="max-width:420px" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <h2><ng-content select=".action-header"></ng-content></h2>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-danger" (click)="closeModal.emit()">
-        No
-      </button>
-      <button
-        type="submit"
-        class="btn btn-success"
-        [clrLoading]="btnState$ | async"
-        (click)="proceed.emit()"
-      >
-        Yes
-      </button>
+    <div class="pk-modal-body">
+      <p style="color:var(--text-2);font-size:14.5px;line-height:1.55;margin:0">
+        <ng-content select=".action-message"></ng-content>
+      </p>
     </div>
-  </clr-modal>
-  
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-danger" [clrLoading]="btnState$ | async" (click)="proceed.emit()">Delete</button>
+    </div>
+  </div>
+</div>

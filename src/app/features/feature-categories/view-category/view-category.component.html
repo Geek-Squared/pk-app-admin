@@ -1,23 +1,19 @@
 <ng-container *ngIf="category$ | async as category">
-  <!--  <a routerLink="../../">Categories List </a>
-  <strong style="font-size: 1.4em"> / </strong> -->
-  <span>Category Details</span> <br /><br />
-
-  <div class="card-title">{{ category?.name }}</div>
-
-  <button class="btn btn-sm btn-primary" (click)="updateCategory(category)">
-    Update Category
-  </button>
-  <br />
-
-  <app-list-chapters
-    [categoryId]="route.snapshot.paramMap.get('categoryId')"
-    [interventionId]="route.snapshot.paramMap.get('interventionId')"
-  ></app-list-chapters>
-
-  <app-update-category
-    *ngIf="isUpdate"
-    [category]="selectedCategory"
-    (closeModal)="isUpdate = false"
-  ></app-update-category>
+  <div style="margin-top:28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;margin:0 0 4px">{{ category?.name }}</h3>
+        <p style="color:var(--text-3);font-size:13px;margin:0">Category</p>
+      </div>
+      <button class="pk-btn pk-btn-outline pk-btn-sm" (click)="updateCategory(category)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+        Edit
+      </button>
+    </div>
+    <app-list-chapters
+      [categoryId]="route.snapshot.paramMap.get('categoryId')"
+      [interventionId]="route.snapshot.paramMap.get('interventionId') || category?.interventionId"
+    ></app-list-chapters>
+  </div>
+  <app-update-category *ngIf="isUpdate" [category]="selectedCategory" (closeModal)="isUpdate = false"></app-update-category>
 </ng-container>

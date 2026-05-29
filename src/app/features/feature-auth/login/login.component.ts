@@ -7,11 +7,19 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  constructor(private authService: AuthenticationService) {}
+  email = '';
+  password = '';
+  showPw = false;
+  loading = false;
 
+  constructor(private authService: AuthenticationService) {}
   ngOnInit(): void {}
 
-  onSubmit(credentials: any) {
-    this.authService.login(credentials.email, credentials.password);
+  onSubmit() {
+    if (!this.email || !this.password) return;
+    this.loading = true;
+    this.authService.login(this.email, this.password)
+      .finally(() => { this.loading = false; })
+      .catch(() => { this.loading = false; });
   }
 }

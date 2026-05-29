@@ -1,134 +1,50 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">{{ title }}</h3>
-  <div class="modal-body">
-    <form clrForm [formGroup]="postForm" clrLayout="vertical">
-      <clr-input-container>
-        <label>Title</label>
-        <input clrInput type="text" formControlName="title" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <clr-input-container>
-        <label>Video Url</label>
-        <input clrInput type="text" formControlName="videoUrl" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <br />
-
-      <div class="clr-col-sm-5 clr-col-xs-12">
-        <input
-          type="file"
-          accept="image/x-png,image/gif,image/jpeg"
-          class="form-control"
-          (change)="onFileInputChange($event)"
-        />
-
-        <clr-progress-bar
-          *ngIf="uploadProgress"
-          clrValue="{{ uploadProgress | async }}"
-          clrSuccess
-          clrLabeled
-        ></clr-progress-bar>
-        <br />
+<div class="pk-overlay">
+  <div class="pk-modal" style="max-width:600px" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>{{ title }}</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
       </div>
-
-      <img
-        height="150"
-        width="150"
-        class="img-rounded clr-col"
-        [src]="imageSrc || 'http://placehold.it/180'"
-        alt="post image"
-      /><br />
-
-      <clr-textarea-container>
-        <label>Description</label>
-        <textarea
-          clrTextarea
-          formControlName="description"
-          name="description"
-          rows="5"
-          cols="50"
-          required
-        ></textarea>
-
-        <clr-control-error>You must provide a description!</clr-control-error>
-      </clr-textarea-container>
-
-      <clr-input-container>
-        <label>Order</label>
-        <input clrInput type="number" formControlName="order" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <clr-input-container>
-        <label>Audio File</label>
-        <input
-          clrInput
-          type="file"
-          accept="audio/*"
-          class="form-control"
-          (change)="onAudioInputChange($event)"
-      /></clr-input-container>
-      <clr-progress-bar
-        *ngIf="audioUploadProgress"
-        clrValue="{{ audioUploadProgress | async }}"
-        clrSuccess
-        clrLabeled
-      ></clr-progress-bar>
-
-      <!--  <ng-container *ngIf="getFormArray('questions').value.length > 0">
-        <ol class="list">
-          <li
-            formArrayName="questions"
-            *ngFor="
-              let question of getFormArray('questions').controls;
-              let i = index
-            "
-          >
-            <div [formGroupName]="i">
-              <div class="card">
-                <div class="card-block">
-                  <div class="clr-row">
-                    <div class="clr-col-4">
-                      <label class="clr-control-label"
-                        >Question {{ i + 1 }}</label
-                      >
-                    </div>
-                    <div class="card-text">
-                      {{ question.get('narrative').value }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ol>
-      </ng-container> -->
-    </form>
+    </div>
+    <div class="pk-modal-body">
+      <form [formGroup]="postForm">
+        <div class="pk-field">
+          <label>Title</label>
+          <input class="pk-input" type="text" formControlName="title" placeholder="Post title" />
+        </div>
+        <div class="pk-field">
+          <label>Video URL</label>
+          <input class="pk-input" type="text" formControlName="videoUrl" placeholder="https://..." />
+        </div>
+        <div class="pk-field">
+          <label>Order</label>
+          <input class="pk-input" type="number" formControlName="order" placeholder="Display order" />
+        </div>
+        <div class="pk-field">
+          <label>Description</label>
+          <textarea class="pk-textarea" formControlName="description" placeholder="Post content..." rows="4"></textarea>
+        </div>
+        <div class="pk-field">
+          <label>Cover image</label>
+          <input type="file" accept="image/*" class="pk-input" style="padding:8px" (change)="onFileInputChange($event)" />
+          <clr-progress-bar *ngIf="uploadProgress" clrValue="{{ uploadProgress | async }}" clrSuccess clrLabeled style="margin-top:8px"></clr-progress-bar>
+          <img *ngIf="imageSrc" [src]="imageSrc" style="width:100%;max-height:160px;object-fit:cover;border-radius:var(--r-md);margin-top:10px" />
+        </div>
+        <div class="pk-field" style="margin-bottom:0">
+          <label>Audio file</label>
+          <input type="file" accept="audio/*" class="pk-input" style="padding:8px" (change)="onAudioInputChange($event)" />
+          <clr-progress-bar *ngIf="audioUploadProgress" clrValue="{{ audioUploadProgress | async }}" clrSuccess clrLabeled style="margin-top:8px"></clr-progress-bar>
+        </div>
+      </form>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState"
+        [disabled]="postForm.invalid || (audioUploadProgress | async) || (uploadProgress | async)"
+        (click)="formValue.emit(postForm.value)">Save post</button>
+    </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [clrLoading]="btnState"
-      [disabled]="
-        postForm.invalid || (audioUploadProgress | async) || uploadProgress
-          | async
-      "
-      (click)="formValue.emit(postForm.value)"
-    >
-      Submit
-    </button>
-  </div>
-</clr-modal>
-
-<app-question-form
-  *ngIf="isAddQuestion"
-  (closeModal)="isAddQuestion = false"
-  (formValue)="addQuestion($event)"
-></app-question-form>
+</div>
+<app-question-form *ngIf="isAddQuestion" (closeModal)="isAddQuestion = false" (formValue)="addQuestion($event)"></app-question-form>

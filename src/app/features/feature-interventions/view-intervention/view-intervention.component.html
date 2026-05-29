@@ -1,24 +1,16 @@
 <ng-container *ngIf="intervention$ | async as intervention">
-  <span>Intervention Details</span> <br /><br />
-
-  <div class="card-title">{{ intervention?.title }}</div>
-  <div class="card-text">{{ intervention?.description }}</div>
-
-  <button
-    class="btn btn-sm btn-primary"
-    (click)="updateIntervention(intervention)"
-  >
-    Update Intervention
-  </button>
-  <br />
-
-  <app-feature-categories
-    [interventionId]="route.snapshot.paramMap.get('interventionId')"
-  ></app-feature-categories>
-
-  <app-update-intervention
-    *ngIf="isUpdate"
-    [intervention]="selectedIntervention"
-    (closeModal)="isUpdate = false"
-  ></app-update-intervention>
+  <div class="pk-page pk-fade-in">
+    <div class="pk-page-head pk-row between">
+      <div>
+        <h1>{{ intervention?.name }}</h1>
+        <p>Manage chapters and content within this intervention.</p>
+      </div>
+      <button class="pk-btn pk-btn-outline" (click)="updateIntervention(intervention)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+        Edit intervention
+      </button>
+    </div>
+    <app-feature-categories [interventionId]="route.snapshot.paramMap.get('interventionId')"></app-feature-categories>
+  </div>
+  <app-update-intervention *ngIf="isUpdate" [intervention]="selectedIntervention" (closeModal)="isUpdate = false"></app-update-intervention>
 </ng-container>

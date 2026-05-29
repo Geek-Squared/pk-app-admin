@@ -1,56 +1,45 @@
-<div class="card-header text-center">Users</div>
-<br />
-
-<div class="text-center" *ngIf="isLoading">
-  <br /><br />
-  <clr-spinner clrMedium clrAssertive></clr-spinner>
-  <br /><br />
-</div>
-
-<ng-container *ngIf="!isLoading">
-  <clr-button-group>
-    <clr-button class="btn btn-sm" (click)="isCreate = true">
-      <clr-icon shape="plus"></clr-icon>&nbsp;Create User
-    </clr-button>
-  </clr-button-group>
-  <div class="clr-row" style="margin-top: 0.75rem;">
-    <div class="clr-col-12 clr-col-md-4">
-      <clr-input-container>
-        <label>Search Users</label>
-        <input
-          clrInput
-          type="text"
-          placeholder="Email, name, or role"
-          [value]="searchTerm"
-          (input)="onSearchTermChange($any($event.target).value)"
-        />
-      </clr-input-container>
+<div class="pk-page pk-fade-in">
+  <div class="pk-page-head pk-row between">
+    <div><h1>Users</h1><p>Clients, counsellors and administrators across the programme.</p></div>
+    <button class="pk-btn pk-btn-primary" (click)="isCreate = true">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-4A3.5 3.5 0 0 0 3 17.5V19M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM18 8v6M21 11h-6"/></svg>
+      Create user
+    </button>
+  </div>
+  <div class="pk-tb-search" style="width:320px;margin-bottom:20px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+    <input placeholder="Search by email, name or role…" [value]="searchTerm" (input)="onSearchTermChange($any($event.target).value)" />
+  </div>
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+  <div class="pk-tbl-wrap" *ngIf="!isLoading">
+    <table class="pk-tbl">
+      <thead><tr><th>User</th><th>Email</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of pagedUsers; let i = index">
+          <td>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span class="pk-avatar" style="width:34px;height:34px;font-size:13px" [style.background]="['#2D6CA8','#2E9E86','#6B53A8','#C0832B','#C25340'][i % 5]">{{ item?.displayName?.substring(0,1)?.toUpperCase() || '?' }}</span>
+              <span class="td-name">{{ item?.displayName || '—' }}</span>
+            </div>
+          </td>
+          <td class="muted">{{ item?.email }}</td>
+          <td><span class="pk-badge" [class.pk-badge-blue]="item?.role === 'Administrator'" [class.pk-badge-teal]="item?.role === 'Counsellor'" [class.pk-badge-gray]="item?.role === 'Client'">{{ item?.role }}</span></td>
+        </tr>
+        <tr *ngIf="!pagedUsers?.length">
+          <td colspan="3" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No users yet.' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface-2);border-top:1px solid var(--border);font-size:13px;color:var(--text-2)">
+      <span>{{ pageFrom }}–{{ pageTo }} of {{ filteredUsers.length }} users</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l-5-5 5-5M10 17l-5-5 5-5"/></svg></button>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = page - 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 18l-6-6 6-6"/></svg></button>
+        <span style="min-width:34px;height:32px;padding:0 8px;border-radius:var(--r-sm);background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px">{{ page }}</span>
+        <span style="color:var(--text-3)">/&nbsp;{{ totalPages }}</span>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page >= totalPages" (click)="page = page + 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg></button>
+      </div>
     </div>
   </div>
-  <br />
-  <clr-datagrid>
-    <clr-dg-column>Email</clr-dg-column>
-    <clr-dg-column>Display Name</clr-dg-column>
-    <clr-dg-column>Role</clr-dg-column>
-
-    <clr-dg-row *clrDgItems="let item of filteredUsers">
-      <clr-dg-cell>{{ item?.email }}</clr-dg-cell>
-      <clr-dg-cell>{{ item?.displayName }}</clr-dg-cell>
-      <clr-dg-cell>{{ item?.role }}</clr-dg-cell>
-    </clr-dg-row>
-
-    <clr-dg-footer
-      >{{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-      {{ filteredUsers?.length }} Users
-      <clr-dg-pagination
-        #pagination
-        [clrDgTotalItems]="filteredUsers?.length"
-      ></clr-dg-pagination
-    ></clr-dg-footer>
-  </clr-datagrid>
-</ng-container>
-
-<app-create-user
-  *ngIf="isCreate"
-  (closeModal)="isCreate = false"
-></app-create-user>
+</div>
+<app-create-user *ngIf="isCreate" (closeModal)="isCreate = false"></app-create-user>

@@ -1,0 +1,56 @@
+<div class="pk-page pk-fade-in">
+
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+
+  <ng-container *ngIf="!isLoading && survey">
+    <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-3);margin-bottom:8px">
+      <a routerLink="/surveys" style="color:var(--text-3);text-decoration:none;font-weight:500">Surveys</a>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+      <span style="color:var(--text);font-weight:600">{{ survey?.name }}</span>
+    </div>
+
+    <div class="pk-page-head pk-row between">
+      <div>
+        <h1>{{ survey?.name }}</h1>
+        <p>{{ responses.length }} responses · {{ questionCount }} questions</p>
+      </div>
+      <button class="pk-btn"
+        [class.pk-btn-outline]="survey?.active"
+        [class.pk-btn-primary]="!survey?.active"
+        [disabled]="toggling"
+        (click)="toggleActive()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
+          <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
+        </svg>
+        {{ survey?.active ? 'Active on app' : 'Activate' }}
+      </button>
+    </div>
+
+    <h3 class="pk-section-title">Recent responses</h3>
+    <div class="pk-tbl-wrap">
+      <table class="pk-tbl">
+        <thead>
+          <tr>
+            <th>Respondent</th>
+            <th>Submitted</th>
+            <th *ngFor="let key of responseKeys">{{ key }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of responses">
+            <td class="td-name">{{ r?.userName || r?.userId || r?.uid || '—' }}</td>
+            <td class="muted">{{ r?.submittedAt?.toDate ? (r?.submittedAt?.toDate() | date:'d MMM y') : (r?.submittedAt || r?.createdAt | date:'d MMM y') }}</td>
+            <td *ngFor="let key of responseKeys">{{ r[key] }}</td>
+          </tr>
+          <tr *ngIf="!responses?.length">
+            <td [attr.colspan]="responseKeys.length + 2" class="muted" style="text-align:center;padding:32px">
+              No responses yet. {{ survey?.active ? 'Clients can submit responses from the app.' : 'Activate this survey to make it visible on the app.' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+</div>

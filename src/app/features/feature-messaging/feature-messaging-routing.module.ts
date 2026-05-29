@@ -5,9 +5,14 @@ import { ChatComponent } from './chat/chat.component';
 import { GroupChatsComponent } from './group-chats/group-chats.component';
 
 const routes: Routes = [
-  { path: '', component: MessagesComponent },
-  { path: 'chats/:id', component: ChatComponent },
-  { path: 'group-chats/:id', component: GroupChatsComponent },
+  {
+    path: '',
+    component: MessagesComponent,
+    children: [
+      { path: 'chats/:id', component: ChatComponent },
+      { path: 'group-chats/:id', component: GroupChatsComponent },
+    ],
+  },
 ];
 
 @NgModule({

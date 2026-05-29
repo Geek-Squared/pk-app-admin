@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services';
 import { ChatsService } from 'src/app/services/chats.service';
 
@@ -31,9 +32,9 @@ export class GroupChatsComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    const chatId = this.route.snapshot.paramMap.get('id');
-    const source = this.cs.get(chatId);
-    this.chat$ = this.cs.joinUsers(source);
+    this.chat$ = this.route.paramMap.pipe(
+      switchMap(params => this.cs.joinUsers(this.cs.get(params.get('id'))))
+    );
   }
 
   ngAfterViewInit() {
@@ -56,7 +57,13 @@ export class GroupChatsComponent implements OnInit, AfterViewInit {
     this.newMsg = '';
   }
 
-  trackByCreated(i, msg) {
-    return msg.createdAt;
+  trackByCreated(i, msg) { return msg.createdAt; }
+  trackByIndex(i: number) { return i; }
+
+  handleEnter(event: KeyboardEvent, chat: any) {
+    if (!event.shiftKey) {
+      event.preventDefault();
+      this.submit(chat);
+    }
   }
 }

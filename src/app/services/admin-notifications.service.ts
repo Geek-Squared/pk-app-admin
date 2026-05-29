@@ -2,25 +2,21 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireFunctions } from '@angular/fire/compat/functions';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AdminNotificationsService {
-  constructor(
-    private firestore: AngularFirestore,
-    private functions: AngularFireFunctions
-  ) {}
+  constructor(private firestore: AngularFirestore, private functions: AngularFireFunctions) {}
 
   getNotifications() {
     return this.firestore
-      .collection('adminNotifications', (ref) =>
-        ref.orderBy('createdAt', 'desc')
-      )
+      .collection('adminNotifications', (ref) => ref.orderBy('createdAt', 'desc'))
       .snapshotChanges();
   }
 
   sendTestNotification(message?: string) {
-    return this.functions
-      .httpsCallable('sendAdminTestNotification')({ message: message || '' });
+    return this.functions.httpsCallable('sendAdminTestNotification')({ message: message || '' });
+  }
+
+  sendBroadcast(title: string, body: string) {
+    return this.functions.httpsCallable('sendUserBroadcastNotification')({ title, body });
   }
 }

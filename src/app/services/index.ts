@@ -7,3 +7,4 @@ export * from './interventions.service';
 export * from './referrals.service';
 export * from './categories.service';
 export * from './admin-notifications.service';
+export * from './surveys.service';

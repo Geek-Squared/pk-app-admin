@@ -1,31 +1,34 @@
-<div class="card-header text-center">Feedback</div>
-<br />
-
-<div class="text-center" *ngIf="isLoading">
-  <br /><br />
-  <clr-spinner clrMedium clrAssertive></clr-spinner>
-  <br /><br />
+<div class="pk-page pk-fade-in">
+  <div class="pk-page-head"><h1>Feedback</h1><p>User feedback submissions from the mobile app.</p></div>
+  <div class="pk-tb-search" style="width:320px;margin-bottom:20px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+    <input placeholder="Search by name or message…" [value]="searchTerm" (input)="onSearchTermChange($any($event.target).value)" />
+  </div>
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+  <div class="pk-tbl-wrap" *ngIf="!isLoading">
+    <table class="pk-tbl">
+      <thead><tr><th>Name</th><th>Phone</th><th>Date</th><th>Message</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of pagedFeedback">
+          <td class="td-name">{{ item?.name }}</td>
+          <td class="muted">{{ item?.phoneNumber }}</td>
+          <td class="muted">{{ item?.createdDate | date:'d MMM y' }}</td>
+          <td>{{ item?.message }}</td>
+        </tr>
+        <tr *ngIf="!pagedFeedback?.length">
+          <td colspan="4" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No feedback yet.' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface-2);border-top:1px solid var(--border);font-size:13px;color:var(--text-2)">
+      <span>{{ pageFrom }}–{{ pageTo }} of {{ filteredFeedback.length }}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l-5-5 5-5M10 17l-5-5 5-5"/></svg></button>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = page - 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 18l-6-6 6-6"/></svg></button>
+        <span style="min-width:34px;height:32px;padding:0 8px;border-radius:var(--r-sm);background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px">{{ page }}</span>
+        <span style="color:var(--text-3)">/&nbsp;{{ totalPages }}</span>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page >= totalPages" (click)="page = page + 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<clr-datagrid *ngIf="!isLoading">
-  <clr-dg-column>Name</clr-dg-column>
-  <clr-dg-column>Phone Number</clr-dg-column>
-  <clr-dg-column>Created Date</clr-dg-column>
-  <clr-dg-column>Message</clr-dg-column>
-
-  <clr-dg-row *clrDgItems="let item of feedback">
-    <clr-dg-cell>{{ item?.name }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.phoneNumber }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.createdDate | date }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.message }}</clr-dg-cell>
-  </clr-dg-row>
-
-  <clr-dg-footer
-    >{{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-    {{ feedback?.length }} Feedback Messages
-    <clr-dg-pagination
-      #pagination
-      [clrDgTotalItems]="feedback?.length"
-    ></clr-dg-pagination
-  ></clr-dg-footer>
-</clr-datagrid>

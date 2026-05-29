@@ -1,6 +1,7 @@
 <app-category-form
   [btnState]="buttonState"
   [title]="'Create New Category'"
+  [interventionId]="interventionId"
   (closeModal)="closeModal.emit($event)"
   (formValue)="onSubmit($event)"
 ></app-category-form>

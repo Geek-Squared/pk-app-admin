@@ -20,6 +20,8 @@ import { FeatureInterventionsModule } from './features/feature-interventions/fea
 import { FeatureReferralsModule } from './features/feature-referrals/feature-referrals.module';
 
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,6 +41,8 @@ import { HttpClientModule } from '@angular/common/http';
     FeatureInterventionsModule,
     FeatureReferralsModule,
     HttpClientModule,
+    FormsModule,
+    RouterModule,
   ],
   providers: [
     {

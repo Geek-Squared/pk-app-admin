@@ -6,10 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./portal-container.component.scss']
 })
 export class PortalContainerComponent implements OnInit {
+  collapsed = false;
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  constructor() {}
+  ngOnInit(): void {}
 }

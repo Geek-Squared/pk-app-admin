@@ -1,64 +1,69 @@
-<div class="card-header">Messaging — Group Chat</div>
+<div class="pk-chat pk-fade-in">
+  <ng-container *ngIf="chat$ | async as chat; else loading">
+    <ng-container *ngIf="auth.user">
 
-<ng-container *ngIf="chat$ | async as chat; else loading">
-  <ng-container *ngIf="auth.user">
-    <div class="chatbox-holder">
-      <div class="chatbox group-chat">
-
-        <div class="chatbox-top">
-          <div class="chat-group-name">
-            {{ chat?.displayName }}
-            <span class="label label-info" style="margin-left: 8px;">Group · {{ chat?.uids?.length || 0 }} members</span>
-          </div>
+      <!-- Chat header -->
+      <div class="pk-chat-head">
+        <span class="pk-avatar sq" style="width:42px;height:42px;font-size:15px;background:var(--primary-700)">
+          {{ chat?.displayName?.substring(0,1)?.toUpperCase() || 'G' }}
+        </span>
+        <div style="flex:1">
+          <div class="ch-name">{{ chat?.displayName }}</div>
+          <div class="ch-sub">Group · {{ chat?.uids?.length || 0 }} members</div>
         </div>
-
-        <div class="chat-messages" #content>
-          <div
-            #messages
-            class="message-box-holder"
-            *ngFor="let msg of chat.messages; trackBy: trackByCreated"
-          >
-            <ng-container *ngIf="msg?.uid === auth?.user?.uid">
-              <div class="message-box">{{ msg.content }}</div>
-              <small>{{ msg.createdAt | date : 'short' }}</small>
-            </ng-container>
-
-            <ng-container *ngIf="msg?.uid !== auth?.user?.uid">
-              <div class="message-sender">
-                <a href="#">{{ msg?.user?.displayName || msg?.user?.email }}</a>
-              </div>
-              <div class="message-box message-partner">{{ msg.content }}</div>
-              <small style="align-self: start">{{ msg.createdAt | date : 'short' }}</small>
-            </ng-container>
-          </div>
-        </div>
-
-        <div class="chat-input-holder">
-          <textarea
-            class="chat-input"
-            [(ngModel)]="newMsg"
-            name="message"
-            maxlength="2000"
-            cols="50"
-            placeholder="Type a message..."
-          ></textarea>
-          <input
-            type="submit"
-            value="Send"
-            class="message-send"
-            (click)="submit(chat)"
-          />
-        </div>
-
+        <button class="pk-icon-btn" title="More options">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5.75" r=".75" fill="currentColor"/><circle cx="12" cy="12" r=".75" fill="currentColor"/><circle cx="12" cy="18.25" r=".75" fill="currentColor"/>
+          </svg>
+        </button>
       </div>
-    </div>
-  </ng-container>
-</ng-container>
 
-<ng-template #loading>
-  <div class="text-center">
-    <br /><br />
-    <clr-spinner clrMedium clrAssertive></clr-spinner>
-    <br /><br />
-  </div>
-</ng-template>
+      <!-- Messages -->
+      <div class="pk-chat-body" #content>
+        <div class="pk-chat-day">Today</div>
+        <div class="pk-bubble-row"
+          [class.me]="msg?.uid === auth?.user?.uid"
+          [class.them]="msg?.uid !== auth?.user?.uid"
+          *ngFor="let msg of chat.messages; let i = index; trackBy: trackByIndex" #messages>
+          <span *ngIf="msg?.uid !== auth?.user?.uid" class="pk-avatar"
+            style="width:30px;height:30px;font-size:11px;background:var(--accent-600)">
+            {{ msg?.user?.displayName?.substring(0,1)?.toUpperCase() || '?' }}
+          </span>
+          <div class="pk-bubble">
+            <div *ngIf="msg?.uid !== auth?.user?.uid" class="b-sender">{{ msg?.user?.displayName }}</div>
+            <div *ngIf="!msg?.type || msg?.type === 'text'">{{ msg?.content || msg?.message }}</div>
+            <img *ngIf="msg?.type === 'image'" [src]="msg.content" style="max-width:100%;border-radius:10px" />
+            <video *ngIf="msg?.type === 'video'" [src]="msg.content" controls style="max-width:100%;border-radius:10px"></video>
+            <audio *ngIf="msg?.type === 'audio'" [src]="msg.content" controls style="max-width:100%"></audio>
+            <a *ngIf="msg?.type === 'file'" [href]="msg.content" target="_blank" style="color:inherit;text-decoration:underline">Open file</a>
+            <div class="b-time">{{ msg.createdAt | date:'shortTime' }}</div>
+          </div>
+        </div>
+        <div *ngIf="!chat.messages?.length" class="pk-chat-empty">
+          <h3>No messages yet</h3>
+          <p>Start the group conversation — members will see it on the mobile app.</p>
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <div class="pk-chat-composer">
+        <textarea class="pk-cc-input" rows="1" placeholder="Type a message…"
+          [(ngModel)]="newMsg" name="message"
+          (keydown.enter)="handleEnter($event, chat)">
+        </textarea>
+        <button class="pk-send-btn" (click)="submit(chat)" title="Send">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 13 21 3M21 3l-6.5 18-3.5-8L3 9.5 21 3Z"/>
+          </svg>
+        </button>
+      </div>
+
+    </ng-container>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="pk-chat-empty">
+      <clr-spinner clrMedium clrAssertive></clr-spinner>
+    </div>
+  </ng-template>
+</div>

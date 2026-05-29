@@ -1,23 +1,21 @@
 <ng-container *ngIf="chapter$ | async as chapter">
-  <a routerLink="../../">Chapters List </a>
-  <strong style="font-size: 1.4em"> / </strong> <span>Chapter Details</span>
-  <br /><br />
-
-  <div class="card-title">{{ chapter?.title }}</div>
-  <div class="card-text">{{ chapter?.description }}</div>
-
-  <button class="btn btn-sm btn-primary" (click)="updateChapter(chapter)">
-    Update
-  </button>
-  <br />
-
-  <app-list-posts
-    [chapterId]="route.snapshot.paramMap.get('chapterId')"
-  ></app-list-posts>
-
-  <app-update-chapter
-    *ngIf="isUpdate"
-    [chapter]="selectedChapter"
-    (closeModal)="isUpdate = false"
-  ></app-update-chapter>
+  <div class="pk-page pk-fade-in">
+    <div class="pk-page-head pk-row between">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-3);margin-bottom:8px">
+          <a routerLink="../../" style="color:var(--text-3);text-decoration:none;font-weight:500">Chapters</a>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+          <span style="color:var(--text);font-weight:600">{{ chapter?.title }}</span>
+        </div>
+        <h1>{{ chapter?.title }}</h1>
+        <p>{{ chapter?.description }}</p>
+      </div>
+      <button class="pk-btn pk-btn-outline" (click)="updateChapter(chapter)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+        Edit chapter
+      </button>
+    </div>
+    <app-list-posts [chapterId]="route.snapshot.paramMap.get('chapterId')"></app-list-posts>
+  </div>
+  <app-update-chapter *ngIf="isUpdate" [chapter]="selectedChapter" (closeModal)="isUpdate = false"></app-update-chapter>
 </ng-container>
