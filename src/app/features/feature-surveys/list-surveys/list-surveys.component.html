@@ -1,0 +1,53 @@
+<div class="pk-page pk-fade-in">
+  <div class="pk-page-head pk-row between">
+    <div>
+      <h1>Surveys</h1>
+      <p>Surveys clients complete in the app, and the responses they submit.</p>
+    </div>
+    <button class="pk-btn pk-btn-primary" (click)="isCreate = true">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      New survey
+    </button>
+  </div>
+
+  <div class="pk-tb-search" style="width:320px;margin-bottom:20px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+    <input placeholder="Search surveys…" [value]="searchTerm" (input)="onSearchTermChange($any($event.target).value)" />
+  </div>
+
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="pk-grid-cards" *ngIf="filteredSurveys?.length > 0">
+      <a class="pk-tile" *ngFor="let s of filteredSurveys; let i = index" routerLink="view/{{ s.id }}">
+        <div class="pk-tile-ico" [class.teal]="i % 2 === 1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1ZM9 11h6M9 15h6"/></svg>
+        </div>
+        <h3>{{ s.name }}</h3>
+        <div class="pk-tile-meta" style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-3)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6ZM13 3v6h6"/></svg>
+          {{ questionCount(s) }} questions
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:6px">
+          <span class="pk-badge" [class.pk-badge-teal]="s.active" [class.pk-badge-gray]="!s.active">
+            <i style="width:6px;height:6px;border-radius:999px;background:currentColor;display:inline-block"></i>
+            {{ s.active ? 'Active' : 'Draft' }}
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="pk-chat-empty" *ngIf="!filteredSurveys?.length && !searchTerm">
+      <h3>No surveys yet</h3>
+      <p>Create your first survey — clients will see it on the mobile app.</p>
+      <button class="pk-btn pk-btn-primary" (click)="isCreate = true">Create survey</button>
+    </div>
+    <div class="pk-chat-empty" *ngIf="!filteredSurveys?.length && searchTerm">
+      <h3>No results for "{{ searchTerm }}"</h3>
+      <p>Try a different search term.</p>
+    </div>
+  </ng-container>
+</div>
+
+<app-create-survey-modal *ngIf="isCreate" (closeModal)="isCreate = false"></app-create-survey-modal>

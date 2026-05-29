@@ -1,59 +1,45 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">{{ title }}</h3>
-  <div class="modal-body">
-    <form clrForm [formGroup]="userForm" clrLayout="vertical">
-      <clr-input-container>
-        <label>Display Name</label>
-        <input clrInput type="text" formControlName="displayName" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <clr-radio-container clrInline>
-        <label>Role</label>
-        <clr-radio-wrapper *ngFor="let role of roles | keyvalue">
-          <input
-            type="radio"
-            clrRadio
-            required
-            [value]="role?.value"
-            formControlName="role"
-          />
-          <label>{{ role?.value }}</label>
-        </clr-radio-wrapper>
-        <clr-control-error>This field is required!</clr-control-error>
-      </clr-radio-container>
-
-      <clr-input-container *ngIf="!user">
-        <label>Email</label>
-        <input clrInput type="email" formControlName="email" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <clr-password-container *ngIf="!user">
-        <label>Password</label>
-        <input
-          clrPassword
-          type="password"
-          formControlName="password"
-          size="45"
-        />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-password-container>
-    </form>
+<div class="pk-overlay">
+  <div class="pk-modal" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>Create user</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <p>Register a client, counsellor or administrator.</p>
+    </div>
+    <div class="pk-modal-body">
+      <form [formGroup]="userForm">
+        <div class="pk-field">
+          <label>Display name</label>
+          <input class="pk-input" type="text" formControlName="displayName" placeholder="e.g. Tatenda Chikwava" />
+        </div>
+        <div class="pk-field">
+          <label>Role</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <label *ngFor="let role of roles | keyvalue" style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);font-size:14px;font-weight:500;cursor:pointer"
+              [style.borderColor]="userForm.get('role').value === role.value ? 'var(--primary)' : ''"
+              [style.background]="userForm.get('role').value === role.value ? 'var(--primary-50)' : ''">
+              <input type="radio" [value]="role.value" formControlName="role" style="accent-color:var(--primary)" />
+              {{ role.value }}
+            </label>
+          </div>
+        </div>
+        <div class="pk-field">
+          <label>Email address</label>
+          <input class="pk-input" type="email" formControlName="email" placeholder="name@example.com" />
+        </div>
+        <div class="pk-field" style="margin-bottom:0">
+          <label>Temporary password</label>
+          <input class="pk-input" type="password" formControlName="password" placeholder="Set a password" />
+          <p style="font-size:12.5px;color:var(--text-3);margin-top:6px">The user will be asked to change this on first sign-in.</p>
+        </div>
+      </form>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="userForm.invalid" (click)="formValue.emit(userForm.value)">Create user</button>
+    </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [clrLoading]="btnState"
-      [disabled]="userForm?.invalid"
-      (click)="formValue.emit(userForm.value)"
-    >
-      Submit
-    </button>
-  </div>
-</clr-modal>
+</div>

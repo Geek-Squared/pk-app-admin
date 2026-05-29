@@ -1,58 +1,62 @@
-<div class="card-header text-center">Users</div>
-<br />
-
-<div class="workbooks-search">
-  <clr-input-container>
-    <label>Search</label>
-    <input
-      clrInput
-      type="text"
-      placeholder="Search email, name, or UID"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="applySearch()"
-    />
-  </clr-input-container>
+<div class="pk-page pk-fade-in">
+  <div class="pk-page-head"><h1>Workbooks</h1><p>Review client workbook responses and progress through the curriculum.</p></div>
+  <div class="pk-tb-search" style="width:320px;margin-bottom:20px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+    <input placeholder="Search by name or email…" [value]="searchTerm" (input)="onSearchTermChange($any($event.target).value)" />
+  </div>
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+  <div class="pk-tbl-wrap" *ngIf="!isLoading">
+    <table class="pk-tbl">
+      <thead><tr><th>User</th><th>Progress</th><th>Coins</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let user of pagedUsers">
+          <td>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span class="td-name">{{ user?.displayName || '—' }}</span>
+              <span class="muted" style="font-size:12px">{{ user?.email }}</span>
+            </div>
+          </td>
+          <td style="width:200px">
+            <ng-container *ngIf="getWorkbook(user?.uid) as wb; else noWb">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="flex:1;height:6px;background:var(--surface-3);border-radius:999px;overflow:hidden">
+                  <div style="height:100%;border-radius:999px;background:var(--accent);transition:width .3s" [style.width]="getProgress(user?.uid) + '%'"></div>
+                </div>
+                <span style="font-size:12.5px;font-weight:600;color:var(--text-2);width:36px;text-align:right">{{ getProgress(user?.uid) }}%</span>
+              </div>
+            </ng-container>
+            <ng-template #noWb><span class="muted">—</span></ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="getWorkbook(user?.uid) as wb">
+              <span style="font-size:13.5px;font-weight:600;color:var(--warn)">{{ wb?.coinBalance || 0 }} 🪙</span>
+            </ng-container>
+            <ng-container *ngIf="!getWorkbook(user?.uid)"><span class="muted">—</span></ng-container>
+          </td>
+          <td>
+            <ng-container *ngIf="getWorkbook(user?.uid) as wb">
+              <span class="pk-badge" [class.pk-badge-teal]="wb?.completed" [class.pk-badge-gray]="!wb?.completed">{{ wb?.completed ? 'Completed' : 'In progress' }}</span>
+            </ng-container>
+            <ng-container *ngIf="!getWorkbook(user?.uid)"><span class="pk-badge pk-badge-gray">No workbook</span></ng-container>
+          </td>
+          <td style="text-align:right">
+            <a class="pk-btn pk-btn-soft pk-btn-sm" routerLink="view-details/{{ user?.uid }}">View</a>
+          </td>
+        </tr>
+        <tr *ngIf="!pagedUsers?.length">
+          <td colspan="5" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No users found.' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface-2);border-top:1px solid var(--border);font-size:13px;color:var(--text-2)">
+      <span>{{ pageFrom }}–{{ pageTo }} of {{ filteredUsers.length }}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l-5-5 5-5M10 17l-5-5 5-5"/></svg></button>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = page - 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 18l-6-6 6-6"/></svg></button>
+        <span style="min-width:34px;height:32px;padding:0 8px;border-radius:var(--r-sm);background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px">{{ page }}</span>
+        <span style="color:var(--text-3)">/&nbsp;{{ totalPages }}</span>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page >= totalPages" (click)="page = page + 1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="text-center" *ngIf="isLoading">
-  <br /><br />
-  <clr-spinner clrMedium clrAssertive></clr-spinner>
-  <br /><br />
-</div>
-
-<div class="text-center" *ngIf="!isLoading && filteredUsers?.length === 0">
-  <clr-icon class="is-info" shape="search" size="48"></clr-icon><br /><br />
-  <span class="card-title"> No users match this search.</span>
-</div>
-
-<clr-datagrid *ngIf="!isLoading && filteredUsers?.length > 0">
-  <clr-dg-column [clrDgField]="'email'">Email</clr-dg-column>
-  <clr-dg-column [clrDgField]="'displayName'"> Display Name</clr-dg-column>
-  <clr-dg-column></clr-dg-column>
-
-  <clr-dg-row *clrDgItems="let user of filteredUsers">
-    <clr-dg-cell>{{ user?.email }}</clr-dg-cell>
-    <clr-dg-cell>{{ user?.displayName }}</clr-dg-cell>
-    <clr-dg-cell
-      ><button class="btn btn-sm" (click)="openWorkbook(user?.uid || user?.id)">
-        View Workbook
-      </button></clr-dg-cell
-    >
-  </clr-dg-row>
-
-  <clr-dg-footer>
-    {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-    {{ pagination.totalItems }} Users
-    <clr-dg-pagination
-      #pagination
-      [clrDgTotalItems]="filteredUsers?.length"
-    ></clr-dg-pagination
-  ></clr-dg-footer>
-</clr-datagrid>
-
-<app-view-workbook
-  *ngIf="isViewWorkbookOpen"
-  [isModal]="true"
-  [userUid]="selectedUserUid"
-  (close)="closeWorkbook()"
-></app-view-workbook>

@@ -1,57 +1,62 @@
-<clr-vertical-nav
-  [clrVerticalNavCollapsible]="true"
-  id="show_bg_2"
-  [clr-nav-level]="1"
->
-  <a
-    clrVerticalNavLink
-    [routerLink]="['/interventions']"
-    routerLinkActive="active"
-  >
-    <clr-icon clrVerticalNavIcon shape="file-group"></clr-icon>
-    Interventions
-  </a>
+<aside class="pk-sidebar">
 
-  <a
-    clrVerticalNavLink
-    [routerLink]="['/work-books']"
-    routerLinkActive="active"
-  >
-    <clr-icon clrVerticalNavIcon shape="library"></clr-icon>
-    Work Books
-  </a>
+  <!-- Collapse toggle -->
+  <button class="sb-collapse-btn" (click)="toggle.emit()" title="Collapse sidebar">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 17l-5-5 5-5M10 17l-5-5 5-5"/>
+    </svg>
+  </button>
 
-  <a clrVerticalNavLink [routerLink]="['/feedback']" routerLinkActive="active">
-    <clr-icon clrVerticalNavIcon shape="chat-bubble"></clr-icon>
-    FeedBack
-  </a>
+  <!-- Brand -->
+  <div class="sb-brand">
+    <img src="assets/images/logo.png" alt="Positive Konnections" class="sb-logo-img" />
+  </div>
 
-  <a clrVerticalNavLink [routerLink]="['/messages']" routerLinkActive="active">
-    <clr-icon clrVerticalNavIcon shape="envelope"></clr-icon>
-    Messages
-  </a>
+  <!-- Nav -->
+  <nav class="sb-nav">
+    <ng-container *ngFor="let section of nav">
+      <div class="sb-group-label">{{ section.group }}</div>
+      <ng-container *ngFor="let item of section.items">
+        <a class="pk-nav-item" [routerLink]="item.route" routerLinkActive="active" [title]="collapsed ? item.label : ''">
+          <span class="ni-ico">
+            <!-- layers -->
+            <svg *ngIf="item.icon === 'layers'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5ZM3 13l9 5 9-5M3 17.5l9 5 9-5"/></svg>
+            <!-- folder -->
+            <svg *ngIf="item.icon === 'folder'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18V7Z"/></svg>
+            <!-- bookOpen -->
+            <svg *ngIf="item.icon === 'bookOpen'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 4 5v13c4-.5 6.5 0 8 1.5 1.5-1.5 4-2 8-1.5V5c-4-.5-6.5 0-8 1.5ZM12 6.5V20"/></svg>
+            <!-- clipboard -->
+            <svg *ngIf="item.icon === 'clipboard'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1Z"/><path d="M8 4.5h8"/></svg>
+            <!-- mail -->
+            <svg *ngIf="item.icon === 'mail'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h18v11H3z"/><path d="M3 7l9 6 9-6"/></svg>
+            <!-- users -->
+            <svg *ngIf="item.icon === 'users'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 19v-1.5a3.5 3.5 0 0 0-2.6-3.4M15 4.1a3.5 3.5 0 0 1 0 6.8"/></svg>
+            <!-- share -->
+            <svg *ngIf="item.icon === 'share'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1ZM9 11h6M9 15h6"/></svg>
+            <!-- chat -->
+            <svg *ngIf="item.icon === 'chat'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.5-.6L3 21l1.3-4A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z"/></svg>
+            <!-- bell -->
+            <svg *ngIf="item.icon === 'bell'" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9ZM13.7 20a2 2 0 0 1-3.4 0"/></svg>
+          </span>
+          <span class="ni-label">{{ item.label }}</span>
+          <span class="ni-badge" *ngIf="item.route === '/messages' && messagesUnread > 0 && !collapsed">{{ messagesUnread }}</span>
+        </a>
+      </ng-container>
+    </ng-container>
+  </nav>
 
-  <a clrVerticalNavLink [routerLink]="['/referrals']" routerLinkActive="active">
-    <clr-icon clrVerticalNavIcon shape="book"></clr-icon>
-    Referrals
-  </a>
+  <!-- User foot -->
+  <div class="sb-foot">
+    <button class="sb-user" (click)="auth.logout()">
+      <span class="sb-avatar">{{ userInitials }}</span>
+      <span class="sb-user-meta">
+        <b>{{ userName }}</b>
+        <span>{{ userRole }}</span>
+      </span>
+      <span class="sb-user-caret">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg>
+      </span>
+    </button>
+  </div>
 
-  <a clrVerticalNavLink [routerLink]="['/users']" routerLinkActive="active">
-    <clr-icon clrVerticalNavIcon shape="book"></clr-icon>
-    Users
-  </a>
-
-  <a clrVerticalNavLink [routerLink]="['/surveys']" routerLinkActive="active">
-    <clr-icon clrVerticalNavIcon shape="book"></clr-icon>
-    Surveys
-  </a>
-
-  <a
-    clrVerticalNavLink
-    [routerLink]="['/notifications']"
-    routerLinkActive="active"
-  >
-    <clr-icon clrVerticalNavIcon shape="bell"></clr-icon>
-    Notifications
-  </a>
-</clr-vertical-nav>
+</aside>

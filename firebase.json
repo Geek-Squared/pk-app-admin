@@ -6,7 +6,7 @@
     ]
   },
   "hosting": {
-    "public": "dist\\positive-konnections-admin",
+    "public": "dist/positive-konnections-admin",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {

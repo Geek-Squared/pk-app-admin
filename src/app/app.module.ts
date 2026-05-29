@@ -7,7 +7,10 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import {
+  AngularFirestoreModule,
+  SETTINGS as FIRESTORE_SETTINGS,
+} from '@angular/fire/compat/firestore';
 import { AngularFireFunctionsModule } from '@angular/fire/compat/functions';
 import { environment } from 'src/environments/environment';
 import { PortalContainerComponent } from './components/portal-container/portal-container.component';
@@ -17,6 +20,8 @@ import { FeatureInterventionsModule } from './features/feature-interventions/fea
 import { FeatureReferralsModule } from './features/feature-referrals/feature-referrals.module';
 
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,8 +41,18 @@ import { HttpClientModule } from '@angular/common/http';
     FeatureInterventionsModule,
     FeatureReferralsModule,
     HttpClientModule,
+    FormsModule,
+    RouterModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: FIRESTORE_SETTINGS,
+      useValue: {
+        experimentalForceLongPolling: true,
+        useFetchStreams: false,
+      },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

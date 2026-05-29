@@ -1,26 +1,45 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">Create Group Chat</h3>
-  <div class="modal-body">
-    <form clrForm [formGroup]="groupChatForm" clrLayout="vertical">
-      <clr-input-container>
-        <label>Display Name</label>
-        <input clrInput type="text" formControlName="displayName" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-    </form>
+<div class="pk-overlay">
+  <div class="pk-modal" style="max-width:520px" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>Create group chat</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <p>Select a name and add members. The group will appear on all members' mobile apps.</p>
+    </div>
+    <div class="pk-modal-body">
+      <form [formGroup]="groupChatForm">
+        <div class="pk-field">
+          <label>Group name</label>
+          <input class="pk-input" type="text" formControlName="displayName" placeholder="e.g. Support Group A" />
+        </div>
+      </form>
+      <div style="margin-top:4px">
+        <p style="font-size:13px;font-weight:600;color:var(--text);margin:0 0 10px">Add members</p>
+        <div class="pk-chat-empty" *ngIf="isLoadingUsers" style="padding:20px">
+          <clr-spinner clrSmall></clr-spinner>
+        </div>
+        <div *ngIf="!isLoadingUsers" style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r-md)">
+          <label *ngFor="let user of users" style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer"
+            [style.background]="isSelected(user.id) ? 'var(--primary-50)' : ''">
+            <input type="checkbox" [checked]="isSelected(user.id)" (change)="toggleUser(user.id)" style="accent-color:var(--primary);width:16px;height:16px;flex:none" />
+            <span class="pk-avatar" style="width:32px;height:32px;font-size:12px;background:var(--primary)">{{ user?.displayName?.substring(0,1)?.toUpperCase() || '?' }}</span>
+            <span style="flex:1;min-width:0">
+              <span style="font-weight:600;font-size:13.5px">{{ user?.displayName || user?.email }}</span>
+              <span class="pk-badge pk-badge-gray" style="margin-left:8px">{{ user?.role }}</span>
+            </span>
+          </label>
+        </div>
+        <p *ngIf="selectedUids.length > 0" style="font-size:12.5px;color:var(--primary);font-weight:600;margin:8px 0 0">
+          {{ selectedUids.length }} member(s) selected
+        </p>
+      </div>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="groupChatForm.invalid" (click)="onSubmit()">Create group</button>
+    </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [clrLoading]="btnState"
-      (click)="onSubmit()"
-    >
-      Submit
-    </button>
-  </div>
-</clr-modal>
+</div>

@@ -1,79 +1,60 @@
-<ng-template #workbookContent>
-  <div class="text-center" *ngIf="isLoading">
-    <br /><br />
-    <clr-spinner clrMedium clrAssertive></clr-spinner>
-    <br /><br />
+<div class="pk-page pk-fade-in">
+  <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-3);margin-bottom:18px">
+    <a routerLink="/work-books" style="color:var(--text-3);text-decoration:none;font-weight:500">Workbooks</a>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+    <span style="color:var(--text);font-weight:600">{{ user?.displayName || user?.email || 'Workbook' }}</span>
   </div>
 
-  <ng-container *ngIf="!isLoading">
-    <div class="clr-row" *ngIf="workbook?.length > 0; else emptyState">
-      <div class="clr-col-12 clr-col-md-4" style="border-right: 1px solid #ddd; max-height: 70vh; overflow-y: auto;">
-        <app-workbooks-posts-list
-          [postIds]="uniquePosts"
-          [posts]="posts"
-          [chapters]="chapters"
-          [activePostId]="currentPostId"
-          (viewSelected)="getSelectedWorkBookItem($event)"
-        ></app-workbooks-posts-list>
+  <div class="pk-row between" style="align-items:flex-start;gap:16px;margin-bottom:26px">
+    <div style="display:flex;align-items:center;gap:16px;min-width:0">
+      <span class="pk-avatar" style="width:56px;height:56px;font-size:20px;background:var(--primary)">{{ initials }}</span>
+      <div style="min-width:0">
+        <h1 style="margin:0">{{ user?.displayName || 'Client' }}</h1>
+        <p style="margin:4px 0 0;color:var(--text-3)">{{ user?.email }}</p>
       </div>
+    </div>
+    <button class="pk-btn pk-btn-outline" (click)="messageClient()" [disabled]="isOpeningChat">
+      <clr-spinner *ngIf="isOpeningChat" clrInline clrSmall></clr-spinner>
+      <svg *ngIf="!isOpeningChat" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/><path d="m4 6 8 6 8-6"/></svg>
+      {{ isOpeningChat ? 'Opening…' : 'Message client' }}
+    </button>
+  </div>
 
-      <div class="clr-col-12 clr-col-md-8">
-        <div *ngIf="isViewDetails; else selectPrompt" style="max-height: 70vh; overflow-y: auto;">
-          <app-workbook-details
-            [item]="selectedWorkBookItem"
-            [posts]="posts"
-            [chapters]="chapters"
-            [showFooter]="false"
-            [postId]="currentPostId"
-          ></app-workbook-details>
-        </div>
-        <ng-template #selectPrompt>
-          <div class="text-center" style="margin-top: 4rem;">
-            <clr-icon shape="cursor-arrow" size="64"></clr-icon>
-            <br /><br />
-            <span class="card-title">Select an item from the list to view details</span>
-          </div>
-        </ng-template>
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="pk-wb-stats">
+      <div class="pk-card pad pk-wb-stat">
+        <span class="pk-wb-stat-label">Curriculum progress</span>
+        <span class="pk-wb-stat-value">{{ curriculumProgress }}%</span>
+      </div>
+      <div class="pk-card pad pk-wb-stat">
+        <span class="pk-wb-stat-label">Chapters completed</span>
+        <span class="pk-wb-stat-value">{{ chaptersCompleted }} <span class="muted">/ {{ totalChapters }}</span></span>
+      </div>
+      <div class="pk-card pad pk-wb-stat">
+        <span class="pk-wb-stat-label">Reflections written</span>
+        <span class="pk-wb-stat-value">{{ reflectionsWritten }}</span>
       </div>
     </div>
 
-    <ng-template #emptyState>
-      <div class="text-center">
-        <clr-icon class="is-info" shape="search" size="72"></clr-icon
-        ><br /><br />
-        <span class="card-title"> This workbook is still empty!</span>
+    <ng-container *ngIf="reflectionGroups.length > 0; else emptyWb">
+      <section *ngFor="let group of reflectionGroups" style="margin-top:30px">
+        <h3 class="pk-section-title" style="margin:0 0 16px">{{ group.chapterTitle }} · Reflection responses</h3>
+        <div class="pk-card">
+          <div class="pk-wb-qa" *ngFor="let item of group.items; let i = index">
+            <p class="pk-wb-q"><span class="pk-wb-q-num">{{ i + 1 }}.</span> {{ item.question }}</p>
+            <div class="pk-wb-answer">{{ item.answer }}</div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+
+    <ng-template #emptyWb>
+      <div class="pk-chat-empty" style="margin-top:30px">
+        <h3>Empty workbook</h3>
+        <p>This client hasn't submitted any workbook responses yet.</p>
       </div>
     </ng-template>
-    <br /><br />
   </ng-container>
-</ng-template>
-
-<ng-container *ngIf="!isModal">
-  <div class="card-header">Workbooks</div>
-  <br />
-  <button class="btn btn-sm btn-link" type="button" (click)="goBack()">
-    &larr; Back
-  </button>
-  <br /><br />
-  <a routerLink="/work-books">Workbooks List </a>
-  <strong style="font-size: 1.4em"> / </strong> <span>Workbook Details</span>
-  <br />
-  <ng-container *ngTemplateOutlet="workbookContent"></ng-container>
-</ng-container>
-
-<clr-modal
-  *ngIf="isModal"
-  [(clrModalOpen)]="isModal"
-  [clrModalClosable]="false"
-  clrModalSize="xl"
->
-  <h3 class="modal-title">Workbook Details</h3>
-  <div class="modal-body">
-    <ng-container *ngTemplateOutlet="workbookContent"></ng-container>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="close.emit()">
-      Close
-    </button>
-  </div>
-</clr-modal>
+</div>

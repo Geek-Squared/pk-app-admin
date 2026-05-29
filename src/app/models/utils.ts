@@ -1,12 +1,10 @@
-import { Ng2IzitoastService } from 'ng2-izitoast';
+import iziToast from 'izitoast';
 import { ClrDatagridStateInterface } from '@clr/angular';
 
 export class Utilities {
   constructor() {}
 
   static displayToast(type: string, message?: string) {
-    const iziToast = new Ng2IzitoastService();
-
     switch (type) {
       case 'success':
         iziToast.success({
@@ -16,7 +14,7 @@ export class Utilities {
               ? 'Operation completed successfully'
               : message,
           position: 'center',
-          zindex: '99999',
+          zindex: 99999,
         });
         break;
 
@@ -28,7 +26,7 @@ export class Utilities {
               ? 'Something went wrong. Please try again'
               : message,
           position: 'center',
-          zindex: '99999',
+          zindex: 99999,
         });
         break;
 
@@ -38,7 +36,7 @@ export class Utilities {
           message:
             message === undefined ? 'You forgot important data' : message,
           position: 'center',
-          zindex: '99999',
+          zindex: 99999,
         });
         break;
 
@@ -47,7 +45,7 @@ export class Utilities {
           title: 'Info',
           message: message === undefined ? '' : message,
           position: 'center',
-          zindex: '99999',
+          zindex: 99999,
         });
         break;
     }

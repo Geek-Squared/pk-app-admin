@@ -1,9 +1,9 @@
-<clr-main-container>
-  <app-header></app-header>
-  <div class="content-container">
-    <app-sidenav></app-sidenav>
-    <main class="content-area">
+<div class="pk-app" [class.collapsed]="collapsed">
+  <app-sidenav [collapsed]="collapsed" (toggle)="collapsed = !collapsed"></app-sidenav>
+  <div class="pk-main">
+    <app-header></app-header>
+    <div class="pk-content">
       <router-outlet></router-outlet>
-    </main>
+    </div>
   </div>
-</clr-main-container>
+</div>

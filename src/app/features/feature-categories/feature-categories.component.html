@@ -1,52 +1,48 @@
-<div class="card-header">Categories</div>
-<br />
+<div style="margin-top:28px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+    <h3 class="pk-section-title" style="margin:0">Categories</h3>
+    <button class="pk-btn pk-btn-primary pk-btn-sm" (click)="isCreate = true">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      Add category
+    </button>
+  </div>
 
-<div class="text-center" *ngIf="isLoading">
-  <br /><br />
-  <clr-spinner clrMedium clrAssertive></clr-spinner>
-  <br /><br />
-</div>
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrSmall clrAssertive></clr-spinner></div>
 
-<ng-container *ngIf="!isLoading">
-  <clr-button-group>
-    <clr-button class="btn btn-sm" (click)="isCreate = true">
-      <clr-icon shape="plus"></clr-icon>&nbsp;Create Category
-    </clr-button>
-  </clr-button-group>
-  <br />
-
-  <ng-container *ngIf="categories?.length > 0">
-    <div class="clr-row">
-      <div
-        class="clr-col-lg-4 clr-col-12"
-        *ngFor="let category of categories; let i = index"
-      >
-        <a
-          class="card clickable text-center"
-          routerLink="./view-category/{{ category.id }}"
-        >
-          <div class="card-block">
-            <clr-icon
-              shape="grid-view"
-              class="is-solid is-info"
-              size="72"
-            ></clr-icon>
-            <p class="card-title">{{ category?.name }}</p>
-          </div>
-        </a>
-      </div>
+  <ng-container *ngIf="!isLoading">
+    <div class="pk-grid-cards" *ngIf="categories?.length > 0">
+      <a class="pk-tile" *ngFor="let category of categories; let i = index"
+        routerLink="./view-category/{{ category.id }}">
+        <button class="pk-tile-menu-btn" type="button" (click)="toggleMenu($event, category)" aria-label="More actions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+        </button>
+        <div class="pk-tile-menu" *ngIf="openMenuId === category.id" (click)="$event.stopPropagation()">
+          <button type="button" (click)="editCategory($event, category)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+            Edit
+          </button>
+          <button type="button" class="danger" (click)="deleteCategory($event, category)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
+            Delete
+          </button>
+        </div>
+        <div class="pk-tile-ico" [class.teal]="i % 2 === 0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18V7Z"/></svg>
+        </div>
+        <h3>{{ category?.name }}</h3>
+        <div class="pk-tile-meta">
+          <span class="pk-badge pk-badge-blue" *ngIf="interventionName(category?.interventionId)">{{ interventionName(category?.interventionId) }}</span>
+          <span class="pk-badge pk-badge-gray" *ngIf="!interventionName(category?.interventionId)">Unassigned</span>
+        </div>
+      </a>
+    </div>
+    <div class="pk-chat-empty" *ngIf="!categories?.length">
+      <h3>No categories yet</h3>
+      <p>Add a category to organise chapters within this intervention.</p>
+      <button class="pk-btn pk-btn-primary pk-btn-sm" (click)="isCreate = true">Add category</button>
     </div>
   </ng-container>
-
-  <div class="text-center" *ngIf="categories?.length < 1">
-    <clr-icon class="is-info" shape="search" size="72"></clr-icon><br /><br />
-    <span class="card-title"> No Categories Found!</span>
-  </div>
-  <br /><br />
-</ng-container>
-
-<app-create-category
-  *ngIf="isCreate"
-  [interventionId]="interventionId"
-  (closeModal)="isCreate = false"
-></app-create-category>
+</div>
+<app-create-category *ngIf="isCreate" [interventionId]="interventionId" (closeModal)="isCreate = false"></app-create-category>
+<app-update-category *ngIf="isUpdate" [category]="selectedCategory" (closeModal)="isUpdate = false"></app-update-category>
+<app-delete-category *ngIf="isDelete" [categoryId]="selectedCategory?.id" (closeModal)="isDelete = false"></app-delete-category>

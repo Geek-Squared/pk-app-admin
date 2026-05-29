@@ -72,10 +72,7 @@ export class ChaptersService {
           );
         });
 
-        batch.commit().then(
-          (res) => console.log('Batch completed!'),
-          (err) => console.error(err)
-        );
+        batch.commit().catch(() => undefined);
       });
   }
 }

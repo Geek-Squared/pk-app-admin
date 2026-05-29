@@ -1,0 +1,7 @@
+<app-action-confirmation-form
+  (proceed)="onSubmit()"
+  (closeModal)="closeModal.emit(false)"
+>
+  <span class="action-header">Delete Intervention</span>
+  <span class="action-message">Are you sure you want to delete this intervention? This cannot be undone.</span>
+</app-action-confirmation-form>

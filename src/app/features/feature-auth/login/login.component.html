@@ -1,15 +1,70 @@
-<div class="login-wrapper">
-  <div class="login">
-    <div class="text-center">
-      <span>
-        <img class="img-logo" src="assets/images/logo.png" />
-      </span>
-      <br />
-      <section class="title">
-        <h3 class="welcome">Enter your details below to continue</h3>
-      </section>
+<div class="pk-login">
+
+  <!-- Left aside -->
+  <div class="pk-login-aside">
+    <svg class="pk-la-orbs" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+      <circle cx="120" cy="120" r="220" fill="#fff" opacity=".05"/>
+      <circle cx="520" cy="640" r="280" fill="#fff" opacity=".05"/>
+      <circle cx="480" cy="80"  r="90"  fill="#fff" opacity=".06"/>
+    </svg>
+
+    <div class="pk-la-brand">
+      <img src="assets/images/logo.png" alt="Positive Konnections" style="height:52px;width:auto;object-fit:contain;filter:brightness(0) invert(1)" />
     </div>
 
-    <app-login-form (formValue)="onSubmit($event)"></app-login-form>
+    <div class="pk-la-quote">
+      <h2>A calm, trusted space for the people who care for our community.</h2>
+      <p>Manage the therapeutic curriculum, stay close to your clients, and keep the programme running with warmth and confidence.</p>
+    </div>
+
+    <div class="pk-la-foot">Supporting young people living positively · Harare, Zimbabwe</div>
   </div>
+
+  <!-- Right form -->
+  <div class="pk-login-main">
+    <form class="pk-login-card pk-fade-in" (ngSubmit)="onSubmit()">
+      <div class="lc-eyebrow">Welcome back</div>
+      <h1>Sign in</h1>
+      <p class="lc-sub">Enter your administrator or counsellor credentials to continue.</p>
+
+      <div class="pk-field">
+        <label>Email address</label>
+        <input class="pk-input" type="email" [(ngModel)]="email" name="email"
+          placeholder="you@positivekonnections.org" autocomplete="email" />
+      </div>
+
+      <div class="pk-field">
+        <label>Password</label>
+        <div class="pk-input-wrap">
+          <input class="pk-input" [type]="showPw ? 'text' : 'password'" [(ngModel)]="password" name="password"
+            placeholder="Your password" style="padding-right: 44px" autocomplete="current-password" />
+          <button type="button" class="pi-ico" (click)="showPw = !showPw" tabindex="-1">
+            <svg *ngIf="!showPw" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg *ngIf="showPw" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.9 5.2A9.7 9.7 0 0 1 12 5c6 0 9.5 7 9.5 7a16 16 0 0 1-2.3 3.2M6.6 6.7A16 16 0 0 0 2.5 12S6 19 12 19a9.4 9.4 0 0 0 4-.9M3 3l18 18M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="lc-opts">
+        <label>
+          <input type="checkbox" style="accent-color: var(--primary)" /> Remember me
+        </label>
+        <a routerLink="/auth/reset-password">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="pk-btn pk-btn-primary pk-btn-lg pk-btn-block" [disabled]="loading || !email || !password">
+        <span>{{ loading ? 'Signing in...' : 'Sign in' }}</span>
+        <svg *ngIf="!loading" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </button>
+
+      <p class="lc-alt">Need access? <a href="#">Contact your programme administrator</a></p>
+    </form>
+  </div>
+
 </div>

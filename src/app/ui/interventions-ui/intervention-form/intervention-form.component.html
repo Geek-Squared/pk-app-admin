@@ -1,32 +1,54 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">{{ title }}</h3>
-  <div class="modal-body">
-    <form clrForm [formGroup]="interventionForm" clrLayout="vertical">
-      <clr-input-container>
-        <label>Name</label>
-        <input clrInput type="text" formControlName="name" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
+<div class="pk-overlay">
+  <div class="pk-modal" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>{{ title }}</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="pk-modal-body">
+      <form [formGroup]="interventionForm">
+        <div class="pk-field">
+          <label>Name</label>
+          <input class="pk-input" type="text" formControlName="name" placeholder="Intervention name" />
+        </div>
+        <div class="pk-field">
+          <label>Order</label>
+          <input class="pk-input" type="number" formControlName="order" placeholder="Display order" />
+        </div>
+        <div class="pk-field" [style.margin-bottom]="isRestricted ? '16px' : '0'">
+          <label>Visibility</label>
+          <select class="pk-input" formControlName="visibility">
+            <option value="all">Everyone</option>
+            <option value="restricted">Specific people (testing)</option>
+          </select>
+        </div>
 
-      <clr-input-container>
-        <label>Order</label>
-        <input clrInput type="number" formControlName="order" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-    </form>
+        <div *ngIf="isRestricted" class="pk-field" style="margin-bottom:0">
+          <label>Who can see this intervention</label>
+          <div class="pk-tb-search" style="margin-bottom:10px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+            <input placeholder="Search people by name, email or role…" [(ngModel)]="userSearch" [ngModelOptions]="{standalone:true}" />
+          </div>
+          <div class="pk-user-picker">
+            <label class="pk-user-row" *ngFor="let u of filteredUsers">
+              <input type="checkbox" [checked]="isSelected(u.id)" (change)="toggleUser(u.id)" />
+              <span class="pk-user-row-body">
+                <span class="pk-user-row-name">{{ u?.displayName || '—' }}</span>
+                <span class="pk-user-row-sub">{{ u?.email }}<span *ngIf="u?.role"> · {{ u?.role }}</span></span>
+              </span>
+            </label>
+            <div *ngIf="!filteredUsers.length" class="pk-user-empty">No people match “{{ userSearch }}”.</div>
+          </div>
+          <p class="pk-user-count">{{ selectedUserIds.size }} selected</p>
+        </div>
+      </form>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="!canSave" (click)="submit()">Save</button>
+    </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [clrLoading]="btnState"
-      (click)="formValue.emit(interventionForm.value)"
-    >
-      Submit
-    </button>
-  </div>
-</clr-modal>
+</div>

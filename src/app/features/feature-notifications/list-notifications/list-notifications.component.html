@@ -1,42 +1,101 @@
-<div class="card-header text-center">Admin Notifications</div>
-<br />
+<div class="pk-page pk-fade-in">
+  <div class="pk-page-head pk-row between">
+    <div>
+      <h1>Notifications</h1>
+      <p>Send broadcasts to clients and review the programme’s notification log.</p>
+    </div>
+    <button class="pk-btn pk-btn-primary" (click)="openModal()">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a1 1 0 0 0 1 1h2l8 4V6L6 10H4a1 1 0 0 0-1 1ZM18 8a4 4 0 0 1 0 8M14 6v12"/></svg>
+      Send notification
+    </button>
+  </div>
 
-<br />
+  <!-- History -->
+  <div class="pk-tb-search" style="width:320px;margin-bottom:16px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+    <input placeholder="Search by title, message or type…" [value]="searchTerm" (input)="onSearchTermChange($any($event.target).value)" />
+  </div>
 
-<div class="text-center" *ngIf="isLoading">
-  <br /><br />
-  <clr-spinner clrMedium clrAssertive></clr-spinner>
-  <br /><br />
+  <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+
+  <div class="pk-tbl-wrap" *ngIf="!isLoading">
+    <table class="pk-tbl">
+      <thead><tr><th>Type</th><th>Title</th><th>Message</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of pagedNotifications" (click)="openNotification(item)"
+            [style.cursor]="isNavigable(item) ? 'pointer' : 'default'"
+            [title]="isNavigable(item) ? 'View this client’s workbook answers' : ''">
+          <td><span class="pk-badge" [class.pk-badge-teal]="item?.type === 'workbook_completed'" [class.pk-badge-warn]="item?.type === 'chapter_completed'" [class.pk-badge-blue]="item?.type !== 'workbook_completed' && item?.type !== 'chapter_completed'">{{ item?.type }}</span></td>
+          <td class="td-name">{{ item?.title }}</td>
+          <td class="muted">{{ item?.message }}</td>
+          <td class="muted">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span>{{ item?.createdAt?.toDate ? (item?.createdAt?.toDate() | date:'d MMM y') : (item?.createdAt | date:'d MMM y') }}</span>
+              <svg *ngIf="isNavigable(item)" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!pagedNotifications?.length">
+          <td colspan="4" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No notifications yet.' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface-2);border-top:1px solid var(--border);font-size:13px;color:var(--text-2)">
+      <span>{{ pageFrom }}–{{ pageTo }} of {{ filteredNotifications.length }}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = 1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l-5-5 5-5M10 17l-5-5 5-5"/></svg>
+        </button>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page <= 1" (click)="page = page - 1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 18l-6-6 6-6"/></svg>
+        </button>
+        <span style="min-width:34px;height:32px;padding:0 8px;border-radius:var(--r-sm);background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px">{{ page }}</span>
+        <span style="color:var(--text-3)">/&nbsp;{{ totalPages }}</span>
+        <button class="pk-icon-btn" style="width:32px;height:32px;border-radius:var(--r-sm)" [disabled]="page >= totalPages" (click)="page = page + 1">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<clr-datagrid *ngIf="!isLoading">
-  <clr-dg-column>Type</clr-dg-column>
-  <clr-dg-column>Title</clr-dg-column>
-  <clr-dg-column>Message</clr-dg-column>
-  <clr-dg-column>User</clr-dg-column>
-  <clr-dg-column>Workbook</clr-dg-column>
-  <clr-dg-column>Created</clr-dg-column>
-
-  <clr-dg-row
-    *clrDgItems="let item of notifications"
-    class="notification-row"
-    [class.notification-read]="isRead(item)"
-    (click)="handleNotificationClick(item)"
-  >
-    <clr-dg-cell>{{ item?.type }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.title }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.message }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.userId }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.workbookId }}</clr-dg-cell>
-    <clr-dg-cell>{{ item?.createdAt?.toDate ? (item?.createdAt?.toDate() | date:'medium') : (item?.createdAt | date:'medium') }}</clr-dg-cell>
-  </clr-dg-row>
-
-  <clr-dg-footer>
-    {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
-    {{ notifications?.length }} Notifications
-    <clr-dg-pagination
-      #pagination
-      [clrDgTotalItems]="notifications?.length"
-    ></clr-dg-pagination>
-  </clr-dg-footer>
-</clr-datagrid>
+<!-- Send notification modal -->
+<div class="pk-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="pk-modal" style="max-width:560px" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>Send notification</h2>
+        <button class="pk-icon-btn" (click)="closeModal()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <p>Compose a push notification for your community.</p>
+    </div>
+    <div class="pk-modal-body">
+      <div class="pk-field">
+        <label>Audience</label>
+        <div class="pk-seg">
+          <button [class.on]="target === 'all'" (click)="target = 'all'">All users</button>
+          <button [class.on]="target === 'clients'" (click)="target = 'clients'">Clients only</button>
+          <button [class.on]="target === 'group'" (click)="target = 'group'">Targeted</button>
+        </div>
+      </div>
+      <div class="pk-field">
+        <label>Title</label>
+        <input class="pk-input" type="text" [(ngModel)]="broadcastTitle" placeholder="e.g. Weekly check-in reminder" />
+      </div>
+      <div class="pk-field" style="margin-bottom:0">
+        <label>Message</label>
+        <textarea class="pk-textarea" [(ngModel)]="broadcastBody" placeholder="Write a warm, encouraging message…" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" (click)="sendBroadcast()" [disabled]="!broadcastTitle.trim() || !broadcastBody.trim() || isBroadcasting">
+        <clr-spinner *ngIf="isBroadcasting" clrSmall></clr-spinner>
+        <svg *ngIf="!isBroadcasting" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 13 21 3M21 3l-6.5 18-3.5-8L3 9.5 21 3Z"/></svg>
+        {{ isBroadcasting ? 'Sending…' : 'Send notification' }}
+      </button>
+    </div>
+  </div>
+</div>

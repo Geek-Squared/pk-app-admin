@@ -1,52 +1,91 @@
-<div class="card-header">Messaging</div>
-<br />
+<div class="pk-msg-layout">
 
-<div class="login" *ngIf="auth.user">
-  <h3>All Messages</h3>
-  <br />
-  <button class="btn btn-sm btn-primary" (click)="isCreateGroup = true">
-    Create Group Chat
-  </button>
-  <div class="clr-row" style="margin-top: 0.75rem;">
-    <div class="clr-col-12 clr-col-md-4">
-      <clr-input-container>
-        <label>Search Messages</label>
-        <input
-          clrInput
-          type="text"
-          placeholder="Name or message text"
-          [value]="searchTerm"
-          (input)="onSearchTermChange($any($event.target).value)"
-        />
-      </clr-input-container>
+  <!-- Thread list (left) -->
+  <div class="pk-msg-list">
+    <div class="pk-msg-list-head">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h2>Messages</h2>
+        <button *ngIf="canCreateGroup" class="pk-btn pk-btn-outline pk-btn-sm" (click)="isCreateGroup = true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          New group
+        </button>
+      </div>
+
+      <div class="pk-tb-search" style="width:100%">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-4-4"/></svg>
+        <input placeholder="Search name or message…" [(ngModel)]="searchTerm" />
+      </div>
+
+      <div class="pk-msg-tabs">
+        <button class="pk-msg-tab" [class.active]="activeTab === 'direct'" (click)="activeTab = 'direct'">Direct</button>
+        <button class="pk-msg-tab" [class.active]="activeTab === 'groups'" (click)="activeTab = 'groups'">Group chats</button>
+      </div>
+    </div>
+
+    <div class="pk-msg-scroll">
+      <ng-container *ngIf="!isLoading; else loadingTpl">
+
+        <!-- Direct -->
+        <ng-container *ngIf="activeTab === 'direct'">
+          <ng-container *ngIf="filteredIndividual.length > 0; else emptyDirect">
+            <button class="pk-thread-item" *ngFor="let chat of filteredIndividual; let i = index"
+              (click)="openChat(chat.id)" routerLinkActive="active"
+              [routerLinkActiveOptions]="{exact:false}">
+              <span class="pk-avatar" [style.background]="getAvatarColor(i)" style="width:40px;height:40px;font-size:15px">
+                {{ getInitials(chatName(chat)) }}
+              </span>
+              <div class="pk-ti-body">
+                <div class="pk-ti-top">
+                  <span class="pk-ti-name">{{ chatName(chat) }}</span>
+                  <span class="pk-ti-time">{{ lastMessageTime(chat) }}</span>
+                </div>
+                <div class="pk-ti-top">
+                  <span class="pk-ti-prev">{{ getLastMessage(chat) }}</span>
+                  <span class="pk-ti-unread" *ngIf="unreadCount(chat) > 0">{{ unreadCount(chat) }}</span>
+                </div>
+              </div>
+            </button>
+          </ng-container>
+          <ng-template #emptyDirect>
+            <div class="pk-chat-empty"><p>No individual chats found.</p></div>
+          </ng-template>
+        </ng-container>
+
+        <!-- Groups -->
+        <ng-container *ngIf="activeTab === 'groups'">
+          <ng-container *ngIf="filteredGroups.length > 0; else emptyGroups">
+            <button class="pk-thread-item" *ngFor="let chat of filteredGroups"
+              (click)="openGroup(chat.id)">
+              <span class="pk-avatar sq" style="background:var(--primary-700);width:40px;height:40px;font-size:14px">
+                {{ getInitials(chat?.displayName) }}
+              </span>
+              <div class="pk-ti-body">
+                <div class="pk-ti-top">
+                  <span class="pk-ti-name">{{ chat?.displayName }}</span>
+                  <span class="pk-ti-time">{{ chat?.uids?.length || 0 }} members</span>
+                </div>
+                <div class="pk-ti-prev">{{ getLastMessage(chat) }}</div>
+              </div>
+            </button>
+          </ng-container>
+          <ng-template #emptyGroups>
+            <div class="pk-chat-empty">
+              <p>No group chats yet.</p>
+              <button *ngIf="canCreateGroup" class="pk-btn pk-btn-outline pk-btn-sm" (click)="isCreateGroup = true">Create one</button>
+            </div>
+          </ng-template>
+        </ng-container>
+
+      </ng-container>
+      <ng-template #loadingTpl>
+        <div class="pk-chat-empty"><clr-spinner clrSmall clrAssertive></clr-spinner></div>
+      </ng-template>
     </div>
   </div>
 
-  <div class="chat">
-    <ng-container *ngIf="!isLoading; else loading">
-      <div class="msg" *ngFor="let chat of filteredChats">
-        <div class="user">
-          <span
-            id="profileImage"
-            [innerHTML]="getInitials(chat?.displayName)"
-          ></span>
-        </div>
-        <a routerLink="chats/{{ chat?.id }}"
-          >{{ chat?.displayName }} - {{ chat?.messages?.length }} Messages</a
-        >
-      </div>
-    </ng-container>
+  <!-- Chat pane (right) - nested router-outlet -->
+  <router-outlet></router-outlet>
 
-    <ng-template #loading>
-      <div class="text-center">
-        <br /><br />
-        <clr-spinner clrMedium clrAssertive></clr-spinner>
-        <br /><br /></div
-    ></ng-template>
-  </div>
 </div>
 
-<app-create-group-chat
-  *ngIf="isCreateGroup"
-  (closeModal)="isCreateGroup = false"
-></app-create-group-chat>
+<app-create-group-chat *ngIf="isCreateGroup" (closeModal)="isCreateGroup = false"></app-create-group-chat>

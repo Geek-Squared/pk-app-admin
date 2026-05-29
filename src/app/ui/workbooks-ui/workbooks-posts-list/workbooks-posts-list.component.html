@@ -1,16 +1,9 @@
-<div class="workbook-sidebar">
-  <div
-    class="sidebar-item"
-    *ngFor="let postId of postIds; let i = index"
-    [class.active]="postId === activePostId"
-    (click)="viewSelected.emit(postId)"
-  >
-    <div class="sidebar-item-content">
-      <clr-icon shape="book"></clr-icon>
-      <div class="sidebar-text">
-        <span class="chapter-label">{{ getDetails(postId)?.chapterTitle }}</span>
-        <span class="post-label">{{ getDetails(postId)?.postTitle }}</span>
-      </div>
+<div class="pk-grid-cards">
+  <button class="pk-tile" *ngFor="let postId of postIds" (click)="viewSelected.emit(postId)">
+    <div class="pk-tile-ico teal">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 4 5v13c4-.5 6.5 0 8 1.5 1.5-1.5 4-2 8-1.5V5c-4-.5-6.5 0-8 1.5ZM12 6.5V20"/></svg>
     </div>
-  </div>
+    <h3 style="font-size:14px">{{ getDetails(postId)?.chapterTitle }}</h3>
+    <div class="pk-tile-meta">{{ getDetails(postId)?.postTitle }}</div>
+  </button>
 </div>

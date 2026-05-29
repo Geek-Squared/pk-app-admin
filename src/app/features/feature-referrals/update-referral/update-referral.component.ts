@@ -16,9 +16,7 @@ export class UpdateReferralComponent implements OnInit {
 
   constructor(private referralsService: ReferralsService) {}
 
-  ngOnInit(): void {
-    console.log(this.referral);
-  }
+  ngOnInit(): void {}
 
   onSubmit(referral: Referral) {
     this.buttonState = ClrLoadingState.LOADING;

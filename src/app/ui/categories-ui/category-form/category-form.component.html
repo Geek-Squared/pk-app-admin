@@ -1,32 +1,35 @@
-<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">
-  <h3 class="modal-title">{{ title }}</h3>
-  <div class="modal-body">
-    <form clrForm [formGroup]="categoryForm" clrLayout="vertical">
-      <clr-input-container>
-        <label>Name</label>
-        <input clrInput type="text" formControlName="name" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-
-      <clr-input-container>
-        <label>Order</label>
-        <input clrInput type="number" formControlName="order" size="45" />
-        <clr-control-error>Field is required</clr-control-error>
-      </clr-input-container>
-    </form>
+<div class="pk-overlay">
+  <div class="pk-modal" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>{{ title }}</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="pk-modal-body">
+      <form [formGroup]="categoryForm">
+        <div class="pk-field">
+          <label>Name</label>
+          <input class="pk-input" type="text" formControlName="name" placeholder="Category name" />
+        </div>
+        <div class="pk-field">
+          <label>Intervention</label>
+          <select class="pk-input" formControlName="interventionId">
+            <option value="" disabled>Select an intervention…</option>
+            <option *ngFor="let intervention of interventions" [value]="intervention.id">{{ intervention.name }}</option>
+          </select>
+        </div>
+        <div class="pk-field" style="margin-bottom:0">
+          <label>Order</label>
+          <input class="pk-input" type="number" formControlName="order" placeholder="Display order" />
+        </div>
+      </form>
+    </div>
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="categoryForm.invalid" (click)="formValue.emit(categoryForm.value)">Save</button>
+    </div>
   </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="closeModal.emit()">
-      Cancel
-    </button>
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [clrLoading]="btnState"
-      (click)="formValue.emit(categoryForm.value)"
-    >
-      Submit
-    </button>
-  </div>
-</clr-modal>
+</div>

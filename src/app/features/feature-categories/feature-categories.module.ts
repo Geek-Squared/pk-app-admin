@@ -5,10 +5,12 @@ import { FeatureCategoriesRoutingModule } from './feature-categories-routing.mod
 import { FeatureCategoriesComponent } from './feature-categories.component';
 import { CreateCategoryComponent } from './create-category/create-category.component';
 import { UpdateCategoryComponent } from './update-category/update-category.component';
+import { DeleteCategoryComponent } from './delete-category/delete-category.component';
 import { ViewCategoryComponent } from './view-category/view-category.component';
 import { FeatureInterventionsModule } from '../feature-interventions/feature-interventions.module';
 import { ClarityModule } from '@clr/angular';
 import { CategoriesUiModule } from '../../ui/categories-ui/categories-ui.module';
+import { SharedUiModule } from '../../ui/shared-ui/shared-ui.module';
 import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.module';
 
 @NgModule({
@@ -16,6 +18,7 @@ import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.modu
     FeatureCategoriesComponent,
     CreateCategoryComponent,
     UpdateCategoryComponent,
+    DeleteCategoryComponent,
     ViewCategoryComponent,
   ],
   imports: [
@@ -23,12 +26,14 @@ import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.modu
     FeatureCategoriesRoutingModule,
     ClarityModule,
     CategoriesUiModule,
+    SharedUiModule,
     FeatureChaptersModule,
   ],
   exports: [
     FeatureCategoriesComponent,
     CreateCategoryComponent,
     UpdateCategoryComponent,
+    DeleteCategoryComponent,
     ViewCategoryComponent,
   ],
 })

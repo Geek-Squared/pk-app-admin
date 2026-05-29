@@ -1,0 +1,91 @@
+<div class="pk-overlay">
+  <div class="pk-modal" style="max-width:680px" (click)="$event.stopPropagation()">
+    <div class="pk-modal-head">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2>Create survey</h2>
+        <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <p>Clients will see active surveys on the mobile app and submit responses there.</p>
+    </div>
+
+    <div class="pk-modal-body">
+
+      <div class="pk-field">
+        <label>Survey name</label>
+        <input class="pk-input" type="text" [(ngModel)]="name" placeholder="e.g. Programme intake survey" />
+      </div>
+
+      <div class="pk-field">
+        <label>Description</label>
+        <textarea class="pk-textarea" [(ngModel)]="description" rows="2" placeholder="Brief description for clients (optional)…"></textarea>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:18px;margin-top:6px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <p style="font-size:13px;font-weight:600;color:var(--text);margin:0">Questions</p>
+          <span style="font-size:12.5px;color:var(--text-3)">{{ questions.length }} added</span>
+        </div>
+
+        <div class="sb-question" *ngFor="let q of questions; let qi = index; trackBy: trackByIndex">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:999px;background:var(--primary-100);color:var(--primary-700);font-weight:700;font-size:12px">{{ qi + 1 }}</span>
+            <button class="pk-btn pk-btn-ghost pk-btn-sm" style="color:var(--danger)" (click)="removeQuestion(qi)" *ngIf="questions.length > 1">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M10 7V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12"/></svg>
+              Remove
+            </button>
+          </div>
+
+          <div class="pk-field" style="margin-bottom:12px">
+            <label style="font-size:12px;font-weight:600;color:var(--text-2)">Question</label>
+            <input class="pk-input" type="text" [(ngModel)]="q.title" placeholder="What would you like to ask?" />
+          </div>
+
+          <div class="pk-field" style="margin-bottom:0">
+            <label style="font-size:12px;font-weight:600;color:var(--text-2)">Answer type</label>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
+              <button type="button" class="sb-type-pill" *ngFor="let t of typeOptions"
+                [class.sel]="q.type === t.value"
+                (click)="changeType(q, t.value)">{{ t.label }}</button>
+            </div>
+          </div>
+
+          <div *ngIf="hasOptions(q.type)" style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">
+            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:8px">Options</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center" *ngFor="let opt of q.options; let oi = index; trackBy: trackByIndex">
+                <input class="pk-input" type="text" [(ngModel)]="q.options[oi]" [placeholder]="'Option ' + (oi + 1)" style="flex:1" />
+                <button class="pk-icon-btn" style="width:34px;height:34px" (click)="removeOption(q, oi)" [disabled]="q.options.length <= 2" title="Remove option">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+              </div>
+            </div>
+            <button class="pk-btn pk-btn-ghost pk-btn-sm" style="margin-top:8px" (click)="addOption(q)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Add option
+            </button>
+          </div>
+        </div>
+
+        <button class="pk-btn pk-btn-outline pk-btn-block" (click)="addQuestion()" style="margin-top:6px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add another question
+        </button>
+      </div>
+
+      <div class="pk-field" style="margin-top:18px;margin-bottom:0;border-top:1px solid var(--border);padding-top:16px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" [(ngModel)]="active" style="accent-color:var(--primary);width:16px;height:16px" />
+          <span style="font-weight:500;font-size:14px;color:var(--text)">Active (visible to clients on the app)</span>
+        </label>
+      </div>
+
+    </div>
+
+    <div class="pk-modal-foot">
+      <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="!canSubmit" (click)="onSubmit()">Create survey</button>
+    </div>
+  </div>
+</div>

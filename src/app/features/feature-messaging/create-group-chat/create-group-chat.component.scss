@@ -1,0 +1,35 @@
+.member-section {
+  margin-top: 1.2rem;
+}
+
+.member-label {
+  font-weight: 600;
+  font-size: 0.65rem;
+  color: #565656;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+
+.member-list {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+
+  .member-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.selected-count {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #0072a3;
+}
