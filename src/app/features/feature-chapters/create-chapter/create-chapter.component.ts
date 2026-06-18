@@ -28,7 +28,13 @@ export class CreateChapterComponent implements OnInit {
     chapter.uid = this.authService.user.uid;
     chapter.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     chapter.interventionId = this.interventionId;
-    chapter.categoryId = this.categoryId;
+    // Only set categoryId when present — Firestore rejects `undefined`, and
+    // chapters created directly under an intervention have no category.
+    if (this.categoryId) {
+      chapter.categoryId = this.categoryId;
+    } else {
+      delete (chapter as any).categoryId;
+    }
     this.chaptersService.createChapter(chapter).then(
       () => {
         this.closeModal.emit();

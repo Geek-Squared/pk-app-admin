@@ -1,0 +1,10 @@
+// Keep chapter cards compact — show a short preview of the description and
+// let users click into the chapter to read the full text.
+.pk-tile-meta {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}

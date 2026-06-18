@@ -10,7 +10,7 @@
         Edit intervention
       </button>
     </div>
-    <app-feature-categories [interventionId]="route.snapshot.paramMap.get('interventionId')"></app-feature-categories>
+    <app-list-chapters [interventionId]="route.snapshot.paramMap.get('interventionId')"></app-list-chapters>
   </div>
   <app-update-intervention *ngIf="isUpdate" [intervention]="selectedIntervention" (closeModal)="isUpdate = false"></app-update-intervention>
 </ng-container>

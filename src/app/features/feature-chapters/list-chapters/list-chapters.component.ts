@@ -49,11 +49,15 @@ export class ListChaptersComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.chaptersService
-      .getChaptersByCategoryIdAndInterventionId(
-        this.categoryId,
-        this.interventionId
-      )
+    // When opened directly under an intervention (no category), list chapters
+    // by interventionId; otherwise scope to the category.
+    const source$ = this.categoryId
+      ? this.chaptersService.getChaptersByCategoryIdAndInterventionId(
+          this.categoryId,
+          this.interventionId
+        )
+      : this.chaptersService.getChaptersByInterventionId(this.interventionId);
+    source$
       .subscribe(
         (data) => {
           this.chapters = data

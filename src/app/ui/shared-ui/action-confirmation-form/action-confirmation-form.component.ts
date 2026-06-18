@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 })
 export class ActionConfirmationFormComponent implements OnInit {
   @Input() btnState$: Observable<ClrLoadingState>;
+  @Input() confirmLabel = 'Delete';
   @Output() proceed = new EventEmitter();
   @Output() closeModal = new EventEmitter();
   public opened = true;

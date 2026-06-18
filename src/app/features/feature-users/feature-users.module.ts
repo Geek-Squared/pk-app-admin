@@ -5,6 +5,7 @@ import { FeatureUsersRoutingModule } from './feature-users-routing.module';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { ListUsersComponent } from './list-users/list-users.component';
 import { UsersUiModule } from '../../ui/users-ui/users-ui.module';
+import { SharedUiModule } from '../../ui/shared-ui/shared-ui.module';
 import { ClarityModule } from '@clr/angular';
 
 @NgModule({
@@ -13,6 +14,7 @@ import { ClarityModule } from '@clr/angular';
     CommonModule,
     FeatureUsersRoutingModule,
     UsersUiModule,
+    SharedUiModule,
     ClarityModule,
   ],
 })

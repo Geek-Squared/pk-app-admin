@@ -68,9 +68,10 @@ export class FeatureCategoriesComponent implements OnInit {
     this.categoriesService.getCategories().subscribe(
       (data) => {
         const all = data.map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Category));
-        this.categories = this.interventionId
+        this.categories = (this.interventionId
           ? all.filter(c => c.interventionId === this.interventionId)
-          : all;
+          : all
+        ).sort((a: any, b: any) => (a?.order ?? 0) - (b?.order ?? 0));
         this.isLoading = false;
       },
       () => { this.isLoading = false; }

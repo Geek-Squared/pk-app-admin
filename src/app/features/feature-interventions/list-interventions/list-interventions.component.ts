@@ -10,6 +10,7 @@ import { ChaptersService } from 'src/app/services/chapters.service';
 
 interface InterventionStats extends Intervention {
   categoryCount: number;
+  chapterCount: number;
   clientCount: number;
   avgCompletion: number;
 }
@@ -129,6 +130,7 @@ export class ListInterventionsComponent implements OnInit {
       return {
         ...intv,
         categoryCount: categoryCounts.get(intv.id) || 0,
+        chapterCount: totalChapters,
         clientCount,
         avgCompletion,
       };
