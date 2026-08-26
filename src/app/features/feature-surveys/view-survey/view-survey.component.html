@@ -6,25 +6,47 @@
     <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-3);margin-bottom:8px">
       <a routerLink="/surveys" style="color:var(--text-3);text-decoration:none;font-weight:500">Surveys</a>
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+      <ng-container *ngIf="survey?.interventionId">
+        <a routerLink="/interventions/view-intervention/{{ survey.interventionId }}" style="color:var(--text-3);text-decoration:none;font-weight:500">{{ survey?.interventionName || 'Intervention' }}</a>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
+      </ng-container>
       <span style="color:var(--text);font-weight:600">{{ survey?.name }}</span>
     </div>
 
     <div class="pk-page-head pk-row between">
       <div>
-        <h1>{{ survey?.name }}</h1>
+        <h1>
+          {{ survey?.name }}
+          <span class="pk-badge pk-badge-blue" *ngIf="phaseLabel" style="vertical-align:middle;margin-left:8px">{{ phaseLabel }}</span>
+        </h1>
         <p>{{ responses.length }} responses · {{ questionCount }} questions</p>
       </div>
-      <button class="pk-btn"
-        [class.pk-btn-outline]="survey?.active"
-        [class.pk-btn-primary]="!survey?.active"
-        [disabled]="toggling"
-        (click)="toggleActive()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
-          <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
-        </svg>
-        {{ survey?.active ? 'Active on app' : 'Activate' }}
-      </button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="pk-btn pk-btn-outline" (click)="isEditing = true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+          {{ questionCount ? 'Edit questions' : 'Add questions' }}
+        </button>
+        <button class="pk-btn"
+          [class.pk-btn-outline]="survey?.active"
+          [class.pk-btn-primary]="!survey?.active"
+          [disabled]="toggling || (!survey?.active && !canActivate)"
+          [title]="!survey?.active && !canActivate ? 'Add at least one question before activating this survey' : ''"
+          (click)="toggleActive()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
+            <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
+          </svg>
+          {{ survey?.active ? 'Active on app' : 'Activate' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="pk-card" *ngIf="!questionCount" style="margin-bottom:var(--section-gap);display:flex;align-items:center;gap:12px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--warn);flex:none"><path d="M12 8v5M12 16.5v.01M10.3 3.9 2.5 17.5A1.7 1.7 0 0 0 4 20h16a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3 0Z"/></svg>
+      <div>
+        <p style="margin:0;font-size:14px;font-weight:600;color:var(--text)">This survey has no questions yet</p>
+        <p style="margin:2px 0 0;font-size:12.5px;color:var(--text-3)">Add questions before activating it — clients cannot answer an empty survey.</p>
+      </div>
     </div>
 
     <h3 class="pk-section-title">Recent responses</h3>
@@ -54,3 +76,5 @@
   </ng-container>
 
 </div>
+
+<app-survey-editor-modal *ngIf="isEditing" [survey]="survey" (closeModal)="isEditing = false"></app-survey-editor-modal>

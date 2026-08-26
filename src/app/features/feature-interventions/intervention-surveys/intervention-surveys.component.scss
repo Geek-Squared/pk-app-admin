@@ -1,0 +1,59 @@
+.iv-surveys-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.iv-survey-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: var(--row-pad);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: inherit;
+
+  & + .iv-survey-row { margin-top: 10px; }
+}
+
+a.iv-survey-row:hover {
+  border-color: var(--primary-300);
+  background: var(--primary-50);
+}
+
+.iv-survey-row.empty { border-style: dashed; }
+
+.iv-phase-step {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--primary-100);
+  color: var(--primary-700);
+  font-size: 12px;
+  font-weight: 700;
+}
+.iv-survey-row.empty .iv-phase-step { background: var(--surface-3); color: var(--text-3); }
+
+.iv-survey-body { flex: 1; min-width: 0; }
+
+.iv-survey-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.iv-survey-sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--text-3);
+}

@@ -1,0 +1,46 @@
+<div class="iv-surveys-head">
+  <div>
+    <h3 class="pk-section-title" style="margin:0">Surveys</h3>
+    <p style="margin:3px 0 0;font-size:12.5px;color:var(--text-3)">
+      The Before, Midline and Endline surveys clients complete around this intervention.
+    </p>
+  </div>
+  <button class="pk-btn pk-btn-outline pk-btn-sm" *ngIf="missingCount && !isLoading"
+    [disabled]="isSettingUp" (click)="setupSurveys()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    {{ isSettingUp ? 'Setting up…' : (missingCount === rows.length ? 'Set up surveys' : 'Add missing surveys') }}
+  </button>
+</div>
+
+<div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
+
+<ng-container *ngIf="!isLoading">
+  <ng-container *ngFor="let row of rows">
+    <!-- Set up: links through to the survey builder / responses -->
+    <a class="iv-survey-row" *ngIf="row.survey" routerLink="/surveys/view/{{ row.survey.id }}">
+      <span class="iv-phase-step">{{ row.order }}</span>
+      <span class="iv-survey-body">
+        <span class="iv-survey-title">
+          {{ row.label }}
+          <span class="pk-badge" [class.pk-badge-teal]="row.survey.active" [class.pk-badge-gray]="!row.survey.active">
+            {{ row.survey.active ? 'Active' : 'Draft' }}
+          </span>
+          <span class="pk-badge pk-badge-warn" *ngIf="!row.questionCount">No questions yet</span>
+        </span>
+        <p class="iv-survey-sub">
+          {{ row.questionCount }} {{ row.questionCount === 1 ? 'question' : 'questions' }} · {{ row.description }}
+        </p>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3);flex:none"><path d="M9.5 18l6-6-6-6"/></svg>
+    </a>
+
+    <!-- Not set up yet -->
+    <div class="iv-survey-row empty" *ngIf="!row.survey">
+      <span class="iv-phase-step">{{ row.order }}</span>
+      <span class="iv-survey-body">
+        <span class="iv-survey-title" style="color:var(--text-2)">{{ row.label }}</span>
+        <p class="iv-survey-sub">Not set up yet · {{ row.description }}</p>
+      </span>
+    </div>
+  </ng-container>
+</ng-container>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Survey, surveyPhaseLabel } from 'src/app/models/survey.interface';
 import { SurveysService } from 'src/app/services';
 
 @Component({
@@ -7,8 +8,8 @@ import { SurveysService } from 'src/app/services';
   styleUrls: ['./list-surveys.component.scss'],
 })
 export class ListSurveysComponent implements OnInit {
-  public surveys: any[] = [];
-  public filteredSurveys: any[] = [];
+  public surveys: Survey[] = [];
+  public filteredSurveys: Survey[] = [];
   public isLoading = false;
   public isCreate = false;
   public searchTerm = '';
@@ -20,13 +21,33 @@ export class ListSurveysComponent implements OnInit {
     this.surveysService.getSurveys().subscribe(
       (data) => {
         this.surveys = data
-          .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() }))
-          .filter((s: any) => s?.name && typeof s.name === 'string' && s.name.trim().length > 0);
+          .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Survey))
+          .filter((s: any) => s?.name && typeof s.name === 'string' && s.name.trim().length > 0)
+          .sort((a, b) => this.compare(a, b));
         this.applyFilter();
         this.isLoading = false;
       },
       () => { this.isLoading = false; }
     );
+  }
+
+  /** Standalone surveys first, then each intervention's set in Before → Endline order. */
+  private compare(a: Survey, b: Survey): number {
+    const aGroup = a.interventionName || '';
+    const bGroup = b.interventionName || '';
+    if (aGroup !== bGroup) {
+      if (!aGroup) return -1;
+      if (!bGroup) return 1;
+      return aGroup.localeCompare(bGroup);
+    }
+    if (aGroup) {
+      return (a.phaseOrder || 0) - (b.phaseOrder || 0);
+    }
+    return (a.name || '').localeCompare(b.name || '');
+  }
+
+  phaseLabel(s: Survey): string {
+    return surveyPhaseLabel(s?.phase || '');
   }
 
   onSearchTermChange(value: string) { this.searchTerm = value; this.applyFilter(); }
@@ -36,13 +57,15 @@ export class ListSurveysComponent implements OnInit {
     this.filteredSurveys = term
       ? this.surveys.filter(s =>
           (s.name || '').toLowerCase().includes(term) ||
-          (s.description || '').toLowerCase().includes(term))
+          (s.description || '').toLowerCase().includes(term) ||
+          (s.interventionName || '').toLowerCase().includes(term) ||
+          this.phaseLabel(s).toLowerCase().includes(term))
       : [...this.surveys];
   }
 
-  questionCount(s: any): number {
+  questionCount(s: Survey): number {
     try {
-      const schema = typeof s?.schema === 'string' ? JSON.parse(s.schema) : s?.schema;
+      const schema: any = typeof s?.schema === 'string' ? JSON.parse(s.schema) : s?.schema;
       return (schema?.elements?.length) || (schema?.pages?.reduce((n: number, p: any) => n + (p.elements?.length || 0), 0)) || 0;
     } catch { return 0; }
   }

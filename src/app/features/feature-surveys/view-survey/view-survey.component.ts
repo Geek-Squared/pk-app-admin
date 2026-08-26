@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { surveyPhaseLabel } from 'src/app/models/survey.interface';
 import { SurveysService } from 'src/app/services';
 
 @Component({
@@ -13,6 +14,7 @@ export class ViewSurveyComponent implements OnInit {
   public responseKeys: string[] = [];
   public isLoading = false;
   public toggling = false;
+  public isEditing = false;
 
   constructor(private route: ActivatedRoute, private surveysService: SurveysService) {}
 
@@ -38,8 +40,18 @@ export class ViewSurveyComponent implements OnInit {
     return s?.elements?.length || s?.pages?.reduce((n: number, p: any) => n + (p.elements?.length || 0), 0) || 0;
   }
 
+  get phaseLabel(): string {
+    return surveyPhaseLabel(this.survey?.phase || '');
+  }
+
+  /** A survey with no questions has nothing for clients to answer. */
+  get canActivate(): boolean {
+    return this.questionCount > 0;
+  }
+
   toggleActive() {
     if (!this.survey || this.toggling) return;
+    if (!this.survey.active && !this.canActivate) return;
     this.toggling = true;
     this.surveysService.updateSurvey(this.survey.id, { active: !this.survey.active })
       .finally(() => { this.toggling = false; });

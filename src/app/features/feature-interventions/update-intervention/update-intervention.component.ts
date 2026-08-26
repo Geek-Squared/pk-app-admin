@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Intervention } from 'src/app/models/intervention.interface';
-import { InterventionsService } from 'src/app/services';
+import { InterventionsService, SurveysService } from 'src/app/services';
 
 @Component({
   selector: 'app-update-intervention',
@@ -13,14 +13,23 @@ export class UpdateInterventionComponent implements OnInit {
   @Input() intervention: Intervention;
   public buttonState = ClrLoadingState.DEFAULT;
 
-  constructor(private interventionsService: InterventionsService) {}
+  constructor(
+    private interventionsService: InterventionsService,
+    private surveysService: SurveysService
+  ) {}
 
   ngOnInit(): void {}
 
   onSubmit(intervention: Intervention) {
+    const previousName = this.intervention?.name;
     this.buttonState = ClrLoadingState.LOADING;
     this.interventionsService.updateIntervention(intervention).then(
-      () => {
+      async () => {
+        if (previousName && previousName !== intervention.name) {
+          await this.surveysService
+            .syncInterventionName(intervention, previousName)
+            .catch(() => undefined);
+        }
         this.closeModal.emit();
         this.buttonState = ClrLoadingState.SUCCESS;
       },

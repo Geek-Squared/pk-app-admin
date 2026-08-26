@@ -1,5 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
+import { Survey, surveyPhaseLabel } from 'src/app/models/survey.interface';
 import { SurveysService } from 'src/app/services';
 
 type QType = 'text' | 'comment' | 'rating' | 'radiogroup' | 'checkbox' | 'boolean';
@@ -20,11 +21,13 @@ const TYPE_OPTIONS: { value: QType; label: string; hasOptions: boolean; }[] = [
 ];
 
 @Component({
-  selector: 'app-create-survey-modal',
-  templateUrl: './create-survey-modal.component.html',
-  styleUrls: ['./create-survey-modal.component.scss'],
+  selector: 'app-survey-editor-modal',
+  templateUrl: './survey-editor-modal.component.html',
+  styleUrls: ['./survey-editor-modal.component.scss'],
 })
-export class CreateSurveyModalComponent implements OnInit {
+export class SurveyEditorModalComponent implements OnInit {
+  /** Pass an existing survey to edit it; omit to create a new one. */
+  @Input() survey: Survey | null = null;
   @Output() closeModal = new EventEmitter();
 
   readonly typeOptions = TYPE_OPTIONS;
@@ -38,7 +41,49 @@ export class CreateSurveyModalComponent implements OnInit {
   public btnState = ClrLoadingState.DEFAULT;
 
   constructor(private surveysService: SurveysService) {}
-  ngOnInit(): void {}
+
+  ngOnInit(): void {
+    if (this.survey) {
+      this.name = this.survey.name || '';
+      this.description = this.survey.description || '';
+      this.active = !!this.survey.active;
+      const existing = this.toBuilderQuestions(this.survey);
+      if (existing.length) {
+        this.questions = existing;
+      }
+    }
+  }
+
+  get isEdit(): boolean {
+    return !!this.survey?.id;
+  }
+
+  get heading(): string {
+    if (!this.isEdit) return 'Create survey';
+    const phase = surveyPhaseLabel(this.survey?.phase || '');
+    return phase ? `Edit ${phase} survey` : 'Edit survey';
+  }
+
+  /** Rebuilds the visual builder's state from a stored SurveyJS schema. */
+  private toBuilderQuestions(survey: Survey): BuilderQuestion[] {
+    const schema: any = survey?.schema;
+    const elements: any[] =
+      schema?.elements ||
+      schema?.pages?.reduce((acc: any[], p: any) => acc.concat(p.elements || []), []) ||
+      [];
+
+    return elements.map((el: any) => {
+      const type: QType = TYPE_OPTIONS.some((t) => t.value === el?.type) ? el.type : 'text';
+      const options = Array.isArray(el?.choices)
+        ? el.choices.map((c: any) => (typeof c === 'string' ? c : c?.text ?? c?.value ?? ''))
+        : [];
+      return {
+        type,
+        title: el?.title || el?.name || '',
+        options: this.hasOptions(type) && options.length < 2 ? ['', ''] : options,
+      };
+    });
+  }
 
   hasOptions(type: QType): boolean {
     return type === 'radiogroup' || type === 'checkbox';
@@ -105,13 +150,20 @@ export class CreateSurveyModalComponent implements OnInit {
   onSubmit() {
     if (!this.canSubmit) return;
     this.btnState = ClrLoadingState.LOADING;
-    this.surveysService
-      .createSurvey({
-        name: this.name.trim(),
-        description: this.description.trim(),
-        schema: this.buildSchema(),
-        active: this.active,
-      })
+
+    const payload = {
+      name: this.name.trim(),
+      description: this.description.trim(),
+      schema: this.buildSchema(),
+      active: this.active,
+    };
+
+    // Editing merges, so an intervention survey keeps its interventionId/phase.
+    const save = this.isEdit
+      ? this.surveysService.updateSurvey(this.survey.id, payload)
+      : this.surveysService.createSurvey(payload);
+
+    save
       .then(() => {
         this.btnState = ClrLoadingState.SUCCESS;
         this.closeModal.emit();

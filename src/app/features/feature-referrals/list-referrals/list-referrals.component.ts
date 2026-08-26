@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReferralsService } from 'src/app/services';
+import { Utilities } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-list-referrals',
@@ -23,7 +24,9 @@ export class ListReferralsComponent implements OnInit {
     this.isLoading = true;
     this.referralService.getReferrals().subscribe(
       (data) => {
-        this.referral = data.map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() }));
+        this.referral = data
+          .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() }))
+          .sort(Utilities.byOrder);
         this.applyFilter();
         this.isLoading = false;
       },

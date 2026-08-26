@@ -11,6 +11,10 @@
       </button>
     </div>
     <app-list-chapters [interventionId]="route.snapshot.paramMap.get('interventionId')"></app-list-chapters>
+
+    <div style="margin-top:var(--section-gap)">
+      <app-intervention-surveys [intervention]="intervention"></app-intervention-surveys>
+    </div>
   </div>
   <app-update-intervention *ngIf="isUpdate" [intervention]="selectedIntervention" (closeModal)="isUpdate = false"></app-update-intervention>
 </ng-container>

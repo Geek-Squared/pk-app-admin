@@ -49,9 +49,12 @@ export class CategoriesService {
   }
 
   getCategoriesByInterventionId(interventionId: string) {
+    // Equality filter only. Combining it with orderBy('order') both dropped
+    // categories missing the field and required a composite index. Consumers
+    // sort client-side.
     return this.firestore
       .collection<any>('categories', (ref) =>
-        ref.where('interventionId', '==', interventionId).orderBy('order')
+        ref.where('interventionId', '==', interventionId)
       )
       .snapshotChanges();
   }

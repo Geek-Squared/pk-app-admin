@@ -30,8 +30,10 @@ export class ReferralsService {
   }
 
   getReferrals() {
+    // No orderBy: Firestore's orderBy('order') silently drops any referral
+    // missing the `order` field. Consumers sort client-side.
     return this.firestore
-      .collection<Referral>('referrals', (ref) => ref.orderBy('order'))
+      .collection<Referral>('referrals')
       .snapshotChanges();
   }
 

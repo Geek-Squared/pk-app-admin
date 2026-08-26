@@ -10,6 +10,7 @@ import { UpdateInterventionComponent } from './update-intervention/update-interv
 import { DeleteInterventionComponent } from './delete-intervention/delete-intervention.component';
 import { ListInterventionsComponent } from './list-interventions/list-interventions.component';
 import { ViewInterventionComponent } from './view-intervention/view-intervention.component';
+import { InterventionSurveysComponent } from './intervention-surveys/intervention-surveys.component';
 import { FeatureChaptersModule } from '../feature-chapters/feature-chapters.module';
 import { FeatureCategoriesModule } from '../feature-categories/feature-categories.module';
 
@@ -20,6 +21,7 @@ import { FeatureCategoriesModule } from '../feature-categories/feature-categorie
     DeleteInterventionComponent,
     ListInterventionsComponent,
     ViewInterventionComponent,
+    InterventionSurveysComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +38,7 @@ import { FeatureCategoriesModule } from '../feature-categories/feature-categorie
     DeleteInterventionComponent,
     ListInterventionsComponent,
     ViewInterventionComponent,
+    InterventionSurveysComponent,
   ],
 })
 export class FeatureInterventionsModule {}

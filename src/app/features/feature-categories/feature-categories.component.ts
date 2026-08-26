@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { Category } from 'src/app/models/category.interface';
 import { CategoriesService, InterventionsService } from 'src/app/services';
+import { Utilities } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-feature-categories',
@@ -71,7 +72,7 @@ export class FeatureCategoriesComponent implements OnInit {
         this.categories = (this.interventionId
           ? all.filter(c => c.interventionId === this.interventionId)
           : all
-        ).sort((a: any, b: any) => (a?.order ?? 0) - (b?.order ?? 0));
+        ).sort(Utilities.byOrder);
         this.isLoading = false;
       },
       () => { this.isLoading = false; }
