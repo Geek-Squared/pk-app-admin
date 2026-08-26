@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
-import { Survey, surveyPhaseLabel } from 'src/app/models/survey.interface';
+import { Survey } from 'src/app/models/survey.interface';
 import { SurveysService } from 'src/app/services';
 
 type QType = 'text' | 'comment' | 'rating' | 'radiogroup' | 'checkbox' | 'boolean';
@@ -59,9 +59,7 @@ export class SurveyEditorModalComponent implements OnInit {
   }
 
   get heading(): string {
-    if (!this.isEdit) return 'Create survey';
-    const phase = surveyPhaseLabel(this.survey?.phase || '');
-    return phase ? `Edit ${phase} survey` : 'Edit survey';
+    return this.isEdit ? 'Edit survey' : 'Create survey';
   }
 
   /** Rebuilds the visual builder's state from a stored SurveyJS schema. */
@@ -158,7 +156,6 @@ export class SurveyEditorModalComponent implements OnInit {
       active: this.active,
     };
 
-    // Editing merges, so an intervention survey keeps its interventionId/phase.
     const save = this.isEdit
       ? this.surveysService.updateSurvey(this.survey.id, payload)
       : this.surveysService.createSurvey(payload);

@@ -1,5 +1,3 @@
-export type SurveyPhase = 'baseline' | 'midline' | 'endline';
-
 export interface Survey {
   id?: string;
   name: string;
@@ -7,47 +5,77 @@ export interface Survey {
   schema?: { title?: string; elements: any[] };
   active?: boolean;
   createdAt?: number;
-  // Set on surveys that belong to an intervention's Before/Midline/Endline cycle.
-  // Standalone surveys leave these unset.
-  interventionId?: string;
-  interventionName?: string;
-  phase?: SurveyPhase;
-  phaseOrder?: number;
-}
-
-export interface SurveyPhaseDefinition {
-  phase: SurveyPhase;
-  label: string;
-  order: number;
-  description: string;
 }
 
 /**
- * Every intervention carries these three surveys, in this order. `phase` is the
- * stable key stored on the survey document; `label` is what admins and clients
- * see. Keep the keys stable — the mobile app and any reporting keys off them.
+ * The measurement points an intervention is assessed at. `key` is what is
+ * stored and what the mobile app matches on — keep these stable.
  */
-export const SURVEY_PHASES: SurveyPhaseDefinition[] = [
+export type SurveyTimepoint = 'baseline' | 'midline' | 'endline';
+
+/**
+ * Which surveys an intervention administers, by timepoint. Stored on the
+ * intervention as `interventions/{id}.surveys`.
+ *
+ * Arrays of survey ids rather than a single id, so an intervention can run
+ * several instruments at one point AND — more importantly — so the SAME
+ * instrument can run at all three. Measuring change means asking the same
+ * questions before, during and after; three separately authored surveys would
+ * not be comparable.
+ */
+export interface InterventionSurveys {
+  baseline?: string[];
+  midline?: string[];
+  endline?: string[];
+}
+
+export interface SurveyTimepointDefinition {
+  key: SurveyTimepoint;
+  label: string;
+  order: number;
+  /** How the app decides this timepoint is the current one. */
+  trigger: string;
+}
+
+/**
+ * The app derives the current timepoint from chapter completion, which the
+ * workbook already records — there is no separate schedule to drift out of
+ * sync. These descriptions must stay in step with
+ * InterventionSurveysService.timepointFor() in the mobile app.
+ */
+export const SURVEY_TIMEPOINTS: SurveyTimepointDefinition[] = [
   {
-    phase: 'baseline',
+    key: 'baseline',
     label: 'Before',
     order: 1,
-    description: 'Completed before the client starts this intervention.',
+    trigger: 'Shown before the client completes any chapter of this intervention.',
   },
   {
-    phase: 'midline',
+    key: 'midline',
     label: 'Midline',
     order: 2,
-    description: 'Completed part-way through this intervention.',
+    trigger: 'Shown once at least half the chapters are complete.',
   },
   {
-    phase: 'endline',
+    key: 'endline',
     label: 'Endline',
     order: 3,
-    description: 'Completed once the client finishes this intervention.',
+    trigger: 'Shown once every chapter is complete.',
   },
 ];
 
-export function surveyPhaseLabel(phase: SurveyPhase | string): string {
-  return SURVEY_PHASES.find((p) => p.phase === phase)?.label || '';
+export function timepointLabel(timepoint: SurveyTimepoint | string): string {
+  return SURVEY_TIMEPOINTS.find((t) => t.key === timepoint)?.label || '';
+}
+
+/** Normalises the stored map, tolerating a missing or partial `surveys` field. */
+export function normaliseInterventionSurveys(value: any): InterventionSurveys {
+  const read = (key: SurveyTimepoint): string[] =>
+    Array.isArray(value?.[key]) ? value[key].filter((id: any) => !!id) : [];
+
+  return {
+    baseline: read('baseline'),
+    midline: read('midline'),
+    endline: read('endline'),
+  };
 }

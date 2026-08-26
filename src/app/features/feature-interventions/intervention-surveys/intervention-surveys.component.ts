@@ -2,18 +2,28 @@ import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Intervention } from 'src/app/models/intervention.interface';
 import {
-  SURVEY_PHASES,
+  InterventionSurveys,
+  SURVEY_TIMEPOINTS,
   Survey,
-  SurveyPhaseDefinition,
+  SurveyTimepoint,
+  SurveyTimepointDefinition,
+  normaliseInterventionSurveys,
 } from 'src/app/models/survey.interface';
 import { Utilities } from 'src/app/models/utils';
-import { SurveysService } from 'src/app/services';
+import { InterventionsService, SurveysService } from 'src/app/services';
 
-interface PhaseRow extends SurveyPhaseDefinition {
-  survey: Survey | null;
-  questionCount: number;
+interface TimepointRow extends SurveyTimepointDefinition {
+  surveys: Survey[];
 }
 
+/**
+ * Attaches surveys to an intervention's Before / Midline / Endline timepoints.
+ *
+ * Surveys are not created here and are not owned by the intervention — they are
+ * instruments authored in the Surveys section and referenced by id, so the same
+ * one can be attached to several timepoints. That reuse is the point: asking
+ * the same questions before and after is what makes the answers comparable.
+ */
 @Component({
   selector: 'app-intervention-surveys',
   templateUrl: './intervention-surveys.component.html',
@@ -22,82 +32,133 @@ interface PhaseRow extends SurveyPhaseDefinition {
 export class InterventionSurveysComponent implements OnChanges, OnDestroy {
   @Input() intervention: Intervention;
 
-  public rows: PhaseRow[] = [];
+  public rows: TimepointRow[] = [];
+  public allSurveys: Survey[] = [];
   public isLoading = false;
-  public isSettingUp = false;
+  public isSaving = false;
 
+  /** Timepoint whose picker is open, or null. */
+  public pickerFor: SurveyTimepoint | null = null;
+  public pickerSearch = '';
+
+  private assigned: InterventionSurveys = {};
   private subscription: Subscription | null = null;
 
-  constructor(private surveysService: SurveysService) {}
+  constructor(
+    private surveysService: SurveysService,
+    private interventionsService: InterventionsService
+  ) {}
 
   ngOnChanges(): void {
-    this.subscription?.unsubscribe();
-    this.rows = [];
+    this.assigned = normaliseInterventionSurveys(this.intervention?.surveys);
 
-    if (!this.intervention?.id) {
-      return;
-    }
-
-    this.isLoading = true;
-    this.subscription = this.surveysService
-      .getSurveysByInterventionId(this.intervention.id)
-      .subscribe(
+    if (!this.subscription) {
+      this.isLoading = true;
+      this.subscription = this.surveysService.getSurveys().subscribe(
         (data: any[]) => {
-          const surveys: Survey[] = data.map((e: any) => ({
-            id: e.payload.doc.id,
-            ...e.payload.doc.data(),
-          }));
-          this.rows = SURVEY_PHASES.map((definition) => {
-            const survey = surveys.find((s) => s.phase === definition.phase) || null;
-            return {
-              ...definition,
-              survey,
-              questionCount: this.countQuestions(survey),
-            };
-          });
+          this.allSurveys = data
+            .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Survey))
+            .filter((s) => !!s?.name)
+            .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+          this.buildRows();
           this.isLoading = false;
         },
-        () => {
-          this.isLoading = false;
-        }
+        () => { this.isLoading = false; }
       );
+    }
+
+    this.buildRows();
   }
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
 
-  get missingCount(): number {
-    return this.rows.filter((r) => !r.survey).length;
+  private buildRows(): void {
+    this.rows = SURVEY_TIMEPOINTS.map((definition) => ({
+      ...definition,
+      surveys: (this.assigned[definition.key] || [])
+        .map((id) => this.allSurveys.find((s) => s.id === id))
+        .filter((s): s is Survey => !!s),
+    }));
   }
 
-  setupSurveys(): void {
-    if (this.isSettingUp || !this.intervention?.id) return;
+  /** Ids attached at a timepoint, including any whose survey has been deleted. */
+  private idsAt(timepoint: SurveyTimepoint): string[] {
+    return this.assigned[timepoint] || [];
+  }
 
-    this.isSettingUp = true;
-    this.surveysService
-      .ensurePhaseSurveys(this.intervention)
-      .then((created) => {
-        if (created) {
-          Utilities.displayToast(
-            'success',
-            `Added ${created} draft ${created === 1 ? 'survey' : 'surveys'}. Add questions, then activate to release ${created === 1 ? 'it' : 'them'} to clients.`
-          );
-        }
+  get totalAssigned(): number {
+    return SURVEY_TIMEPOINTS.reduce((n, t) => n + this.idsAt(t.key).length, 0);
+  }
+
+  isAttached(timepoint: SurveyTimepoint, surveyId: string): boolean {
+    return this.idsAt(timepoint).includes(surveyId);
+  }
+
+  openPicker(timepoint: SurveyTimepoint): void {
+    this.pickerFor = timepoint;
+    this.pickerSearch = '';
+  }
+
+  closePicker(): void {
+    this.pickerFor = null;
+  }
+
+  get pickerOptions(): Survey[] {
+    const term = this.pickerSearch.trim().toLowerCase();
+    return this.allSurveys.filter(
+      (s) =>
+        !term ||
+        (s.name || '').toLowerCase().includes(term) ||
+        (s.description || '').toLowerCase().includes(term)
+    );
+  }
+
+  attach(timepoint: SurveyTimepoint, survey: Survey): void {
+    if (!survey?.id || this.isAttached(timepoint, survey.id)) return;
+    this.persist({
+      ...this.assigned,
+      [timepoint]: [...this.idsAt(timepoint), survey.id],
+    });
+  }
+
+  detach(timepoint: SurveyTimepoint, survey: Survey): void {
+    if (!survey?.id) return;
+    this.persist({
+      ...this.assigned,
+      [timepoint]: this.idsAt(timepoint).filter((id) => id !== survey.id),
+    });
+  }
+
+  private persist(next: InterventionSurveys): void {
+    if (!this.intervention?.id || this.isSaving) return;
+
+    const previous = this.assigned;
+    // Optimistic: the intervention document is not re-read here, so reflect the
+    // change immediately and roll back if the write fails.
+    this.assigned = next;
+    this.buildRows();
+    this.isSaving = true;
+
+    this.interventionsService
+      .setInterventionSurveys(this.intervention.id, next)
+      .then(() => {
+        this.intervention.surveys = next;
       })
       .catch((error) => {
-        console.error('Set up surveys failed', error);
+        console.error('Saving intervention surveys failed', error);
+        this.assigned = previous;
+        this.buildRows();
         Utilities.displayToast(
           'error',
-          Utilities.firestoreErrorMessage(error, 'Could not set up the surveys. Please try again.')
+          Utilities.firestoreErrorMessage(error, 'Could not save the survey assignment.')
         );
       })
-      .finally(() => {
-        this.isSettingUp = false;
-      });
+      .finally(() => { this.isSaving = false; });
   }
 
-  private countQuestions(survey: Survey | null): number {
+  questionCount(survey: Survey): number {
     const schema: any = survey?.schema;
     if (!schema) return 0;
     return (
@@ -106,4 +167,13 @@ export class InterventionSurveysComponent implements OnChanges, OnDestroy {
       0
     );
   }
+
+  /** A survey that is attached but inactive or empty will never reach a client. */
+  warningFor(survey: Survey): string {
+    if (!this.questionCount(survey)) return 'No questions';
+    if (!survey.active) return 'Draft — not visible in the app';
+    return '';
+  }
+
+  trackById(_: number, survey: Survey) { return survey.id; }
 }

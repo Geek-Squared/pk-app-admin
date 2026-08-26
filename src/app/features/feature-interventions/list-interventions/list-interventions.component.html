@@ -4,18 +4,10 @@
       <h1>Interventions</h1>
       <p>Manage your therapeutic programme — interventions, chapters, posts and reflection questions.</p>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <button class="pk-btn pk-btn-outline" *ngIf="interventionsMissingSurveys.length"
-        [disabled]="isSettingUpAllSurveys" (click)="setupAllSurveys()"
-        title="Create the Before, Midline and Endline surveys for every intervention that is missing them">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1ZM9 11h6M9 15h6"/></svg>
-        {{ isSettingUpAllSurveys ? 'Setting up…' : 'Set up surveys (' + interventionsMissingSurveys.length + ')' }}
-      </button>
-      <button class="pk-btn pk-btn-primary" (click)="isCreate = true">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        New intervention
-      </button>
-    </div>
+    <button class="pk-btn pk-btn-primary" (click)="isCreate = true">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      New intervention
+    </button>
   </div>
 
   <div class="pk-tb-search" style="width:320px;margin-bottom:20px">
@@ -62,12 +54,6 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
             Edit
           </button>
-          <button type="button" *ngIf="!intervention.surveysReady"
-            [disabled]="settingUpSurveysFor === intervention.id"
-            (click)="setupSurveys($event, intervention)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1ZM9 11h6M9 15h6"/></svg>
-            {{ settingUpSurveysFor === intervention.id ? 'Setting up…' : 'Set up surveys' }}
-          </button>
           <button type="button" class="danger" (click)="deleteIntervention($event, intervention)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
             Delete
@@ -85,9 +71,9 @@
         </div>
         <div class="pk-tile-stats">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5h6a1 1 0 0 1 1 1V6h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h2v-.5a1 1 0 0 1 1-1ZM9 11h6M9 15h6"/></svg>
-          <span *ngIf="intervention?.surveysReady">Before · Midline · Endline</span>
-          <span *ngIf="!intervention?.surveysReady" style="color:var(--warn)">
-            {{ intervention?.surveyCount }}/{{ totalPhases }} surveys set up
+          <span *ngIf="intervention?.timepointsCovered === totalTimepoints">Before · Midline · Endline</span>
+          <span *ngIf="intervention?.timepointsCovered !== totalTimepoints" style="color:var(--text-3)">
+            {{ intervention?.timepointsCovered }}/{{ totalTimepoints }} survey points set
           </span>
         </div>
         <div class="pk-progress">

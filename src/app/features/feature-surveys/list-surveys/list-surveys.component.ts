@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Survey, surveyPhaseLabel } from 'src/app/models/survey.interface';
+import { Survey } from 'src/app/models/survey.interface';
 import { SurveysService } from 'src/app/services';
 
 @Component({
@@ -23,31 +23,12 @@ export class ListSurveysComponent implements OnInit {
         this.surveys = data
           .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Survey))
           .filter((s: any) => s?.name && typeof s.name === 'string' && s.name.trim().length > 0)
-          .sort((a, b) => this.compare(a, b));
+          .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         this.applyFilter();
         this.isLoading = false;
       },
       () => { this.isLoading = false; }
     );
-  }
-
-  /** Standalone surveys first, then each intervention's set in Before → Endline order. */
-  private compare(a: Survey, b: Survey): number {
-    const aGroup = a.interventionName || '';
-    const bGroup = b.interventionName || '';
-    if (aGroup !== bGroup) {
-      if (!aGroup) return -1;
-      if (!bGroup) return 1;
-      return aGroup.localeCompare(bGroup);
-    }
-    if (aGroup) {
-      return (a.phaseOrder || 0) - (b.phaseOrder || 0);
-    }
-    return (a.name || '').localeCompare(b.name || '');
-  }
-
-  phaseLabel(s: Survey): string {
-    return surveyPhaseLabel(s?.phase || '');
   }
 
   onSearchTermChange(value: string) { this.searchTerm = value; this.applyFilter(); }
@@ -57,9 +38,7 @@ export class ListSurveysComponent implements OnInit {
     this.filteredSurveys = term
       ? this.surveys.filter(s =>
           (s.name || '').toLowerCase().includes(term) ||
-          (s.description || '').toLowerCase().includes(term) ||
-          (s.interventionName || '').toLowerCase().includes(term) ||
-          this.phaseLabel(s).toLowerCase().includes(term))
+          (s.description || '').toLowerCase().includes(term))
       : [...this.surveys];
   }
 

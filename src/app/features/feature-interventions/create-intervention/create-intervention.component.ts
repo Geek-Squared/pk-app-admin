@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { Intervention } from 'src/app/models/intervention.interface';
 import { Utilities } from 'src/app/models/utils';
-import { InterventionsService, SurveysService } from 'src/app/services';
+import { InterventionsService } from 'src/app/services';
 
 @Component({
   selector: 'app-create-intervention',
@@ -15,10 +15,7 @@ export class CreateInterventionComponent implements OnInit {
   @Output() closeModal = new EventEmitter();
   public buttonState = ClrLoadingState.DEFAULT;
 
-  constructor(
-    private interventionsService: InterventionsService,
-    private surveysService: SurveysService
-  ) {}
+  constructor(private interventionsService: InterventionsService) {}
 
   ngOnInit(): void {}
 
@@ -26,22 +23,19 @@ export class CreateInterventionComponent implements OnInit {
     this.buttonState = ClrLoadingState.LOADING;
     intervention.createdDate = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
     this.interventionsService.createIntervention(intervention).then(
-      async (docRef) => {
-        // Every intervention ships with its Before / Midline / Endline surveys
-        // as empty drafts. A failure here must not lose the intervention, so it
-        // is reported and left for the "Set up surveys" action to retry.
-        await this.surveysService
-          .ensurePhaseSurveys({ ...intervention, id: docRef.id })
-          .catch(() =>
-            Utilities.displayToast(
-              'warning',
-              'Intervention created, but its Before/Midline/Endline surveys could not be set up. Use “Set up surveys” to retry.'
-            )
-          );
+      () => {
+        Utilities.displayToast('success', `“${intervention.name}” created.`);
         this.closeModal.emit();
         this.buttonState = ClrLoadingState.SUCCESS;
       },
-      () => {
+      (error) => {
+        // Silence here is worse than the failure: the modal just sits there and
+        // nobody can tell whether the intervention was written or not.
+        console.error('Create intervention failed', error);
+        Utilities.displayToast(
+          'error',
+          Utilities.firestoreErrorMessage(error, 'Could not create the intervention.')
+        );
         this.buttonState = ClrLoadingState.ERROR;
       }
     );

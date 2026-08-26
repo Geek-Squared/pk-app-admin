@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { map } from 'rxjs/operators';
 import { Intervention } from 'src/app/models/intervention.interface';
+import { InterventionSurveys } from 'src/app/models/survey.interface';
 import { Utilities } from '../models/utils';
 
 @Injectable({
@@ -72,6 +73,22 @@ export class InterventionsService {
   }
 
   /**
+   * Writes the intervention's measurement surveys, keyed by timepoint:
+   *
+   *   interventions/{id}.surveys = { baseline: [...], midline: [...], endline: [...] }
+   *
+   * This is the contract the mobile app reads to decide which survey a client
+   * is due. Written as a whole map rather than merged field-by-field so that
+   * removing the last survey from a timepoint actually clears it.
+   */
+  setInterventionSurveys(interventionId: string, surveys: InterventionSurveys) {
+    return this.firestore
+      .collection('interventions')
+      .doc(interventionId)
+      .set({ surveys }, { merge: true });
+  }
+
+  /**
    * Assigns a numeric `order` to every intervention missing one, appended after
    * those already ordered. Repairs documents for the mobile app too, which
    * still queries with orderBy('order') and therefore cannot see them.
@@ -106,12 +123,23 @@ export class InterventionsService {
     return unordered.length;
   }
 
+  /**
+   * Best-effort: working out the next order requires reading the collection,
+   * and that read must never be what stops an intervention being created. On
+   * failure the document still gets a numeric order — it just sorts first,
+   * which "Fix ordering" can tidy — rather than the create hanging or throwing.
+   */
   private async nextOrder(): Promise<number> {
-    const snapshot = await this.firestore
-      .collection('interventions')
-      .get()
-      .toPromise();
-    return this.highestOrder(snapshot?.docs || []) + 1;
+    try {
+      const snapshot = await this.firestore
+        .collection('interventions')
+        .get()
+        .toPromise();
+      return this.highestOrder(snapshot?.docs || []) + 1;
+    } catch (error) {
+      console.error('Could not read existing interventions to pick an order', error);
+      return 0;
+    }
   }
 
   private highestOrder(docs: any[]): number {

@@ -6,19 +6,12 @@
     <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text-3);margin-bottom:8px">
       <a routerLink="/surveys" style="color:var(--text-3);text-decoration:none;font-weight:500">Surveys</a>
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
-      <ng-container *ngIf="survey?.interventionId">
-        <a routerLink="/interventions/view-intervention/{{ survey.interventionId }}" style="color:var(--text-3);text-decoration:none;font-weight:500">{{ survey?.interventionName || 'Intervention' }}</a>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18l6-6-6-6"/></svg>
-      </ng-container>
       <span style="color:var(--text);font-weight:600">{{ survey?.name }}</span>
     </div>
 
     <div class="pk-page-head pk-row between">
       <div>
-        <h1>
-          {{ survey?.name }}
-          <span class="pk-badge pk-badge-blue" *ngIf="phaseLabel" style="vertical-align:middle;margin-left:8px">{{ phaseLabel }}</span>
-        </h1>
+        <h1>{{ survey?.name }}</h1>
         <p>{{ responses.length }} responses · {{ questionCount }} questions</p>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
@@ -36,7 +29,7 @@
             <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
             <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
           </svg>
-          {{ survey?.active ? 'Active on app' : 'Activate' }}
+          {{ survey?.active ? 'Active' : 'Activate' }}
         </button>
       </div>
     </div>
@@ -49,12 +42,28 @@
       </div>
     </div>
 
+    <h3 class="pk-section-title">Where it is used</h3>
+    <div class="pk-card" style="margin-bottom:var(--section-gap)">
+      <div *ngIf="placements.length" style="display:flex;flex-wrap:wrap;gap:8px">
+        <a class="pk-badge pk-badge-blue" style="text-decoration:none"
+          *ngFor="let p of placements"
+          routerLink="/interventions/view-intervention/{{ p.interventionId }}">
+          {{ p.interventionName }} · {{ p.timepointLabel }}
+        </a>
+      </div>
+      <p *ngIf="!placements.length" style="margin:0;font-size:12.5px;color:var(--text-3)">
+        Not attached to any intervention yet — clients will never be shown it. Open an intervention and attach it to Before, Midline or Endline.
+      </p>
+    </div>
+
     <h3 class="pk-section-title">Recent responses</h3>
     <div class="pk-tbl-wrap">
       <table class="pk-tbl">
         <thead>
           <tr>
             <th>Respondent</th>
+            <th>Intervention</th>
+            <th>Point</th>
             <th>Submitted</th>
             <th *ngFor="let key of responseKeys">{{ key }}</th>
           </tr>
@@ -62,12 +71,15 @@
         <tbody>
           <tr *ngFor="let r of responses">
             <td class="td-name">{{ r?.userName || r?.userId || r?.uid || '—' }}</td>
+            <td class="muted">{{ interventionName(r?.interventionId) }}</td>
+            <td class="muted">{{ timepointName(r?.timepoint) }}</td>
             <td class="muted">{{ r?.submittedAt?.toDate ? (r?.submittedAt?.toDate() | date:'d MMM y') : (r?.submittedAt || r?.createdAt | date:'d MMM y') }}</td>
             <td *ngFor="let key of responseKeys">{{ r[key] }}</td>
           </tr>
           <tr *ngIf="!responses?.length">
-            <td [attr.colspan]="responseKeys.length + 2" class="muted" style="text-align:center;padding:32px">
-              No responses yet. {{ survey?.active ? 'Clients can submit responses from the app.' : 'Activate this survey to make it visible on the app.' }}
+            <td [attr.colspan]="responseKeys.length + 4" class="muted" style="text-align:center;padding:32px">
+              No responses yet.
+              {{ placements.length ? 'Clients reach this survey as they progress through the interventions above.' : 'Attach it to an intervention timepoint so clients are asked to complete it.' }}
             </td>
           </tr>
         </tbody>

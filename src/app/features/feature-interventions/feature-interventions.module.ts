@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
 
 import { FeatureInterventionsRoutingModule } from './feature-interventions-routing.module';
@@ -25,6 +26,7 @@ import { FeatureCategoriesModule } from '../feature-categories/feature-categorie
   ],
   imports: [
     CommonModule,
+    FormsModule,
     FeatureInterventionsRoutingModule,
     InterventionsUiModule,
     SharedUiModule,
