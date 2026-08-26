@@ -13,20 +13,40 @@
   <div class="pk-chat-empty" *ngIf="isLoading"><clr-spinner clrMedium clrAssertive></clr-spinner></div>
   <div class="pk-tbl-wrap" *ngIf="!isLoading">
     <table class="pk-tbl">
-      <thead><tr><th>User</th><th>Email</th><th>Role</th></tr></thead>
+      <thead><tr><th>User</th><th>Email</th><th>Role</th><th style="width:60px;text-align:right">Actions</th></tr></thead>
       <tbody>
         <tr *ngFor="let item of pagedUsers; let i = index">
           <td>
             <div style="display:flex;align-items:center;gap:11px">
               <span class="pk-avatar" style="width:34px;height:34px;font-size:13px" [style.background]="['#2D6CA8','#2E9E86','#6B53A8','#C0832B','#C25340'][i % 5]">{{ item?.displayName?.substring(0,1)?.toUpperCase() || '?' }}</span>
               <span class="td-name">{{ item?.displayName || '—' }}</span>
+              <span class="pk-badge pk-badge-gray" *ngIf="item?.archived">Archived</span>
             </div>
           </td>
           <td class="muted">{{ item?.email }}</td>
           <td><span class="pk-badge" [class.pk-badge-blue]="item?.role === 'Administrator'" [class.pk-badge-teal]="item?.role === 'Counsellor'" [class.pk-badge-gray]="item?.role === 'Client'">{{ item?.role }}</span></td>
+          <td style="text-align:right">
+            <button class="pk-icon-btn" style="width:32px;height:32px" type="button" (click)="toggleMenu($event, item)" aria-label="More actions">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+            </button>
+            <div class="pk-tile-menu" style="position:fixed;z-index:50" [style.top.px]="menuTop" [style.right.px]="menuRight" *ngIf="openMenuId === item.id" (click)="$event.stopPropagation()">
+              <button type="button" (click)="editUser($event, item)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+                Edit
+              </button>
+              <button type="button" (click)="archiveUser($event, item)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M5 7l1 12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-12M9 11h6"/></svg>
+                {{ item?.archived ? 'Unarchive' : 'Archive' }}
+              </button>
+              <button type="button" class="danger" (click)="deleteUser($event, item)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
+                Delete
+              </button>
+            </div>
+          </td>
         </tr>
         <tr *ngIf="!pagedUsers?.length">
-          <td colspan="3" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No users yet.' }}</td>
+          <td colspan="4" class="muted" style="text-align:center;padding:32px">{{ searchTerm ? 'No results for "' + searchTerm + '".' : 'No users yet.' }}</td>
         </tr>
       </tbody>
     </table>
@@ -43,3 +63,32 @@
   </div>
 </div>
 <app-create-user *ngIf="isCreate" (closeModal)="isCreate = false"></app-create-user>
+
+<app-user-form
+  *ngIf="isEdit"
+  [user]="selectedUser"
+  [title]="'Edit User'"
+  [btnState]="buttonState"
+  (closeModal)="isEdit = false"
+  (formValue)="onEditSubmit($event)"
+></app-user-form>
+
+<app-action-confirmation-form
+  *ngIf="isArchive"
+  [confirmLabel]="selectedUser?.archived ? 'Unarchive' : 'Archive'"
+  (proceed)="onArchiveConfirm()"
+  (closeModal)="isArchive = false"
+>
+  <span class="action-header">{{ selectedUser?.archived ? 'Unarchive' : 'Archive' }} User</span>
+  <span class="action-message">{{ selectedUser?.archived ? 'Restore' : 'Archive' }} <strong>{{ selectedUser?.displayName || selectedUser?.email }}</strong>? {{ selectedUser?.archived ? 'They will appear as active again.' : 'They will be flagged as archived but their data is kept.' }}</span>
+</app-action-confirmation-form>
+
+<app-action-confirmation-form
+  *ngIf="isDelete"
+  [confirmLabel]="'Delete'"
+  (proceed)="onDeleteConfirm()"
+  (closeModal)="isDelete = false"
+>
+  <span class="action-header">Delete User</span>
+  <span class="action-message">Are you sure you want to delete <strong>{{ selectedUser?.displayName || selectedUser?.email }}</strong>? This cannot be undone.</span>
+</app-action-confirmation-form>

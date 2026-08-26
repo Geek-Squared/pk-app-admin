@@ -2,12 +2,12 @@
   <div class="pk-modal" style="max-width:680px" (click)="$event.stopPropagation()">
     <div class="pk-modal-head">
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <h2>Create survey</h2>
+        <h2>{{ heading }}</h2>
         <button class="pk-icon-btn" (click)="closeModal.emit()" style="width:34px;height:34px;flex:none">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
       </div>
-      <p>Clients will see active surveys on the mobile app and submit responses there.</p>
+      <p>Add the questions, then activate it. Clients see it once it is attached to an intervention's Before, Midline or Endline point.</p>
     </div>
 
     <div class="pk-modal-body">
@@ -85,7 +85,7 @@
 
     <div class="pk-modal-foot">
       <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
-      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="!canSubmit" (click)="onSubmit()">Create survey</button>
+      <button class="pk-btn pk-btn-primary" [clrLoading]="btnState" [disabled]="!canSubmit" (click)="onSubmit()">{{ isEdit ? 'Save changes' : 'Create survey' }}</button>
     </div>
   </div>
 </div>

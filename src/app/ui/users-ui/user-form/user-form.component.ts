@@ -17,6 +17,8 @@ import { Roles } from '../../../models/roles';
 })
 export class UserFormComponent implements OnInit {
   @Input() btnState: ClrLoadingState;
+  @Input() title = 'Create user';
+  @Input() user: any;
   @Output() formValue = new EventEmitter();
   @Output() closeModal = new EventEmitter();
   public opened = true;
@@ -24,6 +26,10 @@ export class UserFormComponent implements OnInit {
   public roles = Roles;
 
   constructor(private fb: FormBuilder) {}
+
+  get isEdit(): boolean {
+    return !!this.user;
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -36,5 +42,20 @@ export class UserFormComponent implements OnInit {
       displayName: ['', [Validators.required]],
       role: ['', Validators.required],
     });
+
+    if (this.isEdit) {
+      // Email and password are managed in Firebase Auth and cannot be edited here.
+      this.userForm.removeControl('password');
+      this.userForm.get('email').disable();
+      this.userForm.patchValue({
+        email: this.user.email,
+        displayName: this.user.displayName,
+        role: this.user.role,
+      });
+    }
+  }
+
+  emitValue() {
+    this.formValue.emit({ ...this.user, ...this.userForm.getRawValue() });
   }
 }

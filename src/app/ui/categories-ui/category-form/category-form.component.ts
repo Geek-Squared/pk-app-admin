@@ -5,6 +5,7 @@ import { ClrLoadingState } from '@clr/angular';
 import { Category } from 'src/app/models/category.interface';
 import { Intervention } from 'src/app/models/intervention.interface';
 import { InterventionsService } from 'src/app/services';
+import { Utilities } from 'src/app/models/utils';
 
 @Component({
   selector: 'app-category-form',
@@ -39,9 +40,9 @@ export class CategoryFormComponent implements OnInit {
     }
 
     this.interventionsService.getInterventions().subscribe((data) => {
-      this.interventions = data.map(
-        (e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Intervention)
-      );
+      this.interventions = data
+        .map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Intervention))
+        .sort(Utilities.byOrder);
       this.cdr.markForCheck();
     });
   }

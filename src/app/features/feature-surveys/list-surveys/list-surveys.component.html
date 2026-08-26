@@ -2,7 +2,7 @@
   <div class="pk-page-head pk-row between">
     <div>
       <h1>Surveys</h1>
-      <p>Surveys clients complete in the app, and the responses they submit.</p>
+      <p>Reusable instruments. Attach one to an intervention's Before, Midline or Endline point to have clients complete it.</p>
     </div>
     <button class="pk-btn pk-btn-primary" (click)="isCreate = true">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -33,6 +33,7 @@
             <i style="width:6px;height:6px;border-radius:999px;background:currentColor;display:inline-block"></i>
             {{ s.active ? 'Active' : 'Draft' }}
           </span>
+          <span class="pk-badge pk-badge-warn" *ngIf="!questionCount(s)">Needs questions</span>
         </div>
       </a>
 
@@ -50,4 +51,4 @@
   </ng-container>
 </div>
 
-<app-create-survey-modal *ngIf="isCreate" (closeModal)="isCreate = false"></app-create-survey-modal>
+<app-survey-editor-modal *ngIf="isCreate" (closeModal)="isCreate = false"></app-survey-editor-modal>

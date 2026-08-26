@@ -7,10 +7,10 @@ import { ClarityModule } from '@clr/angular';
 import { FeatureSurveysRoutingModule } from './feature-surveys-routing.module';
 import { ListSurveysComponent } from './list-surveys/list-surveys.component';
 import { ViewSurveyComponent } from './view-survey/view-survey.component';
-import { CreateSurveyModalComponent } from './create-survey-modal/create-survey-modal.component';
+import { SurveyEditorModalComponent } from './survey-editor-modal/survey-editor-modal.component';
 
 @NgModule({
-  declarations: [ListSurveysComponent, ViewSurveyComponent, CreateSurveyModalComponent],
+  declarations: [ListSurveysComponent, ViewSurveyComponent, SurveyEditorModalComponent],
   imports: [CommonModule, FormsModule, RouterModule, ClarityModule, FeatureSurveysRoutingModule],
 })
 export class FeatureSurveysModule {}

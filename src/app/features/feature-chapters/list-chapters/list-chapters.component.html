@@ -11,7 +11,7 @@
 
   <ng-container *ngIf="!isLoading">
     <div class="pk-grid-cards" *ngIf="chapters?.length > 0">
-      <a class="pk-tile teal" *ngFor="let chapter of chapters; let i = index" [routerLink]="['/interventions', 'view-intervention', interventionId, 'view-category', categoryId, 'view-chapter', chapter.id]">
+      <a class="pk-tile teal" *ngFor="let chapter of chapters; let i = index" [routerLink]="categoryId ? ['/interventions', 'view-intervention', interventionId, 'view-category', categoryId, 'view-chapter', chapter.id] : ['/interventions', 'view-intervention', interventionId, 'view-chapter', chapter.id]">
         <button class="pk-tile-menu-btn" type="button" (click)="toggleMenu($event, chapter)" aria-label="More actions">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
         </button>

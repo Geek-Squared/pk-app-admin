@@ -10,7 +10,7 @@
     </div>
     <div class="pk-modal-foot">
       <button class="pk-btn pk-btn-ghost" (click)="closeModal.emit()">Cancel</button>
-      <button class="pk-btn pk-btn-danger" [clrLoading]="btnState$ | async" (click)="proceed.emit()">Delete</button>
+      <button class="pk-btn pk-btn-danger" [clrLoading]="btnState$ | async" (click)="proceed.emit()">{{ confirmLabel }}</button>
     </div>
   </div>
 </div>

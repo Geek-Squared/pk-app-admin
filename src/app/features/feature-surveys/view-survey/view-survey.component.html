@@ -14,17 +14,46 @@
         <h1>{{ survey?.name }}</h1>
         <p>{{ responses.length }} responses · {{ questionCount }} questions</p>
       </div>
-      <button class="pk-btn"
-        [class.pk-btn-outline]="survey?.active"
-        [class.pk-btn-primary]="!survey?.active"
-        [disabled]="toggling"
-        (click)="toggleActive()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
-          <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
-        </svg>
-        {{ survey?.active ? 'Active on app' : 'Activate' }}
-      </button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="pk-btn pk-btn-outline" (click)="isEditing = true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 4.5l3 3M4 20l1-4L17 4l3 3L8 19l-4 1Z"/></svg>
+          {{ questionCount ? 'Edit questions' : 'Add questions' }}
+        </button>
+        <button class="pk-btn"
+          [class.pk-btn-outline]="survey?.active"
+          [class.pk-btn-primary]="!survey?.active"
+          [disabled]="toggling || (!survey?.active && !canActivate)"
+          [title]="!survey?.active && !canActivate ? 'Add at least one question before activating this survey' : ''"
+          (click)="toggleActive()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path *ngIf="survey?.active" d="M5 12.5l4.5 4.5L19 6.5"/>
+            <path *ngIf="!survey?.active" d="M12 5v14M5 12h14"/>
+          </svg>
+          {{ survey?.active ? 'Active' : 'Activate' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="pk-card" *ngIf="!questionCount" style="margin-bottom:var(--section-gap);display:flex;align-items:center;gap:12px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--warn);flex:none"><path d="M12 8v5M12 16.5v.01M10.3 3.9 2.5 17.5A1.7 1.7 0 0 0 4 20h16a1.7 1.7 0 0 0 1.5-2.5L13.7 3.9a1.7 1.7 0 0 0-3 0Z"/></svg>
+      <div>
+        <p style="margin:0;font-size:14px;font-weight:600;color:var(--text)">This survey has no questions yet</p>
+        <p style="margin:2px 0 0;font-size:12.5px;color:var(--text-3)">Add questions before activating it — clients cannot answer an empty survey.</p>
+      </div>
+    </div>
+
+    <h3 class="pk-section-title">Where it is used</h3>
+    <div class="pk-card" style="margin-bottom:var(--section-gap)">
+      <div *ngIf="placements.length" style="display:flex;flex-wrap:wrap;gap:8px">
+        <a class="pk-badge pk-badge-blue" style="text-decoration:none"
+          *ngFor="let p of placements"
+          routerLink="/interventions/view-intervention/{{ p.interventionId }}">
+          {{ p.interventionName }} · {{ p.timepointLabel }}
+        </a>
+      </div>
+      <p *ngIf="!placements.length" style="margin:0;font-size:12.5px;color:var(--text-3)">
+        Not attached to any intervention yet — clients will never be shown it. Open an intervention and attach it to Before, Midline or Endline.
+      </p>
     </div>
 
     <h3 class="pk-section-title">Recent responses</h3>
@@ -33,6 +62,8 @@
         <thead>
           <tr>
             <th>Respondent</th>
+            <th>Intervention</th>
+            <th>Point</th>
             <th>Submitted</th>
             <th *ngFor="let key of responseKeys">{{ key }}</th>
           </tr>
@@ -40,12 +71,15 @@
         <tbody>
           <tr *ngFor="let r of responses">
             <td class="td-name">{{ r?.userName || r?.userId || r?.uid || '—' }}</td>
+            <td class="muted">{{ interventionName(r?.interventionId) }}</td>
+            <td class="muted">{{ timepointName(r?.timepoint) }}</td>
             <td class="muted">{{ r?.submittedAt?.toDate ? (r?.submittedAt?.toDate() | date:'d MMM y') : (r?.submittedAt || r?.createdAt | date:'d MMM y') }}</td>
             <td *ngFor="let key of responseKeys">{{ r[key] }}</td>
           </tr>
           <tr *ngIf="!responses?.length">
-            <td [attr.colspan]="responseKeys.length + 2" class="muted" style="text-align:center;padding:32px">
-              No responses yet. {{ survey?.active ? 'Clients can submit responses from the app.' : 'Activate this survey to make it visible on the app.' }}
+            <td [attr.colspan]="responseKeys.length + 4" class="muted" style="text-align:center;padding:32px">
+              No responses yet.
+              {{ placements.length ? 'Clients reach this survey as they progress through the interventions above.' : 'Attach it to an intervention timepoint so clients are asked to complete it.' }}
             </td>
           </tr>
         </tbody>
@@ -54,3 +88,5 @@
   </ng-container>
 
 </div>
+
+<app-survey-editor-modal *ngIf="isEditing" [survey]="survey" (closeModal)="isEditing = false"></app-survey-editor-modal>

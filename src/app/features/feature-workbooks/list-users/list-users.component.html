@@ -23,6 +23,7 @@
                   <div style="height:100%;border-radius:999px;background:var(--accent);transition:width .3s" [style.width]="getProgress(user?.uid) + '%'"></div>
                 </div>
                 <span style="font-size:12.5px;font-weight:600;color:var(--text-2);width:36px;text-align:right">{{ getProgress(user?.uid) }}%</span>
+                <span style="font-size:12px;color:var(--text-3);white-space:nowrap" *ngIf="totalChapters">{{ completedChapterCount(user?.uid) }}/{{ totalChapters }}</span>
               </div>
             </ng-container>
             <ng-template #noWb><span class="muted">—</span></ng-template>

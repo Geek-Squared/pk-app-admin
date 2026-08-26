@@ -33,8 +33,11 @@ export class CategoriesService {
   }
 
   getCategories() {
+    // No orderBy: Firestore's orderBy('order') silently drops any category
+    // missing the `order` field, which made the per-intervention category
+    // view look empty. Consumers filter/sort client-side as needed.
     return this.firestore
-      .collection<Category>('categories', (ref) => ref.orderBy('order'))
+      .collection<Category>('categories')
       .snapshotChanges();
   }
 
@@ -46,9 +49,12 @@ export class CategoriesService {
   }
 
   getCategoriesByInterventionId(interventionId: string) {
+    // Equality filter only. Combining it with orderBy('order') both dropped
+    // categories missing the field and required a composite index. Consumers
+    // sort client-side.
     return this.firestore
       .collection<any>('categories', (ref) =>
-        ref.where('interventionId', '==', interventionId).orderBy('order')
+        ref.where('interventionId', '==', interventionId)
       )
       .snapshotChanges();
   }

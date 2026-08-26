@@ -13,6 +13,11 @@ const routes: Routes = [
     children: [
       { path: '', component: ViewInterventionComponent },
       {
+        // Chapters linked directly to an intervention (no category layer).
+        path: 'view-chapter/:chapterId',
+        children: [{ path: '', component: ViewChapterComponent }],
+      },
+      {
         path: 'view-category/:categoryId',
         children: [
           { path: '', component: ViewCategoryComponent },

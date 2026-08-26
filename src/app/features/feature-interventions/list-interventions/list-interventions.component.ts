@@ -1,6 +1,12 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Intervention } from 'src/app/models/intervention.interface';
+import {
+  SURVEY_TIMEPOINTS,
+  normaliseInterventionSurveys,
+} from 'src/app/models/survey.interface';
+import { Utilities } from 'src/app/models/utils';
 import {
   InterventionsService,
   CategoriesService,
@@ -10,8 +16,11 @@ import { ChaptersService } from 'src/app/services/chapters.service';
 
 interface InterventionStats extends Intervention {
   categoryCount: number;
+  chapterCount: number;
   clientCount: number;
   avgCompletion: number;
+  /** How many of the three timepoints have at least one survey attached. */
+  timepointsCovered: number;
 }
 
 @Component({
@@ -30,6 +39,11 @@ export class ListInterventionsComponent implements OnInit {
   public searchTerm = '';
   public openMenuId: string | null = null;
   public selectedIntervention: Intervention | null = null;
+  public unorderedCount = 0;
+  public isFixingOrder = false;
+  public loadErrors: string[] = [];
+
+  readonly totalTimepoints = SURVEY_TIMEPOINTS.length;
 
   constructor(
     private interventionsService: InterventionsService,
@@ -68,17 +82,23 @@ export class ListInterventionsComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = true;
     combineLatest([
-      this.interventionsService.getInterventions(),
-      this.categoriesService.getCategories(),
-      this.chaptersService.getChapters(),
-      this.workbooksService.getWorkbooks(),
+      this.guard(this.interventionsService.getInterventions(), 'interventions'),
+      this.guard(this.categoriesService.getCategories(), 'categories'),
+      this.guard(this.chaptersService.getChapters(), 'chapters'),
+      this.guard(this.workbooksService.getWorkbooks(), 'workbooks'),
     ]).subscribe(
       ([iData, cData, chData, wData]) => {
         const interventions = iData.map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as Intervention));
         const categories = cData.map((e: any) => e.payload.doc.data() as any);
         const chapters = chData.map((e: any) => ({ id: e.payload.doc.id, ...e.payload.doc.data() } as any));
         const workbooks = wData.map((e: any) => e.payload.doc.data() as any);
-        this.interventions = this.computeStats(interventions, categories, chapters, workbooks);
+        // Documents with no usable `order` are still hidden from the mobile app,
+        // which lists interventions with orderBy('order').
+        this.unorderedCount = interventions.filter(
+          (i) => Utilities.orderValue(i) === null
+        ).length;
+        this.interventions = this.computeStats(interventions, categories, chapters, workbooks)
+          .sort(Utilities.byOrder);
         this.applyFilter();
         this.isLoading = false;
       },
@@ -126,13 +146,62 @@ export class ListInterventionsComponent implements OnInit {
 
       const avgCompletion = clientCount ? Math.round((completionSum / clientCount) * 100) : 0;
 
+      const attached = normaliseInterventionSurveys(intv.surveys);
+      const timepointsCovered = SURVEY_TIMEPOINTS.filter(
+        (t) => (attached[t.key] || []).length > 0
+      ).length;
+
       return {
         ...intv,
         categoryCount: categoryCounts.get(intv.id) || 0,
+        chapterCount: totalChapters,
         clientCount,
         avgCompletion,
+        timepointsCovered,
       };
     });
+  }
+
+  /**
+   * One failing collection must not blank the whole page. A stream that errors
+   * yields an empty list and is named in `loadErrors`, instead of tearing down
+   * the combineLatest and leaving the list looking simply empty.
+   */
+  private guard<T>(source: Observable<T[]>, name: string): Observable<T[]> {
+    return source.pipe(
+      catchError((error) => {
+        console.error(`Interventions page: failed to load ${name}`, error);
+        if (!this.loadErrors.includes(name)) {
+          this.loadErrors.push(name);
+        }
+        return of([] as T[]);
+      })
+    );
+  }
+
+  /** Gives interventions with no `order` one, so the app can list them too. */
+  fixOrdering() {
+    if (this.isFixingOrder || !this.unorderedCount) return;
+
+    this.isFixingOrder = true;
+    this.interventionsService
+      .backfillMissingOrder()
+      .then((fixed) => {
+        Utilities.displayToast(
+          'success',
+          fixed
+            ? `Ordered ${fixed} ${fixed === 1 ? 'intervention' : 'interventions'}. They will now appear in the app as well.`
+            : 'Every intervention already has an order.'
+        );
+      })
+      .catch((error) => {
+        console.error('Fix ordering failed', error);
+        Utilities.displayToast(
+          'error',
+          Utilities.firestoreErrorMessage(error, 'Could not update the ordering. Please try again.')
+        );
+      })
+      .finally(() => { this.isFixingOrder = false; });
   }
 
   onSearchTermChange(value: string) {

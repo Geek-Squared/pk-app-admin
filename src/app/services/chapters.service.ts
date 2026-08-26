@@ -31,8 +31,11 @@ export class ChaptersService {
   }
 
   getChapters() {
+    // No orderBy here: Firestore's orderBy('order') silently drops any chapter
+    // that is missing the `order` field, which hid chapters from the admin
+    // stats. Consumers sort/aggregate client-side as needed.
     return this.firestore
-      .collection<Chapter>('chapters', (ref) => ref.orderBy('order'))
+      .collection<Chapter>('chapters')
       .snapshotChanges();
   }
 
@@ -41,6 +44,15 @@ export class ChaptersService {
       .collection('chapters')
       .doc(chapter.id)
       .set(chapter, { merge: true });
+  }
+
+  // Chapters linked directly to an intervention (no category layer).
+  getChaptersByInterventionId(interventionId: string) {
+    return this.firestore
+      .collection<any>('chapters', (ref) =>
+        ref.where('interventionId', '==', interventionId)
+      )
+      .snapshotChanges();
   }
 
   getChaptersByCategoryIdAndInterventionId(
